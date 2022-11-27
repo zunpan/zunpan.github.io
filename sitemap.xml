@@ -2,15 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zunpan.github.io/2022/06/22/test/</loc>
-    
-    <lastmod>2022-11-27</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zunpan.github.io/2022/06/22/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/</loc>
     
     <lastmod>2022-11-27</lastmod>
@@ -124,13 +115,6 @@
   </url>
   
   <url>
-    <loc>https://zunpan.github.io/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/</loc>
-    <lastmod>2022-11-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://zunpan.github.io/tags/CORS/</loc>
     <lastmod>2022-11-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -139,6 +123,13 @@
   
   <url>
     <loc>https://zunpan.github.io/tags/Java/</loc>
+    <lastmod>2022-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zunpan.github.io/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/</loc>
     <lastmod>2022-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

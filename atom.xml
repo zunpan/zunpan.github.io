@@ -71,33 +71,6 @@
   </entry>
   
   <entry>
-    <title>test</title>
-    <link href="https://zunpan.github.io/2022/06/22/test/"/>
-    <id>https://zunpan.github.io/2022/06/22/test/</id>
-    <published>2022-06-22T09:12:37.000Z</published>
-    <updated>2022-11-27T14:33:24.648Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="test"><a class="markdownIt-Anchor" href="#test"></a> test</h2>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;test&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#test&quot;&gt;&lt;/a&gt; test&lt;/h2&gt;
-</summary>
-      
-    
-    
-    
-    <category term="通用知识" scheme="https://zunpan.github.io/categories/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/"/>
-    
-    
-    <category term="CORS" scheme="https://zunpan.github.io/tags/CORS/"/>
-    
-    <category term="Java" scheme="https://zunpan.github.io/tags/Java/"/>
-    
-  </entry>
-  
-  <entry>
     <title>跨域问题</title>
     <link href="https://zunpan.github.io/2022/06/22/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/"/>
     <id>https://zunpan.github.io/2022/06/22/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/</id>
