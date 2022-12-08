@@ -6,7 +6,7 @@
   <link href="https://zunpan.github.io/atom.xml" rel="self"/>
   
   <link href="https://zunpan.github.io/"/>
-  <updated>2022-12-03T14:37:25.715Z</updated>
+  <updated>2022-12-08T15:06:56.555Z</updated>
   <id>https://zunpan.github.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://zunpan.github.io/2022/12/03/2022.06-2022.11%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/"/>
     <id>https://zunpan.github.io/2022/12/03/2022.06-2022.11%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/</id>
     <published>2022-12-03T11:29:40.000Z</published>
-    <updated>2022-12-03T14:37:25.715Z</updated>
+    <updated>2022-12-08T15:06:56.555Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="基于json-schema的配置平台"><a class="markdownIt-Anchor" href="#基于json-schema的配置平台"></a> 基于JSON Schema的配置平台</h2><p>背景：这是公司的新人入职练手项目，总共两周时间，实现一个基于JSON Schema的表单配置平台。<br />需求：表单配置指的是通过可视化界面配置 表单的每个字段，包括名称、输入类型、输入限制等。mentor给了一个方向叫JSON Schema<br />调研：JSON Schema是描述json数据的元数据，本身也是json字符串，一般两个作用，1. 后端用 JSON Schema 对前端传的json传进行格式校验；2. 前端通过 JSON Schema生成表单</p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/2022.06~2022.11%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/IMG_20221203-201430967.png" alt="图 3" /></p><p>开发：前端使用Vue、后端使用Spring Boot<br />难点：JSON Schema和表单的双向转换。用户可以手动编辑JSON Schema生成表单项，也可以通过可视化界面增加表单项来修改JSON Schema。<br />解决方案：尝试过写一套解析方案，但是dom操作太复杂作罢。调研了一些开源方案，最终选用vue-json-schema-form</p><h2 id="excel比对与合并系统"><a class="markdownIt-Anchor" href="#excel比对与合并系统"></a> Excel比对与合并系统</h2><p>背景：接手的第一个项目，关于Excel比对与合并，主要参与系统的优化与维护工作<br />主要工作：</p><ol><li>批量文件比对的多线程优化（比对方法涉及对象完全栈封闭）</li><li>批量文件合并oom排查（合并需要先反序列化比对结果，若有多个版本的比对结果需要合并到另一分支上的同名文件，需要循环处理，每个比对结果合并之后需要置空，否则内存无法释放，排查工具：visualvm，发现调用合并方法时，老年代收集次数非常多，内存居高不下导致oom；根本原因：自己开发的excel解析工具+java自带的序列化导致序列化产物非常大）</li></ol><p>算法介绍可以参看<a href="https://markdown.com.cn">《Excel比对与合并系统》</a></p><h2 id="助理系统"><a class="markdownIt-Anchor" href="#助理系统"></a> 助理系统</h2><p>需求：公司员工反馈行政问题都是在公司的聊天软件里反馈，反馈途径包括事业群、私聊行政助理、以及服务号反馈（类似微信公众号），行政助理需要在多个系统进行处理，助理系统为助理统一了消息来源，助理可以在助理系统中回复所有渠道的问题反馈。<br />调研：spring-boot-starter-websocket，实现了客户端与服务器全双工通信<br />难点：助理系统需要给每个反馈问题的员工生成唯一的对话，初次反馈消息时，快速发送消息会创建多个对话。这是因为后端多线程处理消息，每个线程都先去数据库查询此条消息的员工是否存在对话，如果不存在就创建。这里出现了并发经典错误 check-then-act。<br />解决方案：Redis分布式锁</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="基于json-schema的配置平台"><a class="markdownIt-Anchor" href="#基于json-schema的配置平台"></a> 基于JSON Schema的配置平台</h2><p>背景：这是公司的新人入职练手项目，总共两周时间，实现一个基于JSON Schema的表单配置平台。<br />需求：表单配置指的是通过可视化界面配置 表单的每个字段，包括名称、输入类型、输入限制等。mentor给了一个方向叫JSON Schema<br />调研：JSON Schema是描述json数据的元数据，本身也是json字符串，一般两个作用，1. 后端用 JSON Schema 对前端传的json传进行格式校验；2. 前端通过 JSON Schema生成表单</p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/2022.06~2022.11%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/IMG_20221203-201430967.png" alt="图 3" /></p><p>开发：前端使用Vue、后端使用Spring Boot<br />难点：JSON Schema和表单的双向转换。用户可以手动编辑JSON Schema生成表单项，也可以通过可视化界面增加表单项来修改JSON Schema。<br />解决方案：尝试过写一套解析方案，但是dom操作太复杂作罢。调研了一些开源方案，最终选用vue-json-schema-form</p><h2 id="excel比对与合并系统"><a class="markdownIt-Anchor" href="#excel比对与合并系统"></a> Excel比对与合并系统</h2><p>背景：接手的第一个项目，关于Excel比对与合并，主要参与系统的优化与维护工作<br />主要工作：</p><ol><li>批量文件比对的多线程优化（比对方法涉及对象完全栈封闭）</li><li>批量文件合并oom排查（合并需要先反序列化比对结果，若有多个版本的比对结果需要合并到另一分支上的同名文件，需要循环处理，每个比对结果合并之后需要置空，否则内存无法释放，排查工具：visualvm，发现调用合并方法时，老年代收集次数非常多，内存居高不下导致oom；根本原因：自己开发的excel解析工具+java自带的序列化导致序列化产物非常大）</li></ol><p>算法介绍可以参看<a href="https://zunpan.github.io/">《Excel比对与合并系统》</a>（待填坑）</p><h2 id="助理系统"><a class="markdownIt-Anchor" href="#助理系统"></a> 助理系统</h2><p>需求：公司员工反馈行政问题都是在公司的聊天软件里反馈，反馈途径包括事业群、私聊行政助理、以及服务号反馈（类似微信公众号），行政助理需要在多个系统进行处理，助理系统为助理统一了消息来源，助理可以在助理系统中回复所有渠道的问题反馈。<br />调研：spring-boot-starter-websocket，实现了客户端与服务器全双工通信<br />难点：助理系统需要给每个反馈问题的员工生成唯一的对话，初次反馈消息时，快速发送消息会创建多个对话。这是因为后端多线程处理消息，每个线程都先去数据库查询此条消息的员工是否存在对话，如果不存在就创建。这里出现了并发经典错误 check-then-act。<br />解决方案：Redis分布式锁</p>]]></content>
     
     
       

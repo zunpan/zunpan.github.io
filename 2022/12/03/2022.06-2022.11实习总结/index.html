@@ -27,7 +27,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/2022.06~2022.11%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/IMG_20221203-201430967.png">
 <meta property="article:published_time" content="2022-12-03T11:29:40.000Z">
-<meta property="article:modified_time" content="2022-12-03T14:37:25.715Z">
+<meta property="article:modified_time" content="2022-12-08T15:06:56.555Z">
 <meta property="article:author" content="panzun">
 <meta property="article:tag" content="实习">
 <meta name="twitter:card" content="summary">
@@ -373,7 +373,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/12/03/2022.06-2022.11%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 718(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 721(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 2(分)</span>
@@ -398,7 +398,7 @@
 <li>批量文件比对的多线程优化（比对方法涉及对象完全栈封闭）</li>
 <li>批量文件合并oom排查（合并需要先反序列化比对结果，若有多个版本的比对结果需要合并到另一分支上的同名文件，需要循环处理，每个比对结果合并之后需要置空，否则内存无法释放，排查工具：visualvm，发现调用合并方法时，老年代收集次数非常多，内存居高不下导致oom；根本原因：自己开发的excel解析工具+java自带的序列化导致序列化产物非常大）</li>
 </ol>
-<p>算法介绍可以参看<a target="_blank" rel="noopener" href="https://markdown.com.cn">《Excel比对与合并系统》</a></p>
+<p>算法介绍可以参看<a href="https://zunpan.github.io/">《Excel比对与合并系统》</a>（待填坑）</p>
 <h2 id="助理系统"><a class="markdownIt-Anchor" href="#助理系统"></a> 助理系统</h2>
 <p>需求：公司员工反馈行政问题都是在公司的聊天软件里反馈，反馈途径包括事业群、私聊行政助理、以及服务号反馈（类似微信公众号），行政助理需要在多个系统进行处理，助理系统为助理统一了消息来源，助理可以在助理系统中回复所有渠道的问题反馈。<br />
 调研：spring-boot-starter-websocket，实现了客户端与服务器全双工通信<br />
