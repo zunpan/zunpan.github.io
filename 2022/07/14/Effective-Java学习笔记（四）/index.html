@@ -25,14 +25,14 @@
 <meta property="og:site_name" content="panzun blog">
 <meta property="og:description" content="第五章 泛型  26. 不要使用原始类型  泛型和原始类型 声明中具有一个或多个类型参数的类或接口就是泛型类或泛型接口。泛型类和泛型接口统称为泛型。 每个泛型都定义了一个原始类型，它是没有任何相关类型参数的泛型的名称。例如，List&lt;E&gt;  对应的原始类型是 List。原始类型的行为就好像所有泛型信息从类型声明中删除了一样。它们的存在主要是为了与之前的代码兼容。  泛型优势 泛型可以">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur%40main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221208-203742916.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221209-134128538.png">
 <meta property="article:published_time" content="2022-07-14T12:17:09.000Z">
-<meta property="article:modified_time" content="2022-12-08T15:02:21.580Z">
+<meta property="article:modified_time" content="2022-12-09T05:43:31.917Z">
 <meta property="article:author" content="panzun">
 <meta property="article:tag" content="Effective-Java">
 <meta property="article:tag" content="泛型">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur%40main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221208-203742916.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221209-134128538.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://zunpan.github.io/2022/07/14/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89/index.html">
   
@@ -686,7 +686,7 @@ objects[<span class="hljs-number">0</span>] = intList; <span class="hljs-comment
     <span class="hljs-keyword">return</span> s;
 &#125;
 </code></pre>
-<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur%40main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221208-203742916.png" alt="图 1" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221209-134128538.png" alt="图 1" /></p>
 <h5 id="一个正确例子"><a class="markdownIt-Anchor" href="#一个正确例子"></a> 一个正确例子</h5>
 <p>下面是一个安全使用泛型可变参数的典型示例。该方法接受任意数量的列表作为参数，并返回一个包含所有输入列表的元素的序列列表。因为该方法是用 @SafeVarargs 注释的，所以它不会在声明或调用点上生成任何警告：</p>
 <pre class="highlight"><code class="java"><span class="hljs-comment">// Safe method with a generic varargs parameter</span>
