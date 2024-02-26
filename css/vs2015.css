@@ -1,0 +1,29 @@
+/* highlight.js: vs2015.css */
+.hljs {
+    /* 其余部分略 */
+    background: #1e1e1e;
+}
+
+/* Material Theme: style.css*/
+#post-content pre {
+    /* 其余部分略 */
+    background-color: #f7f7f7;
+}
+
+/* 在config_css.ejs中加入的内容，使用!important提高优先级 */
+/* 如果不使用公用CDN库，可以直接修改CSS文件 */
+pre {
+    background-color: #1e1e1e !important;
+    font-size: 15px !important;
+}
+
+.hljs {
+    margin: 0 0 0 0 !important;
+    padding-left: 0 !important;
+    line-height: 1.5em !important;
+}
+
+/* （可选）把highlight.js主题加入的斜体去掉，Visual Studio的注释并不是斜体啊喂！ */
+.hljs-comment {
+    font-style: normal;
+}
