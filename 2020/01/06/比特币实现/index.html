@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>比特币实现 | panzun</title>
+  <meta name="description" content="UTXO 区块链是去中心化的账本，比特币采用的是基于交易的账本模式（transaction-based ledger）。每个区块里记录的是交易信息，有转账交易，铸币交易，但是系统当中并没有哪个地方显式的记录账户中有多少钱，这得需要通过交易记录推算。比特币系统的全节点要维护一个UTXO:Unspent Transaction Output 数据结构。区块链上有很多交易，有些交易的输出已经被花掉了，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="比特币实现">
+<meta property="og:url" content="https://zunpan.github.io/2020/01/06/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="UTXO 区块链是去中心化的账本，比特币采用的是基于交易的账本模式（transaction-based ledger）。每个区块里记录的是交易信息，有转账交易，铸币交易，但是系统当中并没有哪个地方显式的记录账户中有多少钱，这得需要通过交易记录推算。比特币系统的全节点要维护一个UTXO:Unspent Transaction Output 数据结构。区块链上有很多交易，有些交易的输出已经被花掉了，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164250678.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164348573.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164425851.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164437703.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164451049.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164541201.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164558076.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164611745.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164657245.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164709578.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164717338.png">
+<meta property="article:published_time" content="2020-01-06T07:01:40.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.282Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="区块链技术与应用">
+<meta property="article:tag" content="比特币">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164250678.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2020/01/06/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#utxo"><span class="toc-number">1.</span> <span class="toc-text"> UTXO</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#utxo%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.1.</span> <span class="toc-text"> UTXO的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E4%BE%8B%E5%AD%90"><span class="toc-number">1.2.</span> <span class="toc-text"> 比特币例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%96%E7%9F%BF%E7%9A%84%E8%BF%87%E7%A8%8B%E7%9A%84%E6%A6%82%E7%8E%87%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text"> 挖矿的过程的概率分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E7%9A%84%E6%80%BB%E9%87%8F"><span class="toc-number">3.</span> <span class="toc-text"> 比特币的总量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-number">4.</span> <span class="toc-text"> 比特币的安全性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%B6%E6%84%8F%E7%9A%84%E8%8A%82%E7%82%B9%E6%8E%8C%E6%8F%A1%E8%AE%B0%E8%B4%A6%E6%9D%83"><span class="toc-number">4.1.</span> <span class="toc-text"> 恶意的节点掌握记账权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%B7%E5%B8%81"><span class="toc-number">4.1.1.</span> <span class="toc-text"> 偷币</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E8%8A%B1"><span class="toc-number">4.1.2.</span> <span class="toc-text"> 双花</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%85%E6%84%8F%E4%B8%8D%E6%8A%8A%E6%9F%90%E4%BA%9B%E5%90%88%E6%B3%95%E4%BA%A4%E6%98%93%E5%86%99%E8%BF%9B%E5%8C%BA%E5%9D%97%E9%93%BE"><span class="toc-number">4.1.3.</span> <span class="toc-text"> 故意不把某些合法交易写进区块链</span></a></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-比特币实现" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      比特币实现
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/01/06/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/" class="article-date">
+	  <time datetime="2020-01-06T07:01:40.000Z" itemprop="datePublished">2020-01-06</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" rel="tag">区块链技术与应用</a>, <a class="article-tag-link-link" href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" rel="tag">比特币</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/01/06/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 4.7k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 16(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="utxo"><a class="markdownIt-Anchor" href="#utxo"></a> UTXO</h2>
+<p>区块链是去中心化的账本，比特币采用的是基于交易的账本模式（transaction-based ledger）。每个区块里记录的是交易信息，有转账交易，铸币交易，但是系统当中并没有哪个地方显式的记录账户中有多少钱，这得需要通过交易记录推算。比特币系统的全节点要维护一个UTXO:Unspent Transaction Output 数据结构。区块链上有很多交易，有些交易的输出已经被花掉了，有些没有被花掉，所有交易中输出还没有花掉的组成一个集合就是UTXO。注意，一个交易可能有多个输出，所以会出现一个交易中有的输出在UTXO里面，有的不在。UTXO集合当中每个元素要给出产出这个输出的交易的hash值以及他在这个交易里是第几个输出，这两个信息就可以定位到UTXO中的输出。</p>
+<h3 id="utxo的作用"><a class="markdownIt-Anchor" href="#utxo的作用"></a> UTXO的作用</h3>
+<p>为了检测double spending。没有花掉的币必须在UTXO中。全节点要在内存中维护UTXO，以便快速检测double spending 。每个交易会消耗掉一些输出，同时会产生新的输出。如果某人收到比特币的转账交易后，这个钱始终都不花，那么这个信息就要永久存储在UTXO中。</p>
+<p>每个交易可以有多个输入和多个输出，所有输入的金额加起来要等于所有输出的金额，这个叫做total inputs =total outputs 。这意味着交易可能不止一个签名。有些交易的total inputs和total outputs有略微的差异，差额会作为交易费给获得记账权发布区块的节点。节点争夺记账权的动力之一是出块奖励，但是光有出块奖励是不够的，获得记账权的节点如果只打包自己的交易记录怎么办？所以，动力之二是就是交易费，就是前面提到的差额。比特币当中的交易费通常很小0.00几，也有些简单的交易是没有交易费的。目前矿工挖矿主要还是为了得到出块奖励。随着出块奖励的减少，以后的交易费会成为争夺记账权的主要动力。</p>
+<p>除了比特币这种transaction-based ledger外，与之对应的还有基于账户的模式（account-based ledger），以太坊用的就是这种交易模式，在这种模式当中，系统要显示记录每个账户有多少币，这个和现实体验非常接近。比特币这种交易模式隐私保护性较好，但是也有代价，比如转账交易要说明币的来源，这就是没有账户的代价。以太坊系统就不存在这种问题。</p>
+<h3 id="比特币例子"><a class="markdownIt-Anchor" href="#比特币例子"></a> 比特币例子</h3>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164250678.png" alt="图 1" /><br />
+Number Of Transactions : 表示这个区块包含了686个交易<br />
+Output Total：总的输出是4220.46616378个比特币<br />
+Transaction Fees：总的交易费<br />
+Height：区块序号<br />
+TimeStamp：产出的时间戳<br />
+Difficulty：挖矿的难度，每隔2016个区块会进行调整，保持出块时间在每10分钟产出一个<br />
+Nonce：挖矿的随机数<br />
+Block Reward：出块奖励<br />
+Hash：区块块头的hash<br />
+Previous Block：前一个区块的块头hash<br />
+<em>Hash 和 Previous Block 前面都有一串0，这不是偶然的，所谓的挖矿就是不断试nounce，使得整个block header的hash小于等于给定的目标阈值，这个目标阈值表示成16进制就是前面有一长串的0，所以凡是符合难度要求的区块，它的块头的hash值都带一串0</em><br />
+Merkle Root：merkle tree的根hash值<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164348573.png" alt="图 2" /></p>
+<p>注意，nounce的类型是32位的无符号整数，我们知道挖矿的时候要调整nonce，但是这个nonce最多只有2<sup>32</sup>次方个取值，按照比特币现在的挖矿难度，就算把这2<sup>32</sup> 个的取值都遍历一遍，很可能仍然找不到符合难度要求的。因为近年来挖矿的人不断增多，挖矿难度不断增大，单纯调正nonce是很可能找不到符合难度要求的，所以还要调整block header其他的域，下图是block header 里面的各个域的描述</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164425851.png" alt="图 3" /><br />
+version：当前使用的比特币协议的版本号，这个无法更改<br />
+previous block header hash：前一个区块的块头hash，也是无法修改<br />
+merkle root hash：merkle tree 的根hash值，可以修改<br />
+time：区块产生时间，有一定的调整余地，比特币系统并不要求非常精确的时间，可以对时间在一定范围内调整<br />
+nBits：挖矿时候用的目标阈值编码后的版本，4个字节，只能按照协议的要求定期调正，不能更改<br />
+nonce：我们能改的nonce<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164437703.png" alt="图 4" /></p>
+<p><strong>为什么merkle root hash可以改？</strong><br />
+每个发布的区块有一个铸币交易，这是比特币系统中产生新的比特币的唯一方式，这个交易没有输入（也就是上面的no input），因为币是凭空造出来的，它有一个CoinBase域，它可以写入任何东西，没有人管。<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164451049.png" alt="图 5" /></p>
+<p>上图是一个小型区块链的示意图，左下角是coinbase transaction，我们改变这个交易的CoinBase域之后，这个交易的hash就发生了变化，这个变化会沿着merkle tree 不断向上传播，最终会导致block header 里的Merkle Root发生变化，所以我们可以把这个域当作extra nonce，块头的4字节nonce不够用，这里有很多字节可以用，比如把CoinBase域的前8个字节当作extra nonce来用，这样搜索空间一下子增大到了2<sup>96</sup>次方。真正挖矿是有两层循环的，外层循环是调整CoinBase域的extra nonce，算出block header里的Merkle Root之后，内层循环再调整nonce。<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164541201.png" alt="图 6" /></p>
+<p>上图是一个普通转账交易的记录，这个交易有两个输入，两个输出，左上方虽然写的是Output，其实对这个交易来说是输入，这里写的Output意思是说他们花掉的是之前哪个交易的Output。右边两个输出还没有被花掉，处于Unspent状态，会保存在UTXO里面</p>
+<p>Inputs and Outputs中<br />
+Total Input：输入的总金额<br />
+Total Output：输出的总金额<br />
+Fees：前面两者的差值，这笔交易的交易费</p>
+<p>Input Scripts和Output Scripts<br />
+输入和输出都是用脚本的形式指定，比特币系统中验证交易的合法性就是把Input Scripts 和Output Scripts配对后执行，注意上图中的Input Scripts和Output Scripts不是一对，上图的Input Scripts要和提供币的来源的交易的Output Scripts进行配对，如果输入脚本和输出脚本拼接在一起能顺利执行，那么这个交易就是合法的。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164558076.png" alt="图 7" /></p>
+<p>注意，上图中的所有的tx在计算时就是是一个Merkle Root</p>
+<h2 id="挖矿的过程的概率分析"><a class="markdownIt-Anchor" href="#挖矿的过程的概率分析"></a> 挖矿的过程的概率分析</h2>
+<p>挖矿的过程就是不断尝试各种nonce来求解puzzle，每次尝试nonce 都可以看作一个Bernoulli trial：a random experiment with binary outcome（伯努利试验：一个二元结果的随机试验）。伯努利实验的经典案例是抛硬币，如果硬币不均匀，每次实验，正面的概率就是p，反面的概率是1-p。对于挖矿来说，这两个概率相差甚远，每次尝试一个nonce，成功的概率是微乎其微的，大概率不行的，如果我们做大量的伯努利实验，每个实验都是随机的，那么这些伯努利实验就构成了一个Bernoulli process：a sequence of independent Bernoulli trial（伯努利过程：一系列独立伯努利试验）。Bernoulli process的一个特性是无记忆性（memoryless），意思是说做大量实验，前面的实验结果对后面的结果没有影响，挖矿过程就是不断尝试nonce，这种情况下Bernoulli process可以用Poisson process来近似，实验次数很多，每次成功的概率很小就可以用Poisson process来近似。我们关心的是出块时间，也就是系统里产生下一个区块的时间，这个在概率上可以推导出来，服从指数分布（exponential distribution）<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164611745.png" alt="图 8" /></p>
+<p>注意，上图的出块时间是整个系统的出块时间，并不是矿工的出块时间，整个系统的平均出块时间是10分钟，平均时间是比特币协议规定的，通过定期调整挖矿难度，使得平均出块时间维持在10分钟左右，具体到每一个矿工，出块时间取决于矿工的算力，算力大，概率就大，出块时间就短。指数分布也是无记忆的，概率密度曲线的特点有：从任何一个地方把它截断，剩下曲线的形状仍然和原来一样，仍然服从指数分布，这就是无记忆的性质，假如过去了10分钟，仍然没有人找到区块，那么接下来还要等多久呢？还是平均下来10分钟，这个和直觉不太一致。这个概率分析告诉我们将来还要挖多少时间和过去挖了多少时间是没有关系的，仍然是服从指数分布，平均还要10分钟，这个性质也叫progress free。</p>
+<p><strong>progress free 或者 memoryless有什么作用？</strong></p>
+<p>设想一下，如果有某个puzzle不满足这个性质会出现什么情况，比如说过去做的工作越多，接下来尝试nonce的时候成功的概率越大，相当于抛硬币的时候每次结果不是随机的，过去抛了好多次，都是反面朝上，下次再抛硬币的时候，正面朝上的概率会增加。如果有某一个加密货币设计出这样的puzzle，会有什么结果？算力强的矿工会有不成比例的优势，因为算力强的矿工过去的工作量更大。什么是不成比例的优势？比如系统中有两个矿工，一个的算力是另一个的10倍，理想状况下，算力强的矿工能挖到矿的概率应该是另一个矿工的10倍，这才算公平，因为算力强的矿工能尝试的nonce是另一个的10倍，这就是我们说的progress free 或者 memoryless所保证的，如果不是这样的话，算力强的矿工获得记账权的概率就会超过10倍，因为它过去尝试了更多的不成功nonce，那么下次成功的概率就会增大，这就是不成比例的优势。所以progress free 或者 memoryless保证了挖矿公平性。</p>
+<h2 id="比特币的总量"><a class="markdownIt-Anchor" href="#比特币的总量"></a> 比特币的总量</h2>
+<p>我们知道出块奖励是系统产生比特币的唯一途径，而这个奖励是每隔4年减半的，这样产生的比特币数量构成了一个几何序列（geometric series）。一开始的21W个区块能产生21W <em>50的比特币，接下来的区块能够产生21W</em> 25，再往下就是21W<em>12.5……    总量就是21W</em> 50 *（1+1/2+1/4+……）约等于2100W</p>
+<p>不像寻找某个符合条件的质数这类数学难题，比特币求解puzzle除了比拼算力外并没有实际意义，比特币越来越难挖到是因为出块奖励被人为减少，比特币的稀缺性是人为造成的。虽然挖矿求解的puzzle本身没有实际意义，但是挖矿过程对于维护比特币系统的安全性是至关重要的，也叫做BitCoin is secured by mining。对于一个去中心化的没有membership控制的系统来说，挖矿提供了一种凭借算力投票的有效手段，只要大部分算力掌握在诚实的节点手里，系统的安全性就能得到保证，所以挖矿这一过程，表面上没有意义，但是这个机制对于维护系统安全性是非常有效的。</p>
+<p>我们知道出块奖励每隔4年减半，是不是说挖矿的动力也会越来越小呢，从过去几年情况来看，恰恰相反，挖矿竞争越来越激烈，因为比特币的价格是飙升的。随着出块奖励越来越少，交易费也是越来越多的。</p>
+<h2 id="比特币的安全性"><a class="markdownIt-Anchor" href="#比特币的安全性"></a> 比特币的安全性</h2>
+<p>假设大部分算力是掌握在诚实的矿工手里，我们能得到什么样的安全保证？能不能保证写入区块的交易都是合法的？不能，挖矿只是概率上的保证，只能说有一个比较大的概率，下一个区块是诚实的矿工发布的，但是不能保证记账权不会落到有恶意的节点手里。比如，好的矿工占90%算力，坏的矿工占10%的算力，平均下来，10%的情况下，记账权会落到有恶意的节点手里。</p>
+<h3 id="恶意的节点掌握记账权"><a class="markdownIt-Anchor" href="#恶意的节点掌握记账权"></a> 恶意的节点掌握记账权</h3>
+<h4 id="偷币"><a class="markdownIt-Anchor" href="#偷币"></a> 偷币</h4>
+<p>第一个问题，他能不能偷币?能不能把别人账上的钱转给自己？</p>
+<p>不能，因为他不能伪造别人的签名，交易不合法。但是如果他强行把不合法的交易写进区块链里会出现什么情况？诚实的节点都不接受这个区块，他们会沿着上一个合法的区块继续添加区块，形成最长合法链，导致恶意节点写进去的区块作废，这样，恶意节点不仅没有偷到钱，还把出块奖励陪了。</p>
+<h4 id="双花"><a class="markdownIt-Anchor" href="#双花"></a> 双花</h4>
+<p>第二个问题，他能不能把已经花过的币再花一遍？</p>
+<p>比如说M节点发布一个转账交易给A，现在他获得了记账权，又把钱转给自己，如果直接连在M→A的后面肯定是不合法的，因为很明显的double spending，凡是诚实的节点都不会接受这个区块，他要想发布交易就一定要插在M→A前面一个区块后面，也就是前面文章提到的分叉攻击。注意，区块插在什么位置，是要在刚开始挖矿就决定的，因为设置的block header要填上前一个区块的hash，所以M节点想插到这个位置，一开始就要把这个区块设置成前一个区块，而不是等获得了记账权再说。这种情况下会出现两个等长合法链，取决于其他节点沿着哪条链继续往下扩展，最后有一个会胜出，另一个就作废了。这种攻击有什么用？假如M是消费者，A是商家，M买了东西然后用比特币支付，M又发起一个交易，把钱转给自己，然后把下面的交易扩展成最长合法链，这样上面的区块就作废了，这种攻击的作用就是既买的了商品，又把钱收回来了，达到double spending attack的目的。<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164657245.png" alt="图 9" /></p>
+<p>怎么防范这个问题？如果M→A这个交易不在最后一个区块，而是后面跟了几个区块，那么这种攻击的难度就会大大增加，要想回滚M→A这个交易还是得在他前面一个区块后面插入新区块，然后想办法让新区块所在分支成为最长合法链，这个难度非常大，因为诚实的节点不会沿着新区块往后发展，因为他不是最长合法链。这种情况相当于两条链在赛跑，如果大部分算力是掌握在诚实节点手里，这种攻击成功的可能性很小。所以一种防范的手段是多等几个区块或者叫确认（confirmation）。M→A这个交易刚刚写进区块的时候，称为one-confirmation，以此类图，它后面的第三个区块叫做three-confirmation。比特币协议规定，缺省情况下要等6个confirmation，到了six-confirmation时，才认为前面的交易是不可篡改的，也就是要等待10分钟（平均出块时间）*6 = 1小时。<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164709578.png" alt="图 10" /></p>
+<p>我们知道区块链也被叫做不可篡改的分布式账本（irrevocable ledger），是不是说凡是写入区块链的内容就永远改不了呢？经过前面的分析我们可以知道，这种不可篡改性只是一种概率上的保证，刚刚写入区块链的内容，相对来说，还是比较容易被改掉的，经过一段等待时间之后，或者后面跟着好几个确认之后，这种被篡改的概率会指数级别下降。其实还有一种zero confirmation，这个意思是说，转账交易已经发布出去但是下一个区块还没有挖出来。拿电商购物的例子来说，相当于支付的时候发布一个转账交易，电商运行一个全节点或者委托某个全节点，监听区块链上的交易，收到转账交易后要验证交易的合法性，但是不用等到交易写到区块链里。这听起来风险很大，其实zero confirmation 在实际当中应用还是很普遍的，第一个原因是比特币协议缺省的设置是节点接受最先听到交易，两个交易有冲突，先听到哪个就接受哪个，所以zero confirmation处，M→A交易被节点收到，M→M交易较大概率不被诚实节点接受；第二个原因是很多购物网站从支付成功到发货，是有一定时间间隔的，天然有一定处理时间，比如说你要买个东西，在网上支付成功后，电商第二天才会发货，期间发现转账交易没有被写到最长合法链上，那么电商就可以取消发货。<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/IMG_20230316-164717338.png" alt="图 11" /></p>
+<h4 id="故意不把某些合法交易写进区块链"><a class="markdownIt-Anchor" href="#故意不把某些合法交易写进区块链"></a> 故意不把某些合法交易写进区块链</h4>
+<p>第三个问题是他能不能故意不把某些合法交易写进区块链里？</p>
+<p>比特币协议没有规定获得记账权的节点一定要把某些交易写进区块链里，但是出现这种情况问题也不大，因为总会有诚实的节点愿意发布这些交易。区块链正常情况下也会出现合法的交易没有被写进去的情况，可能就是这段时间交易数目太多了，比特币协议规定每个区块的大小是有限制的，最多不能超过1M，所以交易放不下了就得等到下一个区块。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2020/01/06/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/" title="比特币实现" target="_blank" rel="external">https://zunpan.github.io/2020/01/06/比特币实现/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/01/06/%E6%AF%94%E7%89%B9%E5%B8%81%E7%BD%91%E7%BB%9C/" title="比特币网络"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/12/27/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/" title="比特币协议"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

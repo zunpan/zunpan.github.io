@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Java并发编程实战学习笔记 | panzun</title>
+  <meta name="description" content="本书分成四部分， 第一部分是基础，主要内容是并发的基础概念和线程安全，以及如何用java类库提供的并发构建块组成线程安全的类（2-5章节） 第二部分是构建并发应用程序，主要内容是如何利用线程来提高并发应用的吞吐量和响应能力（6-9章节） 第三部分是活跃性、性能和测试，主要内容是如何确保并发程序能够按照你的要求执行，并且具有可接受的性能（10-12章节） 第四部分是高级主题，涵盖了可能只有有经验的开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java并发编程实战学习笔记">
+<meta property="og:url" content="https://zunpan.github.io/2023/01/13/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="本书分成四部分， 第一部分是基础，主要内容是并发的基础概念和线程安全，以及如何用java类库提供的并发构建块组成线程安全的类（2-5章节） 第二部分是构建并发应用程序，主要内容是如何利用线程来提高并发应用的吞吐量和响应能力（6-9章节） 第三部分是活跃性、性能和测试，主要内容是如何确保并发程序能够按照你的要求执行，并且具有可接受的性能（10-12章节） 第四部分是高级主题，涵盖了可能只有有经验的开">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-13T09:02:46.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.278Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="Java并发编程实战">
+<meta property="article:tag" content="Java Concurrency In Practice">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2023/01/13/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#part-1-%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text"> Part 1 基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-1-%E7%AE%80%E4%BB%8B"><span class="toc-number">2.</span> <span class="toc-text"> Chapter 1 简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E5%B9%B6%E5%8F%91%E7%AE%80%E5%8F%B2"><span class="toc-number">2.1.</span> <span class="toc-text"> 1.1 并发简史</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%8A%BF"><span class="toc-number">2.2.</span> <span class="toc-text"> 1.2 线程优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E7%BA%BF%E7%A8%8B%E9%A3%8E%E9%99%A9"><span class="toc-number">2.3.</span> <span class="toc-text"> 1.3 线程风险</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E6%97%A0%E5%A4%84%E4%B8%8D%E5%9C%A8%E7%9A%84%E7%BA%BF%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text"> 1.4 无处不在的线程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-2-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="toc-number">3.</span> <span class="toc-text"> Chapter 2 线程安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#21-%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="toc-number">3.1.</span> <span class="toc-text"> 2.1 什么是线程安全？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">3.2.</span> <span class="toc-text"> 2.2 原子性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-%E5%8A%A0%E9%94%81"><span class="toc-number">3.3.</span> <span class="toc-text"> 2.3 加锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-%E7%94%A8%E9%94%81%E6%9D%A5%E4%BF%9D%E6%8A%A4%E7%8A%B6%E6%80%81"><span class="toc-number">3.4.</span> <span class="toc-text"> 2.4 用锁来保护状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#25-%E6%B4%BB%E8%B7%83%E6%80%A7%E5%92%8C%E6%80%A7%E8%83%BD"><span class="toc-number">3.5.</span> <span class="toc-text"> 2.5 活跃性和性能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-3-%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1"><span class="toc-number">4.</span> <span class="toc-text"> Chapter 3 共享对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#31-%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-number">4.1.</span> <span class="toc-text"> 3.1 可见性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#32-%E5%8F%91%E5%B8%83%E4%B8%8E%E9%80%83%E9%80%B8"><span class="toc-number">4.2.</span> <span class="toc-text"> 3.2 发布与逃逸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#33-%E7%BA%BF%E7%A8%8B%E5%B0%81%E9%97%AD"><span class="toc-number">4.3.</span> <span class="toc-text"> 3.3 线程封闭</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#34-%E4%B8%8D%E5%8F%AF%E5%8F%98"><span class="toc-number">4.4.</span> <span class="toc-text"> 3.4 不可变</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#35-%E5%AE%89%E5%85%A8%E5%8F%91%E5%B8%83"><span class="toc-number">4.5.</span> <span class="toc-text"> 3.5 安全发布</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-4-%E7%BB%84%E5%90%88%E5%AF%B9%E8%B1%A1"><span class="toc-number">5.</span> <span class="toc-text"> Chapter 4 组合对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#41-%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E7%B1%BB"><span class="toc-number">5.1.</span> <span class="toc-text"> 4.1 设计一个线程安全的类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#42-%E5%AE%9E%E4%BE%8B%E5%B0%81%E9%97%AD"><span class="toc-number">5.2.</span> <span class="toc-text"> 4.2 实例封闭</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#43-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%A7%94%E6%89%98"><span class="toc-number">5.3.</span> <span class="toc-text"> 4.3 线程安全的委托</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#44-%E7%BB%99%E7%8E%B0%E6%9C%89%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%B1%BB%E5%8A%A0%E5%8A%9F%E8%83%BD"><span class="toc-number">5.4.</span> <span class="toc-text"> 4.4 给现有的线程安全类加功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#45-%E6%96%87%E6%A1%A3%E5%8C%96%E5%90%8C%E6%AD%A5%E7%AD%96%E7%95%A5"><span class="toc-number">5.5.</span> <span class="toc-text"> 4.5 文档化同步策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-5-%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9D%97"><span class="toc-number">6.</span> <span class="toc-text"> Chapter 5 基础构建模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#51-%E5%90%8C%E6%AD%A5%E9%9B%86%E5%90%88"><span class="toc-number">6.1.</span> <span class="toc-text"> 5.1 同步集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#52-%E5%B9%B6%E5%8F%91%E9%9B%86%E5%90%88"><span class="toc-number">6.2.</span> <span class="toc-text"> 5.2 并发集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#53-%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E5%92%8C%E7%94%9F%E4%BA%A7%E8%80%85-%E6%B6%88%E8%B4%B9%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">6.3.</span> <span class="toc-text"> 5.3 阻塞队列和生产者-消费者模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#54-%E9%98%BB%E5%A1%9E%E6%96%B9%E6%B3%95%E4%B8%8E%E4%B8%AD%E6%96%AD%E6%96%B9%E6%B3%95"><span class="toc-number">6.4.</span> <span class="toc-text"> 5.4 阻塞方法与中断方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#55-%E5%90%8C%E6%AD%A5%E5%99%A8"><span class="toc-number">6.5.</span> <span class="toc-text"> 5.5 同步器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#56-%E6%9E%84%E5%BB%BA%E9%AB%98%E6%95%88%E4%B8%94%E5%8F%AF%E4%BC%B8%E7%BC%A9%E7%9A%84%E7%BC%93%E5%AD%98"><span class="toc-number">6.6.</span> <span class="toc-text"> 5.6 构建高效且可伸缩的缓存</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#part-2-%E6%9E%84%E5%BB%BA%E5%B9%B6%E5%8F%91%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F"><span class="toc-number">7.</span> <span class="toc-text"> Part 2 构建并发应用程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-6-%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C"><span class="toc-number">8.</span> <span class="toc-text"> Chapter 6 任务执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#61-%E5%9C%A8%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%89%A7%E8%A1%8C%E4%BB%BB%E5%8A%A1"><span class="toc-number">8.1.</span> <span class="toc-text"> 6.1 在线程中执行任务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#62-executor%E6%A1%86%E6%9E%B6"><span class="toc-number">8.2.</span> <span class="toc-text"> 6.2 Executor框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#63-%E5%AF%BB%E6%89%BE%E5%8F%AF%E5%88%A9%E7%94%A8%E7%9A%84%E5%B9%B6%E8%A1%8C%E6%80%A7"><span class="toc-number">8.3.</span> <span class="toc-text"> 6.3 寻找可利用的并行性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-7-%E5%8F%96%E6%B6%88%E5%92%8C%E5%85%B3%E9%97%AD"><span class="toc-number">9.</span> <span class="toc-text"> Chapter 7 取消和关闭</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#71-%E4%BB%BB%E5%8A%A1%E5%8F%96%E6%B6%88"><span class="toc-number">9.1.</span> <span class="toc-text"> 7.1 任务取消</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#72-%E5%81%9C%E6%AD%A2%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="toc-number">9.2.</span> <span class="toc-text"> 7.2 停止基于线程的服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#73-%E5%A4%84%E7%90%86%E9%9D%9E%E6%AD%A3%E5%B8%B8%E7%9A%84%E7%BA%BF%E7%A8%8B%E7%BB%88%E6%AD%A2"><span class="toc-number">9.3.</span> <span class="toc-text"> 7.3 处理非正常的线程终止</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#74-jvm%E5%85%B3%E9%97%AD"><span class="toc-number">9.4.</span> <span class="toc-text"> 7.4 JVM关闭</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-8-%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-number">10.</span> <span class="toc-text"> Chapter 8 使用线程池</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#81-%E4%BB%BB%E5%8A%A1%E5%92%8C%E6%89%A7%E8%A1%8C%E7%AD%96%E7%95%A5%E4%B9%8B%E9%97%B4%E7%9A%84%E9%9A%90%E5%BC%8F%E8%80%A6%E5%90%88"><span class="toc-number">10.1.</span> <span class="toc-text"> 8.1 任务和执行策略之间的隐式耦合</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#811-%E7%BA%BF%E7%A8%8B%E9%A5%A5%E9%A5%BF%E6%AD%BB%E9%94%81"><span class="toc-number">10.1.1.</span> <span class="toc-text"> 8.1.1 线程饥饿死锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#812-%E8%BF%90%E8%A1%8C%E8%80%97%E6%97%B6%E9%95%BF%E7%9A%84%E4%BB%BB%E5%8A%A1"><span class="toc-number">10.1.2.</span> <span class="toc-text"> 8.1.2 运行耗时长的任务</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#82-%E8%AE%BE%E7%BD%AE%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%A4%A7%E5%B0%8F"><span class="toc-number">10.2.</span> <span class="toc-text"> 8.2 设置线程池大小</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#83-%E9%85%8D%E7%BD%AE-threadpoolexecutor"><span class="toc-number">10.3.</span> <span class="toc-text"> 8.3 配置 ThreadPoolExecutor</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#831-%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81"><span class="toc-number">10.3.1.</span> <span class="toc-text"> 8.3.1 线程创建和销毁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#832-%E7%AE%A1%E7%90%86%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97"><span class="toc-number">10.3.2.</span> <span class="toc-text"> 8.3.2 管理工作队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#833-%E9%A5%B1%E5%92%8C%E7%AD%96%E7%95%A5"><span class="toc-number">10.3.3.</span> <span class="toc-text"> 8.3.3 饱和策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#834-%E7%BA%BF%E7%A8%8B%E5%B7%A5%E5%8E%82"><span class="toc-number">10.3.4.</span> <span class="toc-text"> 8.3.4 线程工厂</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#835-%E8%B0%83%E7%94%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%90%8E%E5%86%8D%E5%AE%9A%E5%88%B6threadpoolexecutor"><span class="toc-number">10.3.5.</span> <span class="toc-text"> 8.3.5 调用构造函数后再定制ThreadPoolExecutor</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#84-%E6%89%A9%E5%B1%95-threadpoolexecutor"><span class="toc-number">10.4.</span> <span class="toc-text"> 8.4 扩展 ThreadPoolExecutor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#85-%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E5%B9%B6%E8%A1%8C%E5%8C%96"><span class="toc-number">10.5.</span> <span class="toc-text"> 8.5 递归算法并行化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-9-gui%E5%BA%94%E7%94%A8"><span class="toc-number">11.</span> <span class="toc-text"> Chapter 9 GUI应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#91-%E4%B8%BA%E4%BB%80%E4%B9%88gui%E6%98%AF%E5%8D%95%E7%BA%BF%E7%A8%8B%E7%9A%84"><span class="toc-number">11.1.</span> <span class="toc-text"> 9.1 为什么GUI是单线程的</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#911-%E4%B8%B2%E8%A1%8C%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86"><span class="toc-number">11.1.1.</span> <span class="toc-text"> 9.1.1 串行事件处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#912-swing%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%B0%81%E9%97%AD"><span class="toc-number">11.1.2.</span> <span class="toc-text"> 9.1.2 Swing的线程封闭</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#92-%E7%9F%AD%E6%97%B6%E9%97%B4%E7%9A%84gui%E4%BB%BB%E5%8A%A1"><span class="toc-number">11.2.</span> <span class="toc-text"> 9.2 短时间的GUI任务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#93-%E9%95%BF%E6%97%B6%E9%97%B4%E7%9A%84gui%E4%BB%BB%E5%8A%A1"><span class="toc-number">11.3.</span> <span class="toc-text"> 9.3 长时间的GUI任务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#94-%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">11.4.</span> <span class="toc-text"> 9.4 共享数据模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#95-%E5%85%B6%E5%AE%83%E5%BD%A2%E5%BC%8F%E5%8D%95%E7%BA%BF%E7%A8%8B"><span class="toc-number">11.5.</span> <span class="toc-text"> 9.5 其它形式单线程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#part-3-%E6%B4%BB%E8%B7%83%E6%80%A7-%E6%80%A7%E8%83%BD%E5%92%8C%E6%B5%8B%E8%AF%95"><span class="toc-number">12.</span> <span class="toc-text"> Part 3 活跃性、性能和测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-10-%E9%81%BF%E5%85%8D%E6%B4%BB%E8%B7%83%E6%80%A7%E5%8D%B1%E9%99%A9"><span class="toc-number">13.</span> <span class="toc-text"> Chapter 10. 避免活跃性危险</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#101-%E6%AD%BB%E9%94%81"><span class="toc-number">13.1.</span> <span class="toc-text"> 10.1 死锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1011-lock-ordering%E6%AD%BB%E9%94%81"><span class="toc-number">13.1.1.</span> <span class="toc-text"> 10.1.1 Lock-ordering死锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1012-%E5%8A%A8%E6%80%81lock-order%E6%AD%BB%E9%94%81"><span class="toc-number">13.1.2.</span> <span class="toc-text"> 10.1.2 动态Lock Order死锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1013-%E5%8D%8F%E4%BD%9C%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%AD%BB%E9%94%81"><span class="toc-number">13.1.3.</span> <span class="toc-text"> 10.1.3 协作对象的死锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1014-%E5%BC%80%E6%94%BE%E8%B0%83%E7%94%A8"><span class="toc-number">13.1.4.</span> <span class="toc-text"> 10.1.4 开放调用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1015-%E8%B5%84%E6%BA%90%E6%AD%BB%E9%94%81"><span class="toc-number">13.1.5.</span> <span class="toc-text"> 10.1.5 资源死锁</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#102-%E9%81%BF%E5%85%8D%E5%92%8C%E8%AF%8A%E6%96%AD%E6%AD%BB%E9%94%81"><span class="toc-number">13.2.</span> <span class="toc-text"> 10.2 避免和诊断死锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1021-%E5%AE%9A%E6%97%B6%E9%94%81"><span class="toc-number">13.2.1.</span> <span class="toc-text"> 10.2.1 定时锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1022-%E7%94%A8thread-dumps%E8%BF%9B%E8%A1%8C%E6%AD%BB%E9%94%81%E5%88%86%E6%9E%90"><span class="toc-number">13.2.2.</span> <span class="toc-text"> 10.2.2 用Thread Dumps进行死锁分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#103-%E5%85%B6%E5%AE%83%E6%B4%BB%E8%B7%83%E6%80%A7%E5%8D%B1%E9%99%A9"><span class="toc-number">13.3.</span> <span class="toc-text"> 10.3 其它活跃性危险</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1031-%E9%A5%A5%E9%A5%BF"><span class="toc-number">13.3.1.</span> <span class="toc-text"> 10.3.1 饥饿</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1032-%E7%B3%9F%E7%B3%95%E7%9A%84%E5%93%8D%E5%BA%94%E6%80%A7"><span class="toc-number">13.3.2.</span> <span class="toc-text"> 10.3.2 糟糕的响应性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1033-%E6%B4%BB%E9%94%81"><span class="toc-number">13.3.3.</span> <span class="toc-text"> 10.3.3 活锁</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-11-%E6%80%A7%E8%83%BD%E5%92%8C%E5%8F%AF%E4%BC%B8%E7%BC%A9%E6%80%A7"><span class="toc-number">14.</span> <span class="toc-text"> Chapter 11. 性能和可伸缩性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#111-%E5%AF%B9%E6%80%A7%E8%83%BD%E7%9A%84%E6%80%9D%E8%80%83"><span class="toc-number">14.1.</span> <span class="toc-text"> 11.1 对性能的思考</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1111-%E6%80%A7%E8%83%BD%E5%92%8C%E5%8F%AF%E4%BC%B8%E7%BC%A9%E6%80%A7"><span class="toc-number">14.1.1.</span> <span class="toc-text"> 11.1.1 性能和可伸缩性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1112-%E8%AF%84%E4%BC%B0%E6%80%A7%E8%83%BD%E6%9D%83%E8%A1%A1"><span class="toc-number">14.2.</span> <span class="toc-text"> 11.1.2 评估性能权衡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#112-amdahl%E5%AE%9A%E5%BE%8B"><span class="toc-number">14.3.</span> <span class="toc-text"> 11.2 Amdahl定律</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#113-%E7%BA%BF%E7%A8%8B%E5%BC%95%E5%85%A5%E7%9A%84%E5%BC%80%E9%94%80"><span class="toc-number">14.4.</span> <span class="toc-text"> 11.3 线程引入的开销</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#114-%E5%87%8F%E5%B0%91%E9%94%81%E7%9A%84%E7%AB%9E%E4%BA%89"><span class="toc-number">14.5.</span> <span class="toc-text"> 11.4 减少锁的竞争</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1141-%E5%87%8F%E5%B0%8F%E9%94%81%E7%9A%84%E8%8C%83%E5%9B%B4"><span class="toc-number">14.5.1.</span> <span class="toc-text"> 11.4.1 减小锁的范围</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1142-%E9%99%8D%E4%BD%8E%E9%94%81%E7%9A%84%E5%8A%9B%E5%BA%A6"><span class="toc-number">14.5.2.</span> <span class="toc-text"> 11.4.2 降低锁的力度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1143-%E5%88%86%E6%AE%B5%E9%94%81"><span class="toc-number">14.5.3.</span> <span class="toc-text"> 11.4.3 分段锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1144-%E9%81%BF%E5%85%8D%E7%83%AD%E7%82%B9%E5%AD%97%E6%AE%B5"><span class="toc-number">14.5.4.</span> <span class="toc-text"> 11.4.4 避免热点字段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1145-%E4%BA%92%E6%96%A5%E9%94%81%E7%9A%84%E6%9B%BF%E4%BB%A3%E5%93%81"><span class="toc-number">14.5.5.</span> <span class="toc-text"> 11.4.5 互斥锁的替代品</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1146-%E7%9B%91%E6%B5%8Bcpu%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-number">14.5.6.</span> <span class="toc-text"> 11.4.6 监测CPU利用率</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1147-%E4%B8%8D%E8%A6%81%E7%94%A8%E5%AF%B9%E8%B1%A1%E6%B1%A0"><span class="toc-number">14.5.7.</span> <span class="toc-text"> 11.4.7 不要用对象池</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#115-%E4%BE%8B%E5%AD%90%E6%AF%94%E8%BE%83map%E7%9A%84%E6%80%A7%E8%83%BD"><span class="toc-number">14.6.</span> <span class="toc-text"> 11.5 例子：比较Map的性能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#116-%E5%87%8F%E5%B0%91%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="toc-number">14.7.</span> <span class="toc-text"> 11.6 减少上下文切换</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-12-%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="toc-number">15.</span> <span class="toc-text"> Chapter 12. 并发程序的测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#121-%E6%AD%A3%E7%A1%AE%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="toc-number">15.1.</span> <span class="toc-text"> 12.1 正确性测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1211-%E5%9F%BA%E7%A1%80%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="toc-number">15.1.1.</span> <span class="toc-text"> 12.1.1 基础单元测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1212-%E9%98%BB%E5%A1%9E%E6%93%8D%E4%BD%9C%E6%B5%8B%E8%AF%95"><span class="toc-number">15.1.2.</span> <span class="toc-text"> 12.1.2 阻塞操作测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1213-%E5%AE%89%E5%85%A8%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="toc-number">15.1.3.</span> <span class="toc-text"> 12.1.3 安全性测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1214-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E6%B5%8B%E8%AF%95"><span class="toc-number">15.1.4.</span> <span class="toc-text"> 12.1.4 资源管理测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1215-%E4%BD%BF%E7%94%A8%E5%9B%9E%E8%B0%83"><span class="toc-number">15.1.5.</span> <span class="toc-text"> 12.1.5 使用回调</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1216-%E4%BA%A7%E7%94%9F%E6%9B%B4%E5%A4%9A%E7%9A%84%E4%BA%A4%E6%9B%BF%E6%93%8D%E4%BD%9C"><span class="toc-number">15.1.6.</span> <span class="toc-text"> 12.1.6 产生更多的交替操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#122-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="toc-number">15.2.</span> <span class="toc-text"> 12.2 性能测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#123-%E9%81%BF%E5%85%8D%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%9A%84%E9%99%B7%E9%98%B1"><span class="toc-number">15.3.</span> <span class="toc-text"> 12.3 避免性能测试的陷阱</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1231-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="toc-number">15.3.1.</span> <span class="toc-text"> 12.3.1 垃圾回收</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1232-%E5%8A%A8%E6%80%81%E7%BC%96%E8%AF%91"><span class="toc-number">15.3.2.</span> <span class="toc-text"> 12.3.2 动态编译</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1233-%E5%AF%B9%E4%BB%A3%E7%A0%81%E8%B7%AF%E5%BE%84%E7%9A%84%E4%B8%8D%E7%9C%9F%E5%AE%9E%E9%87%87%E6%A0%B7"><span class="toc-number">15.3.3.</span> <span class="toc-text"> 12.3.3 对代码路径的不真实采样</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1234-%E4%B8%8D%E7%9C%9F%E5%AE%9E%E7%9A%84%E7%AB%9E%E4%BA%89%E6%83%85%E5%86%B5"><span class="toc-number">15.3.4.</span> <span class="toc-text"> 12.3.4 不真实的竞争情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1235-%E6%97%A0%E7%94%A8%E4%BB%A3%E7%A0%81%E7%9A%84%E5%88%A0%E9%99%A4"><span class="toc-number">15.3.5.</span> <span class="toc-text"> 12.3.5 无用代码的删除</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#124-%E8%A1%A5%E5%85%85%E7%9A%84%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95"><span class="toc-number">15.4.</span> <span class="toc-text"> 12.4 补充的测试方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#part-4-%E9%AB%98%E7%BA%A7%E4%B8%BB%E9%A2%98"><span class="toc-number">16.</span> <span class="toc-text"> Part 4 高级主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-13-%E6%98%BE%E7%A4%BA%E9%94%81"><span class="toc-number">17.</span> <span class="toc-text"> Chapter 13 显示锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#131-lock%E5%92%8Creentrantlock"><span class="toc-number">17.1.</span> <span class="toc-text"> 13.1 Lock和ReentrantLock</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1311-%E8%BD%AE%E8%AF%A2%E5%92%8C%E5%AE%9A%E6%97%B6%E8%8E%B7%E5%BE%97%E9%94%81"><span class="toc-number">17.1.1.</span> <span class="toc-text"> 13.1.1 轮询和定时获得锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1312-%E5%8F%AF%E4%B8%AD%E6%96%AD%E7%9A%84%E8%8E%B7%E5%BE%97%E9%94%81"><span class="toc-number">17.1.2.</span> <span class="toc-text"> 13.1.2 可中断的获得锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1313-%E9%9D%9E%E5%9D%97%E7%BB%93%E6%9E%84%E5%8A%A0%E9%94%81"><span class="toc-number">17.1.3.</span> <span class="toc-text"> 13.1.3 非块结构加锁</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#132-%E6%80%A7%E8%83%BD%E8%80%83%E8%99%91"><span class="toc-number">17.2.</span> <span class="toc-text"> 13.2 性能考虑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#133-%E5%85%AC%E5%B9%B3%E6%80%A7"><span class="toc-number">17.3.</span> <span class="toc-text"> 13.3 公平性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#134-%E5%9C%A8-synchronized-%E5%92%8C-reentrantlock-%E4%B8%AD%E9%80%89%E6%8B%A9"><span class="toc-number">17.4.</span> <span class="toc-text"> 13.4 在 Synchronized 和 ReentrantLock 中选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#135-%E8%AF%BB%E5%86%99%E9%94%81"><span class="toc-number">17.5.</span> <span class="toc-text"> 13.5 读写锁</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-14-%E6%9E%84%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%90%8C%E6%AD%A5%E5%B7%A5%E5%85%B7"><span class="toc-number">18.</span> <span class="toc-text"> Chapter 14 构建自定义的同步工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#141-%E7%8A%B6%E6%80%81%E4%BE%9D%E8%B5%96%E6%80%A7%E7%9A%84%E7%AE%A1%E7%90%86"><span class="toc-number">18.1.</span> <span class="toc-text"> 14.1 状态依赖性的管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1411-%E5%B0%86%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6%E7%9A%84%E5%A4%B1%E8%B4%A5%E4%BC%A0%E6%92%AD%E7%BB%99%E8%B0%83%E7%94%A8%E8%80%85"><span class="toc-number">18.1.1.</span> <span class="toc-text"> 14.1.1 将前置条件的失败传播给调用者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1412-%E9%80%9A%E8%BF%87%E8%BD%AE%E8%AF%A2%E5%92%8C%E7%9D%A1%E7%9C%A0%E7%B2%97%E9%B2%81%E7%9A%84%E9%98%BB%E5%A1%9E"><span class="toc-number">18.1.2.</span> <span class="toc-text"> 14.1.2 通过轮询和睡眠粗鲁的阻塞</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1413-%E6%9D%A1%E4%BB%B6%E9%98%9F%E5%88%97"><span class="toc-number">18.1.3.</span> <span class="toc-text"> 14.1.3 条件队列</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#142-%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6%E9%98%9F%E5%88%97"><span class="toc-number">18.2.</span> <span class="toc-text"> 14.2 使用条件队列</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1421-%E6%9D%A1%E4%BB%B6%E8%B0%93%E8%AF%8D"><span class="toc-number">18.2.1.</span> <span class="toc-text"> 14.2.1 条件谓词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1422-%E8%BF%87%E6%97%A9%E5%94%A4%E9%86%92"><span class="toc-number">18.2.2.</span> <span class="toc-text"> 14.2.2 过早唤醒</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1423-%E4%B8%A2%E5%A4%B1%E7%9A%84%E4%BF%A1%E5%8F%B7"><span class="toc-number">18.2.3.</span> <span class="toc-text"> 14.2.3 丢失的信号</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1424-%E9%80%9A%E7%9F%A5"><span class="toc-number">18.2.4.</span> <span class="toc-text"> 14.2.4 通知</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1425-%E4%BE%8B%E5%AD%90%E9%97%A8"><span class="toc-number">18.2.5.</span> <span class="toc-text"> 14.2.5 例子：门</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1426-%E5%AD%90%E7%B1%BB%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-number">18.2.6.</span> <span class="toc-text"> 14.2.6 子类的安全问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1427-%E5%B0%81%E8%A3%85%E6%9D%A1%E4%BB%B6%E9%98%9F%E5%88%97"><span class="toc-number">18.2.7.</span> <span class="toc-text"> 14.2.7 封装条件队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1428-%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E5%8D%8F%E8%AE%AE"><span class="toc-number">18.2.8.</span> <span class="toc-text"> 14.2.8 进入和退出协议</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#143-%E6%98%BE%E7%A4%BA-condition"><span class="toc-number">18.3.</span> <span class="toc-text"> 14.3 显示 Condition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#144-synchronizer%E5%89%96%E6%9E%90"><span class="toc-number">18.4.</span> <span class="toc-text"> 14.4 Synchronizer剖析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#145-abstractqueuedsynchronizer"><span class="toc-number">18.5.</span> <span class="toc-text"> 14.5 AbstractQueuedSynchronizer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#146-juc%E5%90%8C%E6%AD%A5%E5%99%A8%E7%B1%BB%E4%B8%AD%E7%9A%84aqs"><span class="toc-number">18.6.</span> <span class="toc-text"> 14.6 JUC同步器类中的AQS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-15-%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6"><span class="toc-number">19.</span> <span class="toc-text"> Chapter 15 原子变量与非阻塞同步机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#151-%E9%94%81%E7%9A%84%E5%8A%A3%E5%8A%BF"><span class="toc-number">19.1.</span> <span class="toc-text"> 15.1 锁的劣势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#152-%E5%B9%B6%E5%8F%91%E6%93%8D%E4%BD%9C%E7%9A%84%E7%A1%AC%E4%BB%B6%E6%94%AF%E6%8C%81"><span class="toc-number">19.2.</span> <span class="toc-text"> 15.2 并发操作的硬件支持</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1521-compare-and-swap"><span class="toc-number">19.2.1.</span> <span class="toc-text"> 15.2.1 Compare and Swap</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1522-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="toc-number">19.2.2.</span> <span class="toc-text"> 15.2.2 非阻塞的计数器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1523-jvm%E5%AF%B9cas%E7%9A%84%E6%94%AF%E6%8C%81"><span class="toc-number">19.2.3.</span> <span class="toc-text"> 15.2.3 JVM对CAS的支持</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#153-%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F%E7%B1%BB"><span class="toc-number">19.3.</span> <span class="toc-text"> 15.3 原子变量类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#154-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E7%AE%97%E6%B3%95"><span class="toc-number">19.4.</span> <span class="toc-text"> 15.4 非阻塞的算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1541-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E6%A0%88"><span class="toc-number">19.4.1.</span> <span class="toc-text"> 15.4.1 非阻塞的栈</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1542-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E9%93%BE%E8%A1%A8"><span class="toc-number">19.4.2.</span> <span class="toc-text"> 15.4.2 非阻塞的链表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1543-%E5%8E%9F%E5%AD%90%E5%AD%97%E6%AE%B5%E6%9B%B4%E6%96%B0%E5%99%A8"><span class="toc-number">19.4.3.</span> <span class="toc-text"> 15.4.3 原子字段更新器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1544-aba%E9%97%AE%E9%A2%98"><span class="toc-number">19.4.4.</span> <span class="toc-text"> 15.4.4 ABA问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chapter-16-java-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">20.</span> <span class="toc-text"> Chapter 16 Java 内存模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#161-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E6%98%AF%E4%BB%80%E4%B9%88%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E9%9C%80%E8%A6%81%E4%B8%80%E4%B8%AA%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">20.1.</span> <span class="toc-text"> 16.1 内存模型是什么，为什么我需要一个内存模型？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1611-%E5%B9%B3%E5%8F%B0%E7%9A%84%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">20.1.1.</span> <span class="toc-text"> 16.1.1 平台的内存模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1612-%E9%87%8D%E6%8E%92"><span class="toc-number">20.1.2.</span> <span class="toc-text"> 16.1.2 重排</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1613-java-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">20.1.3.</span> <span class="toc-text"> 16.1.3 Java 内存模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1614-%E5%80%9F%E7%94%A8%E5%90%8C%E6%AD%A5"><span class="toc-number">20.1.4.</span> <span class="toc-text"> 16.1.4 借用同步</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#162-%E5%8F%91%E5%B8%83"><span class="toc-number">20.2.</span> <span class="toc-text"> 16.2 发布</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1621-%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E5%8F%91%E5%B8%83"><span class="toc-number">20.2.1.</span> <span class="toc-text"> 16.2.1 不安全的发布</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1622-%E5%AE%89%E5%85%A8%E5%8F%91%E5%B8%83"><span class="toc-number">20.2.2.</span> <span class="toc-text"> 16.2.2 安全发布</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1623-%E5%AE%89%E5%85%A8%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">20.2.3.</span> <span class="toc-text"> 16.2.3 安全初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1624-%E5%8F%8C%E9%87%8D%E6%A3%80%E6%9F%A5%E9%94%81"><span class="toc-number">20.2.4.</span> <span class="toc-text"> 16.2.4 双重检查锁</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#163-%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-number">20.3.</span> <span class="toc-text"> 16.3 初始化的安全性</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Java并发编程实战学习笔记" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java并发编程实战学习笔记
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2023/01/13/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-date">
+	  <time datetime="2023-01-13T09:02:46.000Z" itemprop="datePublished">2023-01-13</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Java-Concurrency-In-Practice/" rel="tag">Java Concurrency In Practice</a>, <a class="article-tag-link-link" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" rel="tag">Java并发编程实战</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2023/01/13/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 13.9k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 48(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>本书分成四部分，<br />
+第一部分是基础，主要内容是并发的基础概念和线程安全，以及如何用java类库提供的并发构建块组成线程安全的类（2-5章节）</p>
+<p>第二部分是构建并发应用程序，主要内容是如何利用线程来提高并发应用的吞吐量和响应能力（6-9章节）</p>
+<p>第三部分是活跃性、性能和测试，主要内容是如何确保并发程序能够按照你的要求执行，并且具有可接受的性能（10-12章节）</p>
+<p>第四部分是高级主题，涵盖了可能只有有经验的开发人员才会感兴趣的主题:显式锁、原子变量、非阻塞算法和开发自定义同步器（13-16章节）</p>
+<h2 id="part-1-基础"><a class="markdownIt-Anchor" href="#part-1-基础"></a> Part 1 基础</h2>
+<h2 id="chapter-1-简介"><a class="markdownIt-Anchor" href="#chapter-1-简介"></a> Chapter 1 简介</h2>
+<h3 id="11-并发简史"><a class="markdownIt-Anchor" href="#11-并发简史"></a> 1.1 并发简史</h3>
+<p>早期计算机没有操作系统，程序独占所有资源，一次只能有一个程序运行，效率低下</p>
+<p>操作系统出现后，程序（进程）可以并发运行，由操作系统分配资源，进程互相隔离，必要时依靠粗粒度的通信机制：sockets、signal handlers、shared memory等机制通信</p>
+<p>进程提高了系统吞吐量和资源利用率，线程的出现也是这个原因，线程有时被称为轻量级进程，大多数现代操作系统将线程而不是进程视为调度的基本单位，同一程序的多个线程可以同时在多个CPU上调度，如果没有同步机制协调对共享数据的访问，一个线程可能会修改另一个线程正在使用的变量，导致不可预测的结果</p>
+<h3 id="12-线程优势"><a class="markdownIt-Anchor" href="#12-线程优势"></a> 1.2 线程优势</h3>
+<ul>
+<li>减小开发和维护开销</li>
+<li>提高复杂应用的性能</li>
+<li>提高GUI的响应能力</li>
+<li>简化JVM实现</li>
+</ul>
+<h3 id="13-线程风险"><a class="markdownIt-Anchor" href="#13-线程风险"></a> 1.3 线程风险</h3>
+<p>竞争(多个线程以未知顺序访问资源)<br />
+活跃性(死锁,饥饿,活锁)<br />
+性能(频繁切换导致开销过大)</p>
+<h3 id="14-无处不在的线程"><a class="markdownIt-Anchor" href="#14-无处不在的线程"></a> 1.4 无处不在的线程</h3>
+<ul>
+<li>框架通过在框架线程中调用应用程序代码将并发性引入到应用程序中，在代码中将不可避免的访问应用程序状态,因此所有访问这些状态的代码路径都必须是线程安全的</li>
+<li>Timer类，TimerTask在Timer管理的线程中执行</li>
+<li>Servlet(每个请求使用一个线程同时执行Servlet)</li>
+<li>RMI(由RMI负责打包拆包远程对象)</li>
+<li>Swing(具有异步性)</li>
+</ul>
+<h2 id="chapter-2-线程安全"><a class="markdownIt-Anchor" href="#chapter-2-线程安全"></a> Chapter 2 线程安全</h2>
+<p>多个线程访问同一个可变的状态变量时没有使用合适的同步机制,可以用以下方法修复:</p>
+<ul>
+<li>不在线程间共享该变量</li>
+<li>将变量变为常量</li>
+<li>访问时候使用同步</li>
+</ul>
+<h3 id="21-什么是线程安全"><a class="markdownIt-Anchor" href="#21-什么是线程安全"></a> 2.1 什么是线程安全？</h3>
+<p>如果一个类被多线程访问，不管线程调度或交叉执行顺序如何，类的表现都是正确的，那么类是线程安全的</p>
+<p>线程安全类封装任何需要的同步，因此客户端不需要提供自己的同步。</p>
+<p>无状态的对象永远是线程安全的</p>
+<h3 id="22-原子性"><a class="markdownIt-Anchor" href="#22-原子性"></a> 2.2 原子性</h3>
+<p>竞争情况（race condition）：由于不恰当的执行顺序导致出现不正确的结果，常发生在以下情况中：</p>
+<ul>
+<li>读取-修改-写入，例子: 自增操作</li>
+<li>先检查后执行，例子:延迟初始化,不安全的单例模式,懒汉模式</li>
+</ul>
+<p>第一种情况解决方式：使用juc里面的类，比如count可以用AtomicLong类型操作保证原子性<br />
+第二种情况解决方式：加锁保证原子性</p>
+<h3 id="23-加锁"><a class="markdownIt-Anchor" href="#23-加锁"></a> 2.3 加锁</h3>
+<p>如果类有多个变量需要更新，即使它们的各自操作都是原子性的，也要把他们放在同一个原子操作中，方式是加锁。Java 提供了锁机制来增强原子性：synchronized</p>
+<p>内置锁: synchronized 实例方法会将被调用方法的对象作为内置锁或监视锁，内置锁是互斥的，同一时刻最多只有一个线程拿到这个锁</p>
+<p>可重入: 内置锁是可重入的，已经拿到锁的线程可以再次获取锁，实现方式是锁会(就是lock对象)关联一个持有者和计数值，持有者再次进入次数加一，退出减一，减到0会释放锁</p>
+<h3 id="24-用锁来保护状态"><a class="markdownIt-Anchor" href="#24-用锁来保护状态"></a> 2.4 用锁来保护状态</h3>
+<p>混合操作比如说读取-修改-写入和先检查后执行，需要保证原子性来避免竞争情况。</p>
+<p>常见错误: 只有写入共享变量才需要同步<br />
+原因：读取也需要同步，不然可能会看到过期值</p>
+<p>每个共享的可变变量应该由同一个锁保护，常见的加锁习惯是将可变变量封装到一个对象中</p>
+<p>对于不变性条件（invariant）中涉及的多个变量，这多个变量都需要用同一个锁保护，例如Servlet缓存了请求次数和请求数据（数组），不变性条件是请求数据的长度等于次数，这通过加锁来保证</p>
+<h3 id="25-活跃性和性能"><a class="markdownIt-Anchor" href="#25-活跃性和性能"></a> 2.5 活跃性和性能</h3>
+<p>给Servlet的方法声明syncronized极大降低了并发性，我们可以通过缩小同步块的范围，在保证线程安全的情况下提高并发性。合理的做法是将不影响共享状态的操作从同步块中排除</p>
+<h2 id="chapter-3-共享对象"><a class="markdownIt-Anchor" href="#chapter-3-共享对象"></a> Chapter 3 共享对象</h2>
+<p>synchronized 块和方法可以确保操作的原子性执行，它还有另一个重要作用：内存可见性。我们不仅想要防止一个线程在另一个线程使用一个对象时修改它的状态，还想要确保当一个线程修改一个对象的状态时，其他线程可以看到最新更改</p>
+<h3 id="31-可见性"><a class="markdownIt-Anchor" href="#31-可见性"></a> 3.1 可见性</h3>
+<ol>
+<li>
+<p>过期数据(当一个线程修改数据,但其他线程不能立马看到)。 读取操作如果不同步，仍然能看到一个过期数据，这叫做最低安全性(过期数据至少是由之前的线程设置的，而不是随机值)</p>
+</li>
+<li>
+<p>大多数变量都满足最低安全性,除了非volatile修饰的64位变量(double和long)，jvm允许将64位操作拆解为2个 32位操作，读取这样的变量可能会出现过期值的高32位+新值的低32位的结果</p>
+</li>
+<li>
+<p>内置锁保证可见性</p>
+</li>
+<li>
+<p>volatile: 保证可见性,禁止指令重排,不保证原子性(使用场合:保证自身可见性,引用对象状态可见性,标识重要的生命周期事件)</p>
+<p>当且仅当满足以下所有条件时,才应该使用volatile变量:</p>
+<ul>
+<li>对变量的写入不依赖于它的当前值，或者可以确保只有一个线程更新该值;</li>
+<li>该变量不会与其他状态变量一起纳入不变性条件</li>
+<li>在访问变量时，由于任何其他原因不需要加锁。</li>
+</ul>
+</li>
+</ol>
+<h3 id="32-发布与逃逸"><a class="markdownIt-Anchor" href="#32-发布与逃逸"></a> 3.2 发布与逃逸</h3>
+<p>发布是指让对象在外部可见，常见方式是对象引用声明为 public static。发布对象的同时，任何通过非私有字段引用和方法调用链从发布对象中访问的对象也被发布了</p>
+<p>逃逸是指对象的私有信息也对外可见了，比如发布一个对象包含一个私有数组，同时提供一个返回引用的get方法，外部可以通过引用修改内部私有数组</p>
+<h3 id="33-线程封闭"><a class="markdownIt-Anchor" href="#33-线程封闭"></a> 3.3 线程封闭</h3>
+<p>如果对象限制在一个线程中使用，即使对象不是线程安全的，也会自动线程安全</p>
+<p>例子：Swing: 将组件和数据对象放到事件分发线程，其它线程访问不了这些对象；JDBC.Connection对象: 应用线程从数据库连接池中获取一个连接对象，连接对象由该线程独自使用</p>
+<p>Java 提供 ThreadLocal 来实现线程封闭，程序员做的是阻止对象从线程中逃逸</p>
+<p>线程封闭通常用来实现一个子系统，例如GUI，它是单线程的</p>
+<ol>
+<li>
+<p>Ad-hoc封闭: 核线程封闭性的职责完全由程序实现来承担(脆弱,少用)</p>
+</li>
+<li>
+<p>栈封闭: 只能通过局部变量访问对象(Java基本类型或者局部变量)</p>
+</li>
+<li>
+<p>ThreadLocal类: 提供getter和setter，每个使用该变量的线程存有一份独立的副本</p>
+</li>
+</ol>
+<h3 id="34-不可变"><a class="markdownIt-Anchor" href="#34-不可变"></a> 3.4 不可变</h3>
+<p>不可变对象永远是线程安全的</p>
+<p>满足以下条件,对象才是不可变的:</p>
+<ul>
+<li>构造函数之后状态不可修改</li>
+<li>所有域都是final</li>
+<li>对象正确创建（this引用没有在构造期间逃逸）</li>
+</ul>
+<p>多个状态的对象需要保证线程安全，可以将状态封装到一个不可变类中，用volatile修饰不可变对象引用</p>
+<h3 id="35-安全发布"><a class="markdownIt-Anchor" href="#35-安全发布"></a> 3.5 安全发布</h3>
+<ol>
+<li>
+<p>不正确的发布对象会出现两个问题：其它线程会看到null或旧值；最糟糕的是其它线程看到最新的引用但是被引用的对象还是旧的</p>
+</li>
+<li>
+<p>由于不可变对象很重要，Java内存模型为不可变对象的共享提供一种特殊的初始化安全性保证，不用同步也能安全发布</p>
+</li>
+<li>
+<p>一个正确构造的对象可以通过以下方式安全发布:</p>
+<ul>
+<li>静态初始化函数中初始化一个对象引用</li>
+<li>引用保存到volatile域或者AtomicReference对象中</li>
+<li>引用保存到某个正确构造对象的final域</li>
+<li>引用保存到锁保护的域(容器也可)</li>
+</ul>
+</li>
+<li>
+<p>不可变对象，可以放宽到事实不可变对象(对象在发布之后不会改变状态)</p>
+</li>
+<li>
+<p>可变对象必须通过安全方式发布,并且必须是线程安全的或者锁保护起来</p>
+</li>
+<li>
+<p>并发程序共享对象实用策略</p>
+<ul>
+<li>线程封闭</li>
+<li>只读共享</li>
+<li>线程安全共享:对象内部实现同步</li>
+<li>保护对象:锁机制</li>
+</ul>
+</li>
+</ol>
+<h2 id="chapter-4-组合对象"><a class="markdownIt-Anchor" href="#chapter-4-组合对象"></a> Chapter 4 组合对象</h2>
+<p>本章讨论如何将线程安全的组件组合成更大的组件或程序</p>
+<h3 id="41-设计一个线程安全的类"><a class="markdownIt-Anchor" href="#41-设计一个线程安全的类"></a> 4.1 设计一个线程安全的类</h3>
+<ol>
+<li>
+<p>在设计线程安全类的过程中，常会包含以下三个基本要素:</p>
+<ul>
+<li>找出构成对象状态的所有变量。</li>
+<li>找出约束状态变量的不变性条件和后验条件。</li>
+<li>建立对象状态的并发访问管理策略。</li>
+</ul>
+<p>如果不了解对象的不变性条件和后验条件,就无法确保线程安全</p>
+</li>
+<li>
+<p>依赖状态的方法需要先满足某种状态才能运行，即先验条件。java提供了 wait and notify 机制来等待先验条件成立，它依赖内置锁。更简单的实现方法是用java类库的阻塞队列或者信号量</p>
+</li>
+<li>
+<p>一般情况下，状态所属权是封装状态的类，除非类公开可变对象的引用，这时候类只有共享权</p>
+</li>
+</ol>
+<h3 id="42-实例封闭"><a class="markdownIt-Anchor" href="#42-实例封闭"></a> 4.2 实例封闭</h3>
+<p>在对象中封装数据，通过使用对象方法访问数据，从而更容易确保始终在持有适当锁的情况下访问数据。</p>
+<ol>
+<li>Java监视器模式：封装可变状态到对象中，使用对象的内置锁保护状态，使用私有锁对象更有优势</li>
+</ol>
+<h3 id="43-线程安全的委托"><a class="markdownIt-Anchor" href="#43-线程安全的委托"></a> 4.3 线程安全的委托</h3>
+<ol>
+<li>将线程安全的职责委托给线程安全的类，例如计数器类不做同步处理，依赖AtomicLong类型达到线程安全</li>
+<li>可以将线程安全委托给多个基础状态变量，只要它们是独立的</li>
+<li>委托失效：多个变量间有不变性条件,比如大小关系等,需要加锁,除非复合操作也可以委托给变量</li>
+<li>如果一个状态变量是线程安全的，不参与任何限制其值的不变性条件，并且在任何操作中都没有禁止的状态转换，那么它就可以安全地发布。</li>
+</ol>
+<h3 id="44-给现有的线程安全类加功能"><a class="markdownIt-Anchor" href="#44-给现有的线程安全类加功能"></a> 4.4 给现有的线程安全类加功能</h3>
+<p>继承方式（可能会因为子父类加的锁不一样线程不安全）</p>
+<ol>
+<li>客户端加锁，使用辅助类，若类的加锁依赖其它类，那么辅助类容易错误加锁</li>
+<li>组合方式，加锁策略完全由组合类提供</li>
+</ol>
+<h3 id="45-文档化同步策略"><a class="markdownIt-Anchor" href="#45-文档化同步策略"></a> 4.5 文档化同步策略</h3>
+<p>为类的客户端记录线程安全保证;为其维护者记录其同步策略</p>
+<h2 id="chapter-5-基础构建模块"><a class="markdownIt-Anchor" href="#chapter-5-基础构建模块"></a> Chapter 5 基础构建模块</h2>
+<p>在实际应用中，委托是创建线程安全类最有效的策略之一，本章介绍平台库的并发构建模块，例如线程安全的集合和各种可以协调线程控制流的同步器</p>
+<h3 id="51-同步集合"><a class="markdownIt-Anchor" href="#51-同步集合"></a> 5.1 同步集合</h3>
+<p>Vector、Hashtable，以及JDK1.2增加了 Collections.synchronizedXxx 创建同步包装类</p>
+<ol>
+<li>复合线程安全的类的方法可能不是线程安全的，例如复合方法调用size和get方法，中间可能被删掉元素导致size结果不对</li>
+<li>迭代器或者for-each不会锁定集合，在迭代过程中检测到集合变化时会抛出ConcurrentModificationException异常，检测是通过检测count值，但是没有同步，可能看到过期值</li>
+<li>隐藏的迭代器(某些操作底层隐藏着调用迭代器，比如集合的toString)</li>
+</ol>
+<h3 id="52-并发集合"><a class="markdownIt-Anchor" href="#52-并发集合"></a> 5.2 并发集合</h3>
+<p>同步集合通过序列化对集合状态的所有访问来实现线程安全，性能低。Java 5增加了并发集合</p>
+<ol>
+<li>ConcurrentHashMap，使用分段锁，具有弱一致性，同时size和isEmpty是估计并不精确，只有需要独占Map，才不建议使用该Map</li>
+<li>CopyOnWriteArrayList，每次修改都是返回副本,建议迭代多修改少的时候使用</li>
+</ol>
+<h3 id="53-阻塞队列和生产者-消费者模式"><a class="markdownIt-Anchor" href="#53-阻塞队列和生产者-消费者模式"></a> 5.3 阻塞队列和生产者-消费者模式</h3>
+<p>BlockingQueue，常用来实现生产者和消费者，有一个特殊的实现SynchronousQueue，它不是一个实际的队列，当生产者生产数据时直接交给消费者，适用于消费者多的场景</p>
+<p>Deque，常用来实现工作窃取模式。生产者和消费者模式中，消费者共享一个队列，工作窃取模式中，消费者有独自的队列，当消费完后会偷其他人的工作。工作窃取模式可以减少对于共享队列的竞争</p>
+<h3 id="54-阻塞方法与中断方法"><a class="markdownIt-Anchor" href="#54-阻塞方法与中断方法"></a> 5.4 阻塞方法与中断方法</h3>
+<ul>
+<li>当某个方法抛出InterruptedException,说明该方法是阻塞方法,可以被中断</li>
+<li>代码中调用一个阻塞方法（阻塞方法和线程状态没有必然关系，方法可能是个长时间方法所以声明抛出InterruptedException，也有可能是会导致线程状态改变的sleep方法）,必须处理中断响应.
+<ul>
+<li>捕获/抛出异常</li>
+<li>恢复中断.调用当前线程的interrupt</li>
+</ul>
+</li>
+</ul>
+<h3 id="55-同步器"><a class="markdownIt-Anchor" href="#55-同步器"></a> 5.5 同步器</h3>
+<ol>
+<li>阻塞队列</li>
+<li>闭锁（Latch）: 延迟线程进度，直到条件满足，FutureTask也可以做闭锁</li>
+<li>信号量：类似发布凭证,但是任意线程都可以发布和返还</li>
+<li>栅栏: 阻塞一组线程,直到某个条件满足;如果有某个线程await期间中断或者超时,所有阻塞的调用都会终止并抛出BrokenBarrierException</li>
+</ol>
+<h3 id="56-构建高效且可伸缩的缓存"><a class="markdownIt-Anchor" href="#56-构建高效且可伸缩的缓存"></a> 5.6 构建高效且可伸缩的缓存</h3>
+<ol>
+<li>使用hashMap+synchronized，性能差</li>
+<li>ConcurrentHashMap代替hashMap+synchronized，有重复计算问题</li>
+<li>ConcurrentHashMap的值用FutureTask包起来，只要键已经存在，从FutureTask获取结果，因为check-then-act模式，仍然存在重复计算问题</li>
+<li>使用putIfAbsent设置缓存</li>
+</ol>
+<h2 id="part-2-构建并发应用程序"><a class="markdownIt-Anchor" href="#part-2-构建并发应用程序"></a> Part 2 构建并发应用程序</h2>
+<h2 id="chapter-6-任务执行"><a class="markdownIt-Anchor" href="#chapter-6-任务执行"></a> Chapter 6 任务执行</h2>
+<h3 id="61-在线程中执行任务"><a class="markdownIt-Anchor" href="#61-在线程中执行任务"></a> 6.1 在线程中执行任务</h3>
+<ol>
+<li>
+<p>串行执行任务(响应会慢，服务器资源利用率低)</p>
+</li>
+<li>
+<p>显式为每个请求申请一个线程</p>
+<ul>
+<li>任务处理线程从主线程分离,提高响应速度</li>
+<li>任务可以并行处理,提高吞吐量</li>
+<li>任务处理代码必须是线程安全的,多个线程会并发执行</li>
+</ul>
+</li>
+<li>
+<p>无限制创建线程的不足</p>
+<ul>
+<li>创建销毁浪费时间</li>
+<li>浪费资源</li>
+<li>稳定性差</li>
+</ul>
+</li>
+</ol>
+<h3 id="62-executor框架"><a class="markdownIt-Anchor" href="#62-executor框架"></a> 6.2 Executor框架</h3>
+<ol>
+<li>
+<p>Executor基于生产-消费模式,提交任务相当于生产者,执行任务的线程相当于消费者.</p>
+</li>
+<li>
+<p>执行策略</p>
+<ul>
+<li>What: 在什么线程中执行任务，按什么顺序执行，任务执行前后要执行什么操作</li>
+<li>How Many: 多少任务并发，多少等待</li>
+<li>Which: 系统过载时选择拒绝什么任务</li>
+<li>How: 怎么通知任务成功/失败</li>
+</ul>
+</li>
+<li>
+<p>线程池，管理一组同构工作线程的资源池,跟工作队列密切相关</p>
+</li>
+<li>
+<p>Executor生命周期</p>
+<ul>
+<li>运行 : 对象新建时就是运行状态</li>
+<li>关闭 : 不接受新任务,同时等待已有任务完成,包括未执行的任务,关闭后任务再提交由 “被拒绝的执行处理器” 处理或者直接抛异常</li>
+<li>终止 : 关闭后任务完成</li>
+</ul>
+</li>
+<li>
+<p>延迟任务和周期任务</p>
+<p>Timer类可以负责,但是存在缺陷,应该考虑ScheduledThreadPoolExecutor代替它</p>
+<p>Timer: 只用一个线程执行定时任务，假如某个任务耗时过长，会影响其他任务的定时准确性。除此之外，不支持抛出异常，发生异常将终止线程(已调度（scheduled）未执行的任务，线程不会执行，新任务不会调度，称为线程泄露)</p>
+<p>DelayQueue: 阻塞队列的一种实现，为ScheduledThreadPoolExecutor提供调度策略</p>
+</li>
+</ol>
+<h3 id="63-寻找可利用的并行性"><a class="markdownIt-Anchor" href="#63-寻找可利用的并行性"></a> 6.3 寻找可利用的并行性</h3>
+<ol>
+<li>
+<p>将耗时的IO使用别的线程获取;而不是简单的串行执行</p>
+</li>
+<li>
+<p>Future 表示一个任务的生命周期，并提供相应的方法判断完成/取消，get会阻塞或抛异常</p>
+</li>
+<li>
+<p>使用Callable和Future并行化下载和渲染</p>
+</li>
+<li>
+<p>异构任务并行化获取重大性能提升很困难.</p>
+<ul>
+<li>任务大小不同</li>
+<li>负载均衡问题</li>
+<li>协调开销</li>
+</ul>
+</li>
+<li>
+<p>CompletionService 将 Executor 和BlockingQueue结合在一起，Executor是生产者，CompletionService是消费者</p>
+</li>
+<li>
+<p>使用 CompletionService 并行化下载和渲染</p>
+</li>
+<li>
+<p>为任务设置时限</p>
+</li>
+<li>
+<p>需要获取多个设置了时限的任务的结果可以用带上时间的 invokeAll 提交多个任务</p>
+</li>
+</ol>
+<h2 id="chapter-7-取消和关闭"><a class="markdownIt-Anchor" href="#chapter-7-取消和关闭"></a> Chapter 7 取消和关闭</h2>
+<p>本章讲解如何停止任务和线程，Java没有安全强制线程停止的方法，只有一种协作机制，中断</p>
+<h3 id="71-任务取消"><a class="markdownIt-Anchor" href="#71-任务取消"></a> 7.1 任务取消</h3>
+<p>有一种协作机制是在任务中设置取消位，任务定期查看该标识，假如置位就结束任务(假如线程阻塞了，就看不到取消位，那么就停不下来了)</p>
+<ol>
+<li>中断: 在取消任务或线程之外的其他操作中使用中断是不合适的
+<ul>
+<li>每个线程都有一个中断标志，interrupt中断目标线程，isInterrupted返回目标线程的中断状态，interrupted（<em>糟糕的命名</em>）清除当前线程中断;</li>
+<li>Thread.sleep和Object.wait都会检查线程什么时候中断,发现时提前返回(不会立即响应,只是传递请求而已)</li>
+</ul>
+</li>
+<li>中断策略：尽快推迟执行流程，传递给上层代码；由于每个线程拥有各自的中断策略，除非知道中断对这个线程的含义，否则不应该中断该线程</li>
+<li>中断响应<br />
+当调用会抛出InterruptedException的阻塞方法时，有两种处理策略
+<ul>
+<li>传播异常，让你的方法也变成会抛出异常的阻塞方法（中断标志一直为true）</li>
+<li>恢复中断状态，以便调用堆栈上较高级的代码处理它（try-catch之后中断标志为false，可以调用当前线程的interrupt方法恢复成中断状态）。</li>
+</ul>
+</li>
+<li>在中断线程之前，要了解线程的中断策略</li>
+<li>通过Future取消任务</li>
+<li>处理不可中断的阻塞
+<ul>
+<li>java.io中的同步Socket I/O.通过关闭Socket可以使阻塞线程抛出异常</li>
+<li>java.io中的同步 I/O.终端一个InterruptibleChannel会抛出异常并关闭链路</li>
+<li>获取某个锁. Lock提供lockInterruptibly</li>
+</ul>
+</li>
+<li>通过 newTaskFor 方法进一步优化</li>
+</ol>
+<h3 id="72-停止基于线程的服务"><a class="markdownIt-Anchor" href="#72-停止基于线程的服务"></a> 7.2 停止基于线程的服务</h3>
+<p>基于线程的服务：拥有线程的服务，例如线程池</p>
+<p>只要拥有线程的服务的生命周期比创建它的方法的生命周期长，就提供生命周期方法。例如线程池 ExecutorService 提供了shutdown</p>
+<ol>
+<li>日志服务：多生产者写入消息到阻塞队列，单消费者从阻塞队列中取消息，停止日志服务需要正确关闭线程。需要对结束标志位和队列剩余消息数同步访问（书有错误，LoggerThread 应该 synchronized (LogService.this)）</li>
+<li>毒丸，生产者将毒丸放在队列上，消费者拿到毒丸就结束</li>
+<li>shutdownNow 取消正在执行的任务，返回已提交未开始的任务，可以用个集合保存执行中被取消的任务</li>
+</ol>
+<h3 id="73-处理非正常的线程终止"><a class="markdownIt-Anchor" href="#73-处理非正常的线程终止"></a> 7.3 处理非正常的线程终止</h3>
+<p>通常是因为抛出运行时异常导致线程终止</p>
+<p>处理方法：</p>
+<ol>
+<li>try-catch 捕获任务异常，如果不能恢复，在finally块中通知线程拥有者</li>
+<li>当线程因未捕获异常而退出时，JVM会将事件报告给线程拥有者提供的UncaughtExceptionHandler，如果没有处理程序就将堆栈打印到System.err</li>
+<li>通过execute提交的任务的异常由UncaughtExceptionHandler处理,submit提交的任务，通过调用Future.get方法，包装在ExecutionException里面</li>
+</ol>
+<h3 id="74-jvm关闭"><a class="markdownIt-Anchor" href="#74-jvm关闭"></a> 7.4 JVM关闭</h3>
+<p>有序关闭：最后一个非守护线程终止（可能是调用了System.exit，或者发送SIGINT或按Ctrl-C）后终止<br />
+突然关闭：通过操作系统终止JVM进程，例如发送SIGKIll</p>
+<ol>
+<li>有序关闭中，JVM首先启动所有已注册的关闭钩子(通过Runtime.addShutdownHook注册的未启动线程)。如果应用程序线程在关闭时仍在运行，将与关闭线程并行执行。当所有关闭钩子都完成时，如果runFinalizersOnExit为true,那么jvm可能运行终结器，然后停止</li>
+<li>守护线程：执行辅助功能的线程，不会阻止JVM关闭。当JVM关闭时，守护线程直接关闭，不执行 finally 块，栈不会展开。守护线程适合做“内务”任务，例如清缓存</li>
+<li>终结器：GC在回收对象后会执行 finalize 方法释放持久资源。终结器在JVM管理的线程中运行，需要同步访问。终结器难写且性能低，除非要关闭 native 方法获取的资源，否则在 finally中显示关闭就够了</li>
+</ol>
+<h2 id="chapter-8-使用线程池"><a class="markdownIt-Anchor" href="#chapter-8-使用线程池"></a> Chapter 8 使用线程池</h2>
+<p>本章将介绍配置和调优线程池的高级选项，描述使用任务执行框架时需要注意的危险</p>
+<h3 id="81-任务和执行策略之间的隐式耦合"><a class="markdownIt-Anchor" href="#81-任务和执行策略之间的隐式耦合"></a> 8.1 任务和执行策略之间的隐式耦合</h3>
+<p>Executor 框架在任务提交和执行之间仍存在一些耦合：</p>
+<ol>
+<li>依赖其它任务的任务，相互依赖可能导致活跃性问题</li>
+<li>利用线程封闭的任务，这类任务不做同步，依赖单线程执行</li>
+<li>响应时间敏感的任务，可能需要多线程执行</li>
+<li>使用 ThreadLocal 的任务，ThreadLocal不应该用于线程池中任务之间的通信</li>
+</ol>
+<h4 id="811-线程饥饿死锁"><a class="markdownIt-Anchor" href="#811-线程饥饿死锁"></a> 8.1.1 线程饥饿死锁</h4>
+<p>把相互依赖的任务提交到一个单线程的Executor一定会发生死锁。增大线程池，如果被依赖的任务在等待队列中，也会发生死锁</p>
+<h4 id="812-运行耗时长的任务"><a class="markdownIt-Anchor" href="#812-运行耗时长的任务"></a> 8.1.2 运行耗时长的任务</h4>
+<p>即使不出现死锁,也会降低性能,通过限制执行时间可以缓解</p>
+<h3 id="82-设置线程池大小"><a class="markdownIt-Anchor" href="#82-设置线程池大小"></a> 8.2 设置线程池大小</h3>
+<p>cpu数可以调用 Runtime.availableProcessors得出</p>
+<ol>
+<li>计算密集型场景，线程池大小等于cpu数+1</li>
+<li>IO密集型场景，线程池大小等于cpu数 * cpu利用率 * （1+等待/计算时间比）</li>
+</ol>
+<h3 id="83-配置-threadpoolexecutor"><a class="markdownIt-Anchor" href="#83-配置-threadpoolexecutor"></a> 8.3 配置 ThreadPoolExecutor</h3>
+<h4 id="831-线程创建和销毁"><a class="markdownIt-Anchor" href="#831-线程创建和销毁"></a> 8.3.1 线程创建和销毁</h4>
+<ol>
+<li>corePoolSize：线程池大小，只有工作队列满了才会创建超出这个数量的线程</li>
+<li>maximumPoolSize：最大线程数量</li>
+<li>keepAliveTime：空闲时间超过keepAliveTime的线程会成为回收的候选线程，如果线程池的大小超过了核心的大小，线程就会被终止</li>
+</ol>
+<h4 id="832-管理工作队列"><a class="markdownIt-Anchor" href="#832-管理工作队列"></a> 8.3.2 管理工作队列</h4>
+<p>可以分成三类：无界队列、有界队列和同步移交。队列的选择和线程池大小、内存大小的有关</p>
+<p>无界队列可能会耗尽资源，有界队列会带来队列满时新任务的处理问题，同步移交只适合用在无界线程池或饱和策略可以接受</p>
+<h4 id="833-饱和策略"><a class="markdownIt-Anchor" href="#833-饱和策略"></a> 8.3.3 饱和策略</h4>
+<p>当任务提交给已经满的有界队列或已经关闭的Executor，饱和策略开始工作</p>
+<ol>
+<li>Abort，默认策略，execute方法会抛RejectedExecutionException</li>
+<li>Discard：丢弃原本下个执行的任务，并重新提交新任务</li>
+<li>Caller-Runs：将任务给调用execute 的线程执行</li>
+<li>无界队列可以使用信号量进行饱和策略</li>
+</ol>
+<h4 id="834-线程工厂"><a class="markdownIt-Anchor" href="#834-线程工厂"></a> 8.3.4 线程工厂</h4>
+<p>通过ThreadFactory.newThread创建线程，自定义线程工厂可以在创建线程时设置线程名、自定义异常</p>
+<h4 id="835-调用构造函数后再定制threadpoolexecutor"><a class="markdownIt-Anchor" href="#835-调用构造函数后再定制threadpoolexecutor"></a> 8.3.5 调用构造函数后再定制ThreadPoolExecutor</h4>
+<p>线程池的各项配置可以通过set方法配置，如果不想被修改，可以调用Executors.unconfigurableExecutorService<br />
+将其包装成不可修改的线程池</p>
+<h3 id="84-扩展-threadpoolexecutor"><a class="markdownIt-Anchor" href="#84-扩展-threadpoolexecutor"></a> 8.4 扩展 ThreadPoolExecutor</h3>
+<p>ThreadPoolExecutor给子类提供了钩子方法，beforeExecute、afterExecute和terminated</p>
+<p>beforeExecute和afterExecute钩子在执行任务的线程中调用，可用于添加日志记录、计时、监控或统计信息收集。无论任务从run正常返回还是抛出异常，afterExecute钩子都会被调用。如果beforeExecute抛出一个RuntimeException，任务就不会执行，afterExecute也不会被调用</p>
+<p>terminated钩子在任务都完成且所有工作线程都关闭后调用，用来释放资源、执行通知或日志记录</p>
+<h3 id="85-递归算法并行化"><a class="markdownIt-Anchor" href="#85-递归算法并行化"></a> 8.5 递归算法并行化</h3>
+<ol>
+<li>如果迭代操作之间是独立的，适合并行化</li>
+<li>递归不依赖于后续递归的返回值</li>
+</ol>
+<h2 id="chapter-9-gui应用"><a class="markdownIt-Anchor" href="#chapter-9-gui应用"></a> Chapter 9 GUI应用</h2>
+<h3 id="91-为什么gui是单线程的"><a class="markdownIt-Anchor" href="#91-为什么gui是单线程的"></a> 9.1 为什么GUI是单线程的</h3>
+<p>由于竞争情况和死锁，多线程GUI框架最终都变成了单线程</p>
+<h4 id="911-串行事件处理"><a class="markdownIt-Anchor" href="#911-串行事件处理"></a> 9.1.1 串行事件处理</h4>
+<p>优点：代码简单<br />
+缺点：耗时长的任务会发生无响应（委派给其它线程执行）</p>
+<h4 id="912-swing的线程封闭"><a class="markdownIt-Anchor" href="#912-swing的线程封闭"></a> 9.1.2 Swing的线程封闭</h4>
+<p>所有Swing组件和数据模型对象都封闭在事件线程中,任何访问它们的代码必须在事件线程里</p>
+<h3 id="92-短时间的gui任务"><a class="markdownIt-Anchor" href="#92-短时间的gui任务"></a> 9.2 短时间的GUI任务</h3>
+<p>事件在事件线程中产生,并冒泡到应用程序提供的监听器</p>
+<p>Swing将大多数可视化组件分为两个对象(模型对象和视图对象),模型对象保存数据,可以通过引发事件表示模型发生变化,视图对象通过订阅接收事件</p>
+<h3 id="93-长时间的gui任务"><a class="markdownIt-Anchor" href="#93-长时间的gui任务"></a> 9.3 长时间的GUI任务</h3>
+<p>对于长时间的任务可以使用线程池</p>
+<ol>
+<li>取消 使用Future</li>
+<li>进度标识</li>
+</ol>
+<h3 id="94-共享数据模型"><a class="markdownIt-Anchor" href="#94-共享数据模型"></a> 9.4 共享数据模型</h3>
+<ol>
+<li>只要阻塞操作不会过度影响响应性,那么事件线程和后台线程就可以共享该模型</li>
+<li>分解数据模型.将共享的模型通过快照共享</li>
+</ol>
+<h3 id="95-其它形式单线程"><a class="markdownIt-Anchor" href="#95-其它形式单线程"></a> 9.5 其它形式单线程</h3>
+<p>为了避免同步或死锁使用单线程，例如访问native方法使用单线程</p>
+<h2 id="part-3-活跃性-性能和测试"><a class="markdownIt-Anchor" href="#part-3-活跃性-性能和测试"></a> Part 3 活跃性、性能和测试</h2>
+<h2 id="chapter-10-避免活跃性危险"><a class="markdownIt-Anchor" href="#chapter-10-避免活跃性危险"></a> Chapter 10. 避免活跃性危险</h2>
+<p>Java程序不能从死锁中恢复，本章讨论活跃性失效的一些原因以及预防措施</p>
+<h3 id="101-死锁"><a class="markdownIt-Anchor" href="#101-死锁"></a> 10.1 死锁</h3>
+<p>哲学家进餐问题：每个人都有另一个人需要的资源，并且等待另一个人持有的资源，在获得自己需要的资源前不会释放自己持有的资源，产生死锁</p>
+<h4 id="1011-lock-ordering死锁"><a class="markdownIt-Anchor" href="#1011-lock-ordering死锁"></a> 10.1.1 Lock-ordering死锁</h4>
+<p>线程之间获取锁的顺序不同导致死锁。<br />
+解决方法：如果所有线程以一个固定的顺序获取锁就不会出现Lock-ordering死锁</p>
+<h4 id="1012-动态lock-order死锁"><a class="markdownIt-Anchor" href="#1012-动态lock-order死锁"></a> 10.1.2 动态Lock Order死锁</h4>
+<p>获取锁的顺序依赖参数可能导致死锁。<br />
+解决方法：对参数进行排序，统一线程获取锁的顺序</p>
+<h4 id="1013-协作对象的死锁"><a class="markdownIt-Anchor" href="#1013-协作对象的死锁"></a> 10.1.3 协作对象的死锁</h4>
+<p>如果在持有锁时调用外部方法,将会出现活跃性问题,这个外部方法可能阻塞,加锁等导致其他线程无法获得当前被持有的锁<br />
+解决方法：开放调用</p>
+<h4 id="1014-开放调用"><a class="markdownIt-Anchor" href="#1014-开放调用"></a> 10.1.4 开放调用</h4>
+<p>如果在方法中调用外部方法时不需要持有锁（比如调用者this）,那么这种调用称为开放调用。实现方式是将调用者的方法的同步范围从方法缩小到块</p>
+<h4 id="1015-资源死锁"><a class="markdownIt-Anchor" href="#1015-资源死锁"></a> 10.1.5 资源死锁</h4>
+<p>和循环依赖锁导致死锁类似。例如线程持有数据库连接且等待另一个线程释放，另一个线程也是这样</p>
+<h3 id="102-避免和诊断死锁"><a class="markdownIt-Anchor" href="#102-避免和诊断死锁"></a> 10.2 避免和诊断死锁</h3>
+<p>使用两部分策略来审计代码以确保无死锁:首先，确定哪些地方可以获得多个锁(尽量使其成为一个小集合)，然后对所有这些实例进行全局分析，以确保锁的顺序在整个程序中是一致的，尽可能使用开放调用简化分析</p>
+<h4 id="1021-定时锁"><a class="markdownIt-Anchor" href="#1021-定时锁"></a> 10.2.1 定时锁</h4>
+<p>另一种检测死锁并从死锁中恢复的技术是使用显示锁中的Lock.tryLock()代替内置锁</p>
+<h4 id="1022-用thread-dumps进行死锁分析"><a class="markdownIt-Anchor" href="#1022-用thread-dumps进行死锁分析"></a> 10.2.2 用Thread Dumps进行死锁分析</h4>
+<p>线程转储包含每个运行线程的堆栈信息，锁信息（持有哪些锁，从哪个栈帧中获得）以及阻塞的线程正在等待获得哪些锁</p>
+<h3 id="103-其它活跃性危险"><a class="markdownIt-Anchor" href="#103-其它活跃性危险"></a> 10.3 其它活跃性危险</h3>
+<h4 id="1031-饥饿"><a class="markdownIt-Anchor" href="#1031-饥饿"></a> 10.3.1 饥饿</h4>
+<p>线程由于无法获得它所需要的资源而不能继续执行，最常见的资源是CPU</p>
+<p>避免使用线程优先级，可能导致饥饿</p>
+<h4 id="1032-糟糕的响应性"><a class="markdownIt-Anchor" href="#1032-糟糕的响应性"></a> 10.3.2 糟糕的响应性</h4>
+<p>计算密集型任务会影响响应性，通过降低执行计算密集型任务的线程的优先级可以提高前台任务的响应性</p>
+<h4 id="1033-活锁"><a class="markdownIt-Anchor" href="#1033-活锁"></a> 10.3.3 活锁</h4>
+<p>线程执行任务失败后，任务回滚，又添加到队列头部，导致线程没有阻塞但永远不会有进展。多个相互合作的线程为了响应其它线程而改变状态也会导致活锁<br />
+解决方法：在重试机制中引入一些随机性</p>
+<h2 id="chapter-11-性能和可伸缩性"><a class="markdownIt-Anchor" href="#chapter-11-性能和可伸缩性"></a> Chapter 11. 性能和可伸缩性</h2>
+<h3 id="111-对性能的思考"><a class="markdownIt-Anchor" href="#111-对性能的思考"></a> 11.1 对性能的思考</h3>
+<h4 id="1111-性能和可伸缩性"><a class="markdownIt-Anchor" href="#1111-性能和可伸缩性"></a> 11.1.1 性能和可伸缩性</h4>
+<p>性能: 可以用任务完成快慢或者数量来衡量，具体指标包括服务时间、延迟、<br />
+吞吐量、可伸缩性等</p>
+<p>可伸缩性: 增加计算资源时提供程序吞吐量的能力</p>
+<h3 id="1112-评估性能权衡"><a class="markdownIt-Anchor" href="#1112-评估性能权衡"></a> 11.1.2 评估性能权衡</h3>
+<p>许多性能优化牺牲可读性和可维护性，比如违反面向对象设计原则，需要权衡</p>
+<h3 id="112-amdahl定律"><a class="markdownIt-Anchor" href="#112-amdahl定律"></a> 11.2 Amdahl定律</h3>
+<p>N：处理器数量<br />
+F：必须串行执行的计算部分<br />
+Speedup：加速比</p>
+<p>$\text { Speedup } \leq \frac{1}{F+\frac{1-F}{N}} $</p>
+<p>串行执行的计算部分需要仔细考虑，即使任务之间互不影响可以并行，但是线程从任务队列中需要同步，使用ConcurrentLinkedQueue比同步的LinkedList性能好</p>
+<h3 id="113-线程引入的开销"><a class="markdownIt-Anchor" href="#113-线程引入的开销"></a> 11.3 线程引入的开销</h3>
+<ol>
+<li>上线文切换</li>
+<li>内存同步（同步的性能开销包括可见性保证，即内存屏障，可以用jvm逃逸分析和编译器锁粒度粗化进行优化）</li>
+<li>阻塞(非竞争的同步可以在JVM处理,竞争的同步需要操作系统介入，竞争失败的线程必定阻塞，JVM可以自旋等待（反复尝试获取锁，直到成功）或者被操作系统挂起进入阻塞态，短时间等待选择自旋等待，长时间等待选择挂起)</li>
+</ol>
+<h3 id="114-减少锁的竞争"><a class="markdownIt-Anchor" href="#114-减少锁的竞争"></a> 11.4 减少锁的竞争</h3>
+<p>并发程序中,对伸缩性最主要的威胁就是独占方式的资源锁</p>
+<p>三种减少锁争用的方法：</p>
+<ul>
+<li>减少持有锁的时间</li>
+<li>减少请求锁的频率</li>
+<li>用允许更大并发的协调机制替换互斥锁</li>
+</ul>
+<h4 id="1141-减小锁的范围"><a class="markdownIt-Anchor" href="#1141-减小锁的范围"></a> 11.4.1 减小锁的范围</h4>
+<p>锁的范围即持有锁的时间</p>
+<h4 id="1142-降低锁的力度"><a class="markdownIt-Anchor" href="#1142-降低锁的力度"></a> 11.4.2 降低锁的力度</h4>
+<p>分割锁：将保护多个独立的变量的锁分割成单独的锁，这样锁的请求频率就可以降低</p>
+<h4 id="1143-分段锁"><a class="markdownIt-Anchor" href="#1143-分段锁"></a> 11.4.3 分段锁</h4>
+<p>分割锁可以扩展到可变大小的独立对象上的分段锁。例如ConcurrentHashMap使用了一个包含16个锁的数组，每个锁保护1/16的哈希桶</p>
+<p>分段锁缺点：独占访问集合开销大</p>
+<h4 id="1144-避免热点字段"><a class="markdownIt-Anchor" href="#1144-避免热点字段"></a> 11.4.4 避免热点字段</h4>
+<p>热点字段：缓存<br />
+热点字段会限制可伸缩性，例如，为了缓存Map中的元素数量，添加一个计数器，每次增删时修改计数器，size操作的开销就是O（1）。单线程没问题，多线程下又需要同步访问计数器，ConcurrentHashMap每个哈希桶一个计数器</p>
+<h4 id="1145-互斥锁的替代品"><a class="markdownIt-Anchor" href="#1145-互斥锁的替代品"></a> 11.4.5 互斥锁的替代品</h4>
+<p>考虑使用并发集合、读写锁、不可变对象和原子变量</p>
+<p>读写锁：只要没有一个写者想要修改共享资源，多个读者可以并发访问，但写者必须独占地获得锁<br />
+原子变量：提供细粒度的原子操作，可以降低更新热点字段的开销</p>
+<h4 id="1146-监测cpu利用率"><a class="markdownIt-Anchor" href="#1146-监测cpu利用率"></a> 11.4.6 监测CPU利用率</h4>
+<p>cpu利用率低可能是以下原因：</p>
+<ol>
+<li>负载不够，可以对程序加压</li>
+<li>IO密集，可以通过iostat判断，还可以通过监测网络上的流量水平判断</li>
+<li>外部约束，可能在等待数据库或web服务的响应</li>
+<li>锁竞争，可以用分析工具分析哪些是“热”锁</li>
+</ol>
+<h4 id="1147-不要用对象池"><a class="markdownIt-Anchor" href="#1147-不要用对象池"></a> 11.4.7 不要用对象池</h4>
+<p>现在JVM分配和回收对象已经很快了，不要用对象池</p>
+<h3 id="115-例子比较map的性能"><a class="markdownIt-Anchor" href="#115-例子比较map的性能"></a> 11.5 例子：比较Map的性能</h3>
+<p>ConcurrentHashMap单线程性能略好于同步的HashMap，并发时性能超好。ConcurrentHashMap对大多数成功的读操作不加锁，对写操作和少数读操作加分段锁</p>
+<h3 id="116-减少上下文切换"><a class="markdownIt-Anchor" href="#116-减少上下文切换"></a> 11.6 减少上下文切换</h3>
+<ol>
+<li>日志记录由专门的线程负责</li>
+<li>请求服务时间不应该过长</li>
+<li>将IO移动到单个线程</li>
+</ol>
+<h2 id="chapter-12-并发程序的测试"><a class="markdownIt-Anchor" href="#chapter-12-并发程序的测试"></a> Chapter 12. 并发程序的测试</h2>
+<p>大多数并发程序测试安全性和活跃性。安全性可以理解为“永远不会发生坏事”，活跃性可以理解为“最终会有好事发生”</p>
+<h3 id="121-正确性测试"><a class="markdownIt-Anchor" href="#121-正确性测试"></a> 12.1 正确性测试</h3>
+<h4 id="1211-基础单元测试"><a class="markdownIt-Anchor" href="#1211-基础单元测试"></a> 12.1.1 基础单元测试</h4>
+<p>和顺序程序的测试类似，调用方法，验证程序的后置条件和不变量</p>
+<h4 id="1212-阻塞操作测试"><a class="markdownIt-Anchor" href="#1212-阻塞操作测试"></a> 12.1.2 阻塞操作测试</h4>
+<p>在单独的一个线程中启动阻塞活动，等待线程阻塞，中断它，然后断言阻塞操作完成。</p>
+<p>Thread.getState不可靠，因为线程阻塞不一定进入WAITING或TIMED_WAITING状态，JVM可以通过自旋等待实现阻塞。类似地，Object.wait和Condition.wait存在伪唤醒情况，处于WAITING或TIMED_WAITING状态的线程可以暂时过渡到RUNNABLE。</p>
+<h4 id="1213-安全性测试"><a class="markdownIt-Anchor" href="#1213-安全性测试"></a> 12.1.3 安全性测试</h4>
+<p>给并发程序编写高效的安全测试的挑战在于识别出容易检查的属性，这些属性在程序错误时出错，同时不能让检查限制并发性，最好检查属性时不需要同步。</p>
+<p>生产者和消费者模式中的一种方法是校验和，单生产者单消费者可以使用顺序敏感的校验和计算入队和出队元素的校验和，多生产者多消费者要用顺序不敏感的校验和</p>
+<h4 id="1214-资源管理测试"><a class="markdownIt-Anchor" href="#1214-资源管理测试"></a> 12.1.4 资源管理测试</h4>
+<p>任何保存或管理其他对象的对象都不应该在不必要的时间内继续维护对这些对象的引用。可以用堆检查工具测试内存使用情况</p>
+<h4 id="1215-使用回调"><a class="markdownIt-Anchor" href="#1215-使用回调"></a> 12.1.5 使用回调</h4>
+<p>回调函数通常是在对象生命周期的已知时刻发出的，这是断言不变量的好机会。例如自定义线程池可以在创建销毁线程时记录线程数</p>
+<h4 id="1216-产生更多的交替操作"><a class="markdownIt-Anchor" href="#1216-产生更多的交替操作"></a> 12.1.6 产生更多的交替操作</h4>
+<p>Thread.yield放弃cpu，保持RUNNABLE状态，重新竞争cpu<br />
+Thread.sleep放弃cpu进入TIME_WAITING状态，不竞争cpu，sleep较小时间比yield更稳定产生交替操作</p>
+<p>tips：Java 线程的RUNNABLE 状态对应了操作系统的 ready 和 running 状态，TIME_WAITING（调用Thread.sleep） 和 WAITING（调用Object.wait） 和 BLOCKED(没有竞争到锁) 对应 waiting 状态。interrupt是种干预手段，如果interrupt一个RUNNABLE线程（可能在执行长时间方法需要终止），如果方法声明抛出InterruptedException，就表示可中断，方法会循环检查isInterrupted状态来响应interrupt，一般情况线程状态变成TERMINATED。如果interrupt一个 waiting 线程（可能是由sleep、wait方法导致，这些方法会抛出InterruptedException），线程重新进入 RUNNALBE 状态，处理InterruptedException</p>
+<h3 id="122-性能测试"><a class="markdownIt-Anchor" href="#122-性能测试"></a> 12.2 性能测试</h3>
+<ol>
+<li>增加计时功能（CyclicBarrier）</li>
+<li>多种算法比较（LinkedBlockingQueue在多线程情况下比ArrayBlockingQueue性能好）</li>
+<li>衡量响应性</li>
+</ol>
+<h3 id="123-避免性能测试的陷阱"><a class="markdownIt-Anchor" href="#123-避免性能测试的陷阱"></a> 12.3 避免性能测试的陷阱</h3>
+<h4 id="1231-垃圾回收"><a class="markdownIt-Anchor" href="#1231-垃圾回收"></a> 12.3.1 垃圾回收</h4>
+<p>垃圾回收不可预测，会导致测试误差，需要长时间测试，多次垃圾回收，得到更准确结果</p>
+<h4 id="1232-动态编译"><a class="markdownIt-Anchor" href="#1232-动态编译"></a> 12.3.2 动态编译</h4>
+<p>动态编译会影响运行时间，需要运行足够长时间或者与完成动态编译后再开始计时</p>
+<h4 id="1233-对代码路径的不真实采样"><a class="markdownIt-Anchor" href="#1233-对代码路径的不真实采样"></a> 12.3.3 对代码路径的不真实采样</h4>
+<p>动态编译器会对单线程测试程序进行优化，最好多线程测试和单线程测试混合使用（测试用例至少用两个线程）</p>
+<h4 id="1234-不真实的竞争情况"><a class="markdownIt-Anchor" href="#1234-不真实的竞争情况"></a> 12.3.4 不真实的竞争情况</h4>
+<p>并发性能测试程序应该尽量接近真实应用程序的线程本地计算，并考虑并发协作。例如，多线程访问同步Map，如果本地计算过长，那么锁竞争情况就较弱，可能得出错误的性能瓶颈结果</p>
+<h4 id="1235-无用代码的删除"><a class="markdownIt-Anchor" href="#1235-无用代码的删除"></a> 12.3.5 无用代码的删除</h4>
+<p>无用代码：对结果没有影响的代码<br />
+由于基准测试通常不计算任何东西，很容易被优化器删除，这样测试的执行时间就会变短<br />
+解决方法是计算某个派生类的散列值,与任意值比较,加入相等就输出一个无用且可被忽略的消息</p>
+<h3 id="124-补充的测试方法"><a class="markdownIt-Anchor" href="#124-补充的测试方法"></a> 12.4 补充的测试方法</h3>
+<ol>
+<li>代码审查</li>
+<li>静态代码分析</li>
+<li>面向切面的测试工具</li>
+<li>分析与检测工具</li>
+</ol>
+<h2 id="part-4-高级主题"><a class="markdownIt-Anchor" href="#part-4-高级主题"></a> Part 4 高级主题</h2>
+<h2 id="chapter-13-显示锁"><a class="markdownIt-Anchor" href="#chapter-13-显示锁"></a> Chapter 13 显示锁</h2>
+<p>Java 5 之前，对共享数据的协调访问机制只有 synchronized 和 volatile，Java 5 增加了 ReentrantLock。</p>
+<h3 id="131-lock和reentrantlock"><a class="markdownIt-Anchor" href="#131-lock和reentrantlock"></a> 13.1 Lock和ReentrantLock</h3>
+<p>Lock接口定义加锁和解锁的操作。<br />
+ReentrantLock还提供了可重入特性</p>
+<p>显示锁和内置锁很像，显示锁出现的原因是内置锁有一些功能限制</p>
+<ol>
+<li>不能中断等待锁的线程</li>
+<li>必须在获得锁的地方释放锁</li>
+</ol>
+<h4 id="1311-轮询和定时获得锁"><a class="markdownIt-Anchor" href="#1311-轮询和定时获得锁"></a> 13.1.1 轮询和定时获得锁</h4>
+<p>tryLock：轮询和定时获得锁<br />
+内置锁碰到死锁是致命的，唯一恢复方法是重启，唯一防御方法是统一锁获取顺序，tryLock可以概率避免死锁</p>
+<h4 id="1312-可中断的获得锁"><a class="markdownIt-Anchor" href="#1312-可中断的获得锁"></a> 13.1.2 可中断的获得锁</h4>
+<p>lockInterruptibly，调用后一直阻塞直至获得锁，但是接受中断信号</p>
+<h4 id="1313-非块结构加锁"><a class="markdownIt-Anchor" href="#1313-非块结构加锁"></a> 13.1.3 非块结构加锁</h4>
+<p>内置锁是块结构的加锁和自动释放锁，有时需要更大的灵活性，例如基于hash的集合可以使用分段锁</p>
+<h3 id="132-性能考虑"><a class="markdownIt-Anchor" href="#132-性能考虑"></a> 13.2 性能考虑</h3>
+<p>从Java 6 开始，内置锁已经不比显式锁性能差</p>
+<h3 id="133-公平性"><a class="markdownIt-Anchor" href="#133-公平性"></a> 13.3 公平性</h3>
+<p>内置锁不保证公平，ReentrantLock默认也不保证公平，非公平锁可以插队(不提倡,但是不阻止)，性能相比公平锁会好一些</p>
+<h3 id="134-在-synchronized-和-reentrantlock-中选择"><a class="markdownIt-Anchor" href="#134-在-synchronized-和-reentrantlock-中选择"></a> 13.4 在 Synchronized 和 ReentrantLock 中选择</h3>
+<p>当你需要用到轮询和定时加锁、可中断的加锁、公平等待锁和非块结构加锁，使用 ReentrantLock，否则使用 synchronized</p>
+<h3 id="135-读写锁"><a class="markdownIt-Anchor" href="#135-读写锁"></a> 13.5 读写锁</h3>
+<p>读写锁：资源可以被多个读者同时访问或者单个写者访问</p>
+<p>ReadWriteLock 定义读锁和写锁方法，和 Lock 类似，实现类在性能、调度、获得锁的优先条件、公平等方面可以不同</p>
+<h2 id="chapter-14-构建自定义的同步工具"><a class="markdownIt-Anchor" href="#chapter-14-构建自定义的同步工具"></a> Chapter 14 构建自定义的同步工具</h2>
+<p>最简单的方式使用已有类进行构造，例如LinkedBlockingQueue、CountDown-Latch、Semaphore和FutureTask等</p>
+<h3 id="141-状态依赖性的管理"><a class="markdownIt-Anchor" href="#141-状态依赖性的管理"></a> 14.1 状态依赖性的管理</h3>
+<p>单线程中，基于状态的前置条件不满足就失败。但是多线程中，状态会被其它线程修改，所以多线程程序在不满足前置条件时可以等待直至满足前置条件</p>
+<h4 id="1411-将前置条件的失败传播给调用者"><a class="markdownIt-Anchor" href="#1411-将前置条件的失败传播给调用者"></a> 14.1.1 将前置条件的失败传播给调用者</h4>
+<p>不满足前置条件就抛异常是滥用异常。调用者可以自旋等待（RUNNABLE态，占用cpu）或者阻塞（waiting态，不占cpu），即需要调用者编写前置条件管理的代码</p>
+<h4 id="1412-通过轮询和睡眠粗鲁的阻塞"><a class="markdownIt-Anchor" href="#1412-通过轮询和睡眠粗鲁的阻塞"></a> 14.1.2 通过轮询和睡眠粗鲁的阻塞</h4>
+<p>通过轮询和睡眠完成前置条件管理，不满足是就阻塞，调用者不需要管理前置条件，但需要处理 InterruptedException</p>
+<h4 id="1413-条件队列"><a class="markdownIt-Anchor" href="#1413-条件队列"></a> 14.1.3 条件队列</h4>
+<p>Object的wait，notify 和 notifyAll构成内置条件队列的API,wait会释放锁(本质和轮询与休眠是一样的，注意sleep前要释放锁)</p>
+<h3 id="142-使用条件队列"><a class="markdownIt-Anchor" href="#142-使用条件队列"></a> 14.2 使用条件队列</h3>
+<h4 id="1421-条件谓词"><a class="markdownIt-Anchor" href="#1421-条件谓词"></a> 14.2.1 条件谓词</h4>
+<p>条件谓词：由类的状态变量构造的表达式，例如缓冲区非空即count&gt;0</p>
+<p>给条件队列相关的条件谓词以及等待它成立的操作写Javadoc</p>
+<p>条件谓词涉及状态变量，状态变量由锁保护，所以在测试条件谓词之前，需要先获得锁。锁对象和条件队列对象（调用wait和notify的对象）必须是同一个对象</p>
+<h4 id="1422-过早唤醒"><a class="markdownIt-Anchor" href="#1422-过早唤醒"></a> 14.2.2 过早唤醒</h4>
+<p>一个线程由于其它线程调用notifyAll醒来，不意味着它的等待条件谓词一定为真。每当线程醒来必须再次测试条件谓词(使用循环)</p>
+<h4 id="1423-丢失的信号"><a class="markdownIt-Anchor" href="#1423-丢失的信号"></a> 14.2.3 丢失的信号</h4>
+<p>线程必须等待一个已经为真的条件，但是在开始等待之前没有检查条件谓词，发生的原因是编码错误，正确写法是循环测试条件谓词，false就继续wait</p>
+<h4 id="1424-通知"><a class="markdownIt-Anchor" href="#1424-通知"></a> 14.2.4 通知</h4>
+<p>优先使用 notifyAll，notify 可能会出现“hijacked signal”问题，唤醒了一个条件还未真的线程，本应被唤醒的线程还在等待。只有所有线程都在等同一个条件谓词且通知最多允许一个线程继续执行才使用notify</p>
+<h4 id="1425-例子门"><a class="markdownIt-Anchor" href="#1425-例子门"></a> 14.2.5 例子：门</h4>
+<p>用条件队列实现一个可以重复开关的线程门</p>
+<h4 id="1426-子类的安全问题"><a class="markdownIt-Anchor" href="#1426-子类的安全问题"></a> 14.2.6 子类的安全问题</h4>
+<p>一个依赖状态的类应该完全向子类暴露它的等待和通知协议，或者禁止继承</p>
+<h4 id="1427-封装条件队列"><a class="markdownIt-Anchor" href="#1427-封装条件队列"></a> 14.2.7 封装条件队列</h4>
+<p>最好将条件队列封装起来，在使用它的类的外面无法访问</p>
+<h4 id="1428-进入和退出协议"><a class="markdownIt-Anchor" href="#1428-进入和退出协议"></a> 14.2.8 进入和退出协议</h4>
+<p>进入协议：操作的条件谓词<br />
+退出协议：检查该操作修改的所有状态变量,确认他们是否使某个条件谓词成真,若是,通知相关队列</p>
+<h3 id="143-显示-condition"><a class="markdownIt-Anchor" href="#143-显示-condition"></a> 14.3 显示 Condition</h3>
+<p>显示锁在一些情况下比内置锁更灵活。类似地，Condition 比内置条件队列更灵活</p>
+<p>内置条件队列有几个缺点：</p>
+<ol>
+<li>每个内置锁只能关联一个条件队列，即多个线程可能会在同一个条件队列上等待不同的条件谓词</li>
+<li>最常见的加锁模式会暴露条件队列</li>
+</ol>
+<p>一个 Condition 关联一个 Lock，就像内置条件队列关联一个内置锁，使用 Lock.newCondition 来创建 Condition，Condition比内置条件队列功能丰富：每个锁有多个等待集（即一个Lock可以创建多个Condition），可中断和不可中断的条件等待，基于截止时间的等待，以及公平或不公平排队的选择。</p>
+<p>Condition中和wait，notify，notifyAll 对应的方法是 await，signal，signalAll</p>
+<h3 id="144-synchronizer剖析"><a class="markdownIt-Anchor" href="#144-synchronizer剖析"></a> 14.4 Synchronizer剖析</h3>
+<p>ReentrantLock 和 Semaphore 有很多相似的地方。ReentrantLock可以作为只许一个线程进入的 Semaphore，Semaphore 可以用 ReentrantLock 实现</p>
+<p>它们和其它同步器一样依赖基类 AbstractQueuedSynchronizer（AQS）。AQS是一个用于构建锁和同步器的框架，使用它可以轻松有效地构建范围广泛的同步器。</p>
+<h3 id="145-abstractqueuedsynchronizer"><a class="markdownIt-Anchor" href="#145-abstractqueuedsynchronizer"></a> 14.5 AbstractQueuedSynchronizer</h3>
+<p>依赖AQS的同步器的基本操作是获取和释放的一些变体。获取是阻塞操作，调用者获取不到会进入WAITING或失败。对于锁或信号量，获取的意思是获取锁或许可。对于CountDownLatch，获取的意思是等待门闩到达终点。对于FutureTask，获取的意思是等待任务完成。释放不是阻塞操作。同步器还会根据各自的语义维护状态信息</p>
+<h3 id="146-juc同步器类中的aqs"><a class="markdownIt-Anchor" href="#146-juc同步器类中的aqs"></a> 14.6 JUC同步器类中的AQS</h3>
+<p>JUC许多类使用AQS，例如 ReentrantLock, Semaphore, ReentrantReadWriteLock, CountDownLatch, SynchronousQueue, FutureTask</p>
+<h2 id="chapter-15-原子变量与非阻塞同步机制"><a class="markdownIt-Anchor" href="#chapter-15-原子变量与非阻塞同步机制"></a> Chapter 15 原子变量与非阻塞同步机制</h2>
+<p>非阻塞算法使用原子机器指令，例如 compare-and-swap 取代锁来实现并发下的数据完成性。它的设计比基于锁的算法复杂但可以提供更好的伸缩性和活跃性，非阻塞算法不会出现阻塞、死锁或其它活跃性问题，不会受到单个线程故障的影响</p>
+<h3 id="151-锁的劣势"><a class="markdownIt-Anchor" href="#151-锁的劣势"></a> 15.1 锁的劣势</h3>
+<p>JVM对非竞争锁进行优化,但是如果多个线程同时请求锁,就要借助操作系统挂起或者JVM自旋,开销很大。相比之下volatile是更轻量的同步机制,不涉及上下文切换和线程调度，然后volatile相较于锁，它不能构造原子性的复合操作，例如自增</p>
+<p>锁还会出现优先级反转(阻塞线程优先级高,但是后执行),死锁等问题</p>
+<h3 id="152-并发操作的硬件支持"><a class="markdownIt-Anchor" href="#152-并发操作的硬件支持"></a> 15.2 并发操作的硬件支持</h3>
+<p>排它锁是悲观锁，总是假设最坏情况，只有确保其它线程不会干扰才会执行</p>
+<p>乐观方法依赖碰撞检测来确定在更新过程中是否有其它线程的干扰，若有则操作失败并可以选择重试</p>
+<p>为多处理器设计的cpu提供了对共享变量并发访问的特殊指令，例如 compare‐and‐swap，load-linked</p>
+<h4 id="1521-compare-and-swap"><a class="markdownIt-Anchor" href="#1521-compare-and-swap"></a> 15.2.1 Compare and Swap</h4>
+<p>CAS 有三个操作数：内存地址V，期待的旧值A，新值B。CAS在V的旧值是A的情况下原子更新值为B，否则什么都不做。CAS是一种乐观方法：它满怀希望更新变量，如果检测到其它线程更新了变量，它就会失败。CAS失败不会阻塞，允许重试（一般不重试，失败可能意味着别的线程已经完成该工作）</p>
+<h4 id="1522-非阻塞的计数器"><a class="markdownIt-Anchor" href="#1522-非阻塞的计数器"></a> 15.2.2 非阻塞的计数器</h4>
+<p>在竞争不激烈的情况下，性能比锁优秀。缺点是强制调用者处理竞争问题（重试、后退或放弃），而锁通过阻塞自动处理争用，直到锁可用</p>
+<h4 id="1523-jvm对cas的支持"><a class="markdownIt-Anchor" href="#1523-jvm对cas的支持"></a> 15.2.3 JVM对CAS的支持</h4>
+<p>JVM将CAS编译成底层硬件提供的方法，加入底层硬件不支持CAS，JVM会使用自旋锁。原子变量类使用了CAS</p>
+<h3 id="153-原子变量类"><a class="markdownIt-Anchor" href="#153-原子变量类"></a> 15.3 原子变量类</h3>
+<p>原子变量比锁的粒度更细，重量更轻，能提供volatile不支持的原子性</p>
+<ol>
+<li>原子变量可以作为更好的 volatile</li>
+<li>在高度竞争情况下，锁性能更好，正常情况下，原子变量性能更好</li>
+</ol>
+<h3 id="154-非阻塞的算法"><a class="markdownIt-Anchor" href="#154-非阻塞的算法"></a> 15.4 非阻塞的算法</h3>
+<p>如果一个线程的故障或挂起不会导致另一个线程的故障或挂起，则该算法称为非阻塞算法;如果一个算法在每个执行步骤中都有线程能够执行，那么这个算法被称为无锁算法。如果构造正确，只使用CAS进行线程间协调的算法可以是无阻塞和无锁的</p>
+<h4 id="1541-非阻塞的栈"><a class="markdownIt-Anchor" href="#1541-非阻塞的栈"></a> 15.4.1 非阻塞的栈</h4>
+<p>创建非阻塞算法的关键是如何在保持数据一致性的同时，将原子性更改的范围限制在单个变量内。</p>
+<p>非阻塞的栈使用CAS来修改顶部元素</p>
+<h4 id="1542-非阻塞的链表"><a class="markdownIt-Anchor" href="#1542-非阻塞的链表"></a> 15.4.2 非阻塞的链表</h4>
+<p>Michale-scott算法</p>
+<h4 id="1543-原子字段更新器"><a class="markdownIt-Anchor" href="#1543-原子字段更新器"></a> 15.4.3 原子字段更新器</h4>
+<p>原子字段更新器代表了现有 volatile 字段的基于反射的“视图”，以便可以在现有的 volatile 字段上使用CAS</p>
+<h4 id="1544-aba问题"><a class="markdownIt-Anchor" href="#1544-aba问题"></a> 15.4.4 ABA问题</h4>
+<p>大部分情况下，CAS会询问“V的值还是A吗？”，是A就更新。但是有时候，我们需要知道“从我上次观察到V是A以来，它的值有没有改变？”。对于某些算法，将V的值从A-&gt;B，再从B-&gt;A，是一种更改，需要重新执行算法。解决方法是使用版本号，即使值从A变成B再变回A，版本号也会不同</p>
+<h2 id="chapter-16-java-内存模型"><a class="markdownIt-Anchor" href="#chapter-16-java-内存模型"></a> Chapter 16 Java 内存模型</h2>
+<h3 id="161-内存模型是什么为什么我需要一个内存模型"><a class="markdownIt-Anchor" href="#161-内存模型是什么为什么我需要一个内存模型"></a> 16.1 内存模型是什么，为什么我需要一个内存模型？</h3>
+<p>在并发没有同步的情况下，有许多原因导致一个线程不能立即或永远不能再另一个线程中看到操作的结果</p>
+<ol>
+<li>编译器生成的指令顺序与源码不同</li>
+<li>变量存在寄存器中而不是内存中</li>
+<li>处理器可以并行或乱序执行指令</li>
+<li>缓存可能会改变写入变量到主内存的顺序</li>
+<li>存储在处理器本地缓存中的值可能对其它处理器不可见</li>
+</ol>
+<h4 id="1611-平台的内存模型"><a class="markdownIt-Anchor" href="#1611-平台的内存模型"></a> 16.1.1 平台的内存模型</h4>
+<p>在共享存储的多处理器体系结构中，每个处理器都有自己的高速缓存，这些告诉缓存周期性地与主存协调。</p>
+<p>体系结构的内存模型告诉程序可以从内存系统得到什么一致性保证，并制定所需的特殊指令（内存屏障或栅栏），以在共享数据时获得所需的额外内存协调保证。为了不受跨体系结构的影响，Java提供了自己的内存模型，JVM通过在适当的位置插入内存屏障来处理JMM（Java内存模型）和和底层平台的内存模型之间的差异</p>
+<p>顺序一致性：程序中所有操作都有一个单一的顺序，而不管他们在什么处理器上执行，并且每次读取变量都会看到任何处理器按执行顺序对该变量的最后一次写入。</p>
+<p>现代处理器没有提供顺序一致性，JMM也没有</p>
+<h4 id="1612-重排"><a class="markdownIt-Anchor" href="#1612-重排"></a> 16.1.2 重排</h4>
+<p>指令重排会使程序的行为出乎意料。同步限制了编译器、运行时和硬件在重排序时不会破坏JMM提供的可见性保证</p>
+<h4 id="1613-java-内存模型"><a class="markdownIt-Anchor" href="#1613-java-内存模型"></a> 16.1.3 Java 内存模型</h4>
+<p>Java 内存模型由一些操作指定，包括对变量的读写、监视器的锁定和解锁。JMM对所有操作定义了一个称为 happens before 的偏序规则：</p>
+<ul>
+<li>程序顺序规则：线程按程序定义的顺序执行操作</li>
+<li>监视器锁规则：监视器锁的解锁必须发生在后续的加锁之前</li>
+<li>volatile 变量规则：对 volatile 字段的写入操作必须发生在后续的读取之前</li>
+<li>线程启动规则：对线程调用Thread.start会在该线程所有操作之前执行</li>
+<li>线程结束规则：线程中任何操作必须在其它线程检测到该线程已经结束之前执行或者从Thread.join返回或者Thread.isAlive返回false</li>
+<li>中断规则：一个线程对另一个线程调用 interrupt 发生在被中断线程检测到中断之前</li>
+<li>终结器规则：对象的构造函数必须在启动该对象的终结器之前执行完成</li>
+<li>传递性：A发生在B之前，B发生在C之前，那么A发生在C之前</li>
+</ul>
+<h4 id="1614-借用同步"><a class="markdownIt-Anchor" href="#1614-借用同步"></a> 16.1.4 借用同步</h4>
+<p>通过类库保证 happens-before顺序：</p>
+<ul>
+<li>将元素放入线程安全的容器发生在另一个线程从集合中检索元素之前</li>
+<li>在CountDownLatch上进行倒数发生在该线程从门闩的await返回之前</li>
+<li>释放信号量的许可发生在获取之前</li>
+<li>Future代表的任务执行的操作发生在另一个线程从Future.get返回之前</li>
+<li>提交Runnable或者Callable任务给执行器发生在任务开始之前</li>
+<li>线程到达CyclicBarrier或Exchanger发生在其它线程释放相同的barrier或者exchange point之前</li>
+</ul>
+<h3 id="162-发布"><a class="markdownIt-Anchor" href="#162-发布"></a> 16.2 发布</h3>
+<h4 id="1621-不安全的发布"><a class="markdownIt-Anchor" href="#1621-不安全的发布"></a> 16.2.1 不安全的发布</h4>
+<p>当缺少happens-before关系时候，就可能出现重排序问题，这就解释了为什么在没有同步情况下发布一个对象会导致另一个线程看到一个只被部分构造的对象</p>
+<p>除了不可变对象之外，使用由其他线程初始化的对象都是不安全的，除非对象的发布发生在消费线程使用它之前</p>
+<h4 id="1622-安全发布"><a class="markdownIt-Anchor" href="#1622-安全发布"></a> 16.2.2 安全发布</h4>
+<p>使用锁或者volatile变量可以确保读写操作按照 happens-before 排序</p>
+<h4 id="1623-安全初始化"><a class="markdownIt-Anchor" href="#1623-安全初始化"></a> 16.2.3 安全初始化</h4>
+<p>静态字段在声明时就初始化由JVM提供线程安全保证。<br />
+延迟初始化，可以写在同步方法里面，或者使用辅助类，在辅助类中声明并初始化</p>
+<h4 id="1624-双重检查锁"><a class="markdownIt-Anchor" href="#1624-双重检查锁"></a> 16.2.4 双重检查锁</h4>
+<p>Java 5之前的双重检查锁会出现引用是新值但是对象是旧值，这意味着可以看到对象不正确的状态，Java5之后给引用声明加上 volatile 可以起到线程安全地延迟初始化作用，但是不如使用辅助类，效果一样且更容易懂</p>
+<h3 id="163-初始化的安全性"><a class="markdownIt-Anchor" href="#163-初始化的安全性"></a> 16.3 初始化的安全性</h3>
+<p>初始化安全性只能保证通过final字段可达的值从构造过程完成时开始的可见性（事实不可变对象以任何形式发布都是安全的）。对于通过非final字段可达的值,或者构成完成之后可能改变的值,必须采用同步确保可见性。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2023/01/13/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Java并发编程实战学习笔记" target="_blank" rel="external">https://zunpan.github.io/2023/01/13/Java并发编程实战学习笔记/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2023/02/01/MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="MySQL实战45讲学习笔记"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2022/12/03/2022.06-2022.11%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/" title="2022.06-2022.11实习总结"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

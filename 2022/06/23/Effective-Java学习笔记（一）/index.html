@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Effective-Java学习笔记（一） | panzun</title>
+  <meta name="description" content="第二章 创建和销毁对象  1. 考虑用静态工厂方法代替构造函数 静态工厂方法是一个返回该类实例的 public static 方法。例如，Boolean类的valueOf方法 public static Boolean valueOf(boolean b) &amp;#123;     return b ? Boolean.TRUE : Boolean.FALSE; &amp;#125;  要注意静态工厂方法与">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective-Java学习笔记（一）">
+<meta property="og:url" content="https://zunpan.github.io/2022/06/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="第二章 创建和销毁对象  1. 考虑用静态工厂方法代替构造函数 静态工厂方法是一个返回该类实例的 public static 方法。例如，Boolean类的valueOf方法 public static Boolean valueOf(boolean b) &amp;#123;     return b ? Boolean.TRUE : Boolean.FALSE; &amp;#125;  要注意静态工厂方法与">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-23T10:11:15.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.273Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="Effective-Java">
+<meta property="article:tag" content="创建和销毁对象">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2022/06/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.</span> <span class="toc-text"> 第二章 创建和销毁对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%80%83%E8%99%91%E7%94%A8%E9%9D%99%E6%80%81%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%BB%A3%E6%9B%BF%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text"> 1. 考虑用静态工厂方法代替构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BD%93%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%9C%89%E5%A4%9A%E4%B8%AA%E5%8F%82%E6%95%B0%E6%97%B6%E8%80%83%E8%99%91%E6%94%B9%E7%94%A8builder"><span class="toc-number">1.2.</span> <span class="toc-text"> 2. 当构造函数有多个参数时，考虑改用Builder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%89%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%88%96%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%88%9B%E5%BB%BA%E5%8D%95%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text"> 3. 使用私有构造函数或枚举类型创建单例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%94%A8%E7%A7%81%E6%9C%89%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%AE%9E%E6%96%BD%E4%B8%8D%E5%8F%AF%E5%AE%9E%E4%BE%8B%E5%8C%96"><span class="toc-number">1.4.</span> <span class="toc-text"> 4. 用私有构造函数实施不可实例化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E4%BC%98%E4%BA%8E%E7%A1%AC%E8%BF%9E%E6%8E%A5%E8%B5%84%E6%BA%90"><span class="toc-number">1.5.</span> <span class="toc-text"> 5. 依赖注入优于硬连接资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%81%BF%E5%85%8D%E5%88%9B%E5%BB%BA%E4%B8%8D%E5%BF%85%E8%A6%81%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.6.</span> <span class="toc-text"> 6. 避免创建不必要的对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%8E%92%E9%99%A4%E8%BF%87%E6%97%B6%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%BC%95%E7%94%A8"><span class="toc-number">1.7.</span> <span class="toc-text"> 7. 排除过时的对象引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%E7%BB%88%E7%BB%93%E5%99%A8%E5%92%8C%E6%B8%85%E9%99%A4%E5%99%A8"><span class="toc-number">1.8.</span> <span class="toc-text"> 8. 避免使用终结器和清除器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E4%BD%BF%E7%94%A8-try-with-resources-%E4%BC%98%E4%BA%8E-try-finally"><span class="toc-number">1.9.</span> <span class="toc-text"> 9. 使用 try-with-resources 优于 try-finally</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Effective-Java学习笔记（一）" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective-Java学习笔记（一）
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/06/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
+	  <time datetime="2022-06-23T10:11:15.000Z" itemprop="datePublished">2022-06-23</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" rel="tag">创建和销毁对象</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/06/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 5.4k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 23(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="第二章-创建和销毁对象"><a class="markdownIt-Anchor" href="#第二章-创建和销毁对象"></a> 第二章 创建和销毁对象</h2>
+<h3 id="1-考虑用静态工厂方法代替构造函数"><a class="markdownIt-Anchor" href="#1-考虑用静态工厂方法代替构造函数"></a> 1. 考虑用静态工厂方法代替构造函数</h3>
+<p>静态工厂方法是一个返回该类实例的 public static 方法。例如，Boolean类的valueOf方法</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Boolean <span class="hljs-title function_">valueOf</span><span class="hljs-params">(<span class="hljs-type">boolean</span> b)</span> &#123;
+    <span class="hljs-keyword">return</span> b ? Boolean.TRUE : Boolean.FALSE;
+&#125;
+</code></pre>
+<p>要注意静态工厂方法与设计模式中的工厂方法不同。</p>
+<p><strong>静态工厂方法优点：</strong></p>
+<ol>
+<li>静态工厂方法有确切名字，客户端实例化对象时代码更易懂。例如，<code>BigInteger</code>类中返回可能为素数的<code>BigInteger</code>对象静态工厂方法叫<code>BigInteger.probablePrime</code>。此外，每个类的构造函数签名是唯一的，但是程序员可以通过调整参数类型、个数或顺序修改构造函数的签名，这样会给客户端实例化对象带来困惑，因为静态工厂方法有确切名称所以不会出现这个问题</li>
+<li>静态工厂方法不需要在每次调用时创建新对象。例如<code>Boolean.valueOf(boolean)</code>，true和false会返回预先创建好的对应Boolean对象。这种能力允许类在任何时候都能严格控制存在的实例，常用来实现单例</li>
+<li>静态工厂方法可以获取任何子类的对象。这种能力的一个应用是API可以不公开子类或者实现类的情况下返回对象。例如<code>Collections</code>类提供静态工厂生成不是public的子类对象，不可修改集合和同步集合等</li>
+<li>静态工厂方法返回对象的类型可以根据输入参数变换。例如，<code>EnumSet</code>类的<code>noneOf</code>方法，当enum的元素个数小于等于64，<code>noneOf</code>方法返回<code>RegularEnumSet</code>类型的对象，否则返回<code>JumboEnumSet</code>类型的对象</li>
+<li>静态工厂方法的返回对象的类不需要存在。这种灵活的静态工厂方法构成了服务提供者框架的基础。service provider框架有三个必要的组件：代表实现的service interface；provider registration API，提供者用来注册实现；service access API，客户端使用它来获取服务的实例，服务访问API允许客户端选择不同实现，是一个灵活的静态工厂方法。service provider第四个可选的组件是service provider interface，它描述了产生service interface实例的工厂对象。在JDBC中，Connection扮演service interface角色，DriverManager.registerDriver是provider registration API，DriverManager.getConnection是service access API，Driver是service provider interface</li>
+</ol>
+<p><strong>静态工厂方法的缺点：</strong></p>
+<ol>
+<li>
+<p>只提供静态工厂方法而没有public或者protected的构造方法就不能被继承，例如Collections类就不能被继承</p>
+</li>
+<li>
+<p>静态工厂方法没有构造函数那么显眼，常见的静态工厂方法名字如下：<br />
+from，一种类型转换方法，该方法接受单个参数并返回该类型的相应实例，例如：</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">Date</span> <span class="hljs-variable">d</span> <span class="hljs-operator">=</span> Date.from(instant);
+</code></pre>
+<p>of，一个聚合方法，它接受多个参数并返回一个包含这些参数的实例，例如：</p>
+<pre class="highlight"><code class="java">Set&lt;Rank&gt; faceCards = EnumSet.of(JACK, QUEEN, KING);
+</code></pre>
+<p>valueOf，一种替代 from 和 of 但更冗长的方法</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">BigInteger</span> <span class="hljs-variable">prime</span> <span class="hljs-operator">=</span> BigInteger.valueOf(Integer.MAX_VALUE);
+</code></pre>
+<p>instance 或 getInstance，返回一个实例，该实例由其参数（如果有的话）描述，但不具有相同的值，例如：</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">StackWalker</span> <span class="hljs-variable">luke</span> <span class="hljs-operator">=</span> StackWalker.getInstance(options);
+</code></pre>
+<p>create 或 newInstance，与 instance 或 getInstance 类似，只是该方法保证每个调用都返回一个新实例，例如：</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">Object</span> <span class="hljs-variable">newArray</span> <span class="hljs-operator">=</span> Array.newInstance(classObject, arrayLen);
+</code></pre>
+<p>getType，类似于 getInstance，但如果工厂方法位于不同的类中，则使用此方法。其类型是工厂方法返回的对象类型，例如：</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">FileStore</span> <span class="hljs-variable">fs</span> <span class="hljs-operator">=</span> Files.getFileStore(path);
+</code></pre>
+<p>newType，与 newInstance 类似，但是如果工厂方法在不同的类中使用。类型是工厂方法返回的对象类型，例如：</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">BufferedReader</span> <span class="hljs-variable">br</span> <span class="hljs-operator">=</span> Files.newBufferedReader(path);`
+</code></pre>
+<p>type，一个用来替代 getType 和 newType 的比较简单的方式，例如：</p>
+<pre class="highlight"><code class="java">List&lt;Complaint&gt; litany = Collections.list(legacyLitany);
+</code></pre>
+</li>
+</ol>
+<h3 id="2-当构造函数有多个参数时考虑改用builder"><a class="markdownIt-Anchor" href="#2-当构造函数有多个参数时考虑改用builder"></a> 2. 当构造函数有多个参数时，考虑改用Builder</h3>
+<p>静态工厂和构造函数都有一个局限：不能对大量可选参数做很好扩展。例如，一个表示食品营养标签的类，必选字段有净含量、热量，另外有超过20个可选字段，比如反式脂肪、钠等。</p>
+<p>为这种类编写构造函数，通常是使用可伸缩构造函数，这里展示四个可选字段的情况</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Telescoping constructor pattern - does not scale well!</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NutritionFacts</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> servingSize; <span class="hljs-comment">// (mL) required</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> servings; <span class="hljs-comment">// (per container) required</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> calories; <span class="hljs-comment">// (per serving) optional</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> fat; <span class="hljs-comment">// (g/serving) optional</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> sodium; <span class="hljs-comment">// (mg/serving) optional</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> carbohydrate; <span class="hljs-comment">// (g/serving) optional</span>
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">NutritionFacts</span><span class="hljs-params">(<span class="hljs-type">int</span> servingSize, <span class="hljs-type">int</span> servings)</span> &#123;
+        <span class="hljs-built_in">this</span>(servingSize, servings, <span class="hljs-number">0</span>);
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">NutritionFacts</span><span class="hljs-params">(<span class="hljs-type">int</span> servingSize, <span class="hljs-type">int</span> servings, <span class="hljs-type">int</span> calories)</span> &#123;
+        <span class="hljs-built_in">this</span>(servingSize, servings, calories, <span class="hljs-number">0</span>);
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">NutritionFacts</span><span class="hljs-params">(<span class="hljs-type">int</span> servingSize, <span class="hljs-type">int</span> servings, <span class="hljs-type">int</span> calories, <span class="hljs-type">int</span> fat)</span> &#123;
+        <span class="hljs-built_in">this</span>(servingSize, servings, calories, fat, <span class="hljs-number">0</span>);
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">NutritionFacts</span><span class="hljs-params">(<span class="hljs-type">int</span> servingSize, <span class="hljs-type">int</span> servings, <span class="hljs-type">int</span> calories, <span class="hljs-type">int</span> fat, <span class="hljs-type">int</span> sodium)</span> &#123;
+        <span class="hljs-built_in">this</span>(servingSize, servings, calories, fat, sodium, <span class="hljs-number">0</span>);
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">NutritionFacts</span><span class="hljs-params">(<span class="hljs-type">int</span> servingSize, <span class="hljs-type">int</span> servings, <span class="hljs-type">int</span> calories, <span class="hljs-type">int</span> fat, <span class="hljs-type">int</span> sodium, <span class="hljs-type">int</span> carbohydrate)</span> &#123;
+        <span class="hljs-built_in">this</span>.servingSize = servingSize;
+        <span class="hljs-built_in">this</span>.servings = servings;
+        <span class="hljs-built_in">this</span>.calories = calories;
+        <span class="hljs-built_in">this</span>.fat = fat;
+        <span class="hljs-built_in">this</span>.sodium = sodium;
+        <span class="hljs-built_in">this</span>.carbohydrate = carbohydrate;
+    &#125;
+&#125;
+</code></pre>
+<p>当你想创建指定carbohydrate的实例，就必须调用最后一个构造函数，这样就必须给出calories、fat、sodium的值。当有很多可选参数时，这种模式可读性很差。</p>
+<p>当遇到许多可选参数时，另一种选择是使用JavaBean模式，在这种模式中，调用一个无参数的构造函数来创建对象，然后调用setter方法来设置参数值</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// JavaBeans Pattern - allows inconsistency, mandates mutability</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NutritionFacts</span> &#123;
+    <span class="hljs-comment">// Parameters initialized to default values (if any)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">servingSize</span> <span class="hljs-operator">=</span> -<span class="hljs-number">1</span>; <span class="hljs-comment">// Required; no default value</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">servings</span> <span class="hljs-operator">=</span> -<span class="hljs-number">1</span>; <span class="hljs-comment">// Required; no default value</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">calories</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">fat</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">sodium</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">carbohydrate</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">NutritionFacts</span><span class="hljs-params">()</span> &#123; &#125;
+    <span class="hljs-comment">// Setters</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setServingSize</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123; servingSize = val; &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setServings</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123; servings = val; &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCalories</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123; calories = val; &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setFat</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123; fat = val; &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setSodium</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123; sodium = val; &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCarbohydrate</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123; carbohydrate = val; &#125;
+&#125;
+</code></pre>
+<p>这种模式比可伸缩构造函数模式更易读，但有严重的缺点。因为对象的构建要调用多个set方法，所以对象可能会在构建过程中处于不一致状态（多线程下，其它线程使用了未构建完成的对象）</p>
+<p>第三种选择是建造者模式，它结合了可伸缩构造函数模式的安全性和JavaBean模式的可读性。客户端不直接生成所需的对象，而是使用所有必需的参数调用构造函数或静态工厂方法生成一个builder对象。然后，客户端在builder对象上调用像set一样的方法来设置可选参数，最后调用build方法生成所需对象。Builder通常是它构建的类的静态成员类</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Builder Pattern</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NutritionFacts</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> servingSize;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> servings;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> calories;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> fat;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> sodium;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> carbohydrate;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Builder</span> &#123;
+        <span class="hljs-comment">// Required parameters</span>
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> servingSize;
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> servings;
+        <span class="hljs-comment">// Optional parameters - initialized to default values</span>
+        <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">calories</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">fat</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">sodium</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">carbohydrate</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+
+        <span class="hljs-keyword">public</span> <span class="hljs-title function_">Builder</span><span class="hljs-params">(<span class="hljs-type">int</span> servingSize, <span class="hljs-type">int</span> servings)</span> &#123;
+            <span class="hljs-built_in">this</span>.servingSize = servingSize;
+            <span class="hljs-built_in">this</span>.servings = servings;
+        &#125;
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">calories</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123;
+            calories = val;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        &#125;
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">fat</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123;
+            fat = val;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        &#125;
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">sodium</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123;
+            sodium = val;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        &#125;
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">carbohydrate</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> &#123;
+            carbohydrate = val;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        &#125;
+
+        <span class="hljs-keyword">public</span> NutritionFacts <span class="hljs-title function_">build</span><span class="hljs-params">()</span> &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NutritionFacts</span>(<span class="hljs-built_in">this</span>);
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">NutritionFacts</span><span class="hljs-params">(Builder builder)</span> &#123;
+        servingSize = builder.servingSize;
+        servings = builder.servings;
+        calories = builder.calories;
+        fat = builder.fat;
+        sodium = builder.sodium;
+        carbohydrate = builder.carbohydrate;
+    &#125;
+&#125;
+</code></pre>
+<p>NutritionFacts类是不可变的。Builder的set方法返回builder对象本身，这样就可以链式调用。下面是客户端代码的样子：</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">NutritionFacts</span> <span class="hljs-variable">cocaCola</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NutritionFacts</span>.Builder(<span class="hljs-number">240</span>, <span class="hljs-number">8</span>)
+.calories(<span class="hljs-number">100</span>).sodium(<span class="hljs-number">35</span>).carbohydrate(<span class="hljs-number">27</span>).build();
+</code></pre>
+<p>为了简介，这里省略的参数校验。参数校验在Builder的构造函数和方法中。多参数校验在build方法中</p>
+<p>建造者模式也适用于抽象类，抽象类有抽象Builder</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">import</span> java.util.EnumSet;
+<span class="hljs-keyword">import</span> java.util.Objects;
+<span class="hljs-keyword">import</span> java.util.Set;
+
+<span class="hljs-comment">// Builder pattern for class hierarchies</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Pizza</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">Topping</span> &#123;HAM, MUSHROOM, ONION, PEPPER, SAUSAGE&#125;
+
+    <span class="hljs-keyword">final</span> Set&lt;Topping&gt; toppings;
+
+    <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Builder</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Builder</span>&lt;T&gt;&gt; &#123;
+        EnumSet&lt;Topping&gt; toppings = EnumSet.noneOf(Topping.class);
+
+        <span class="hljs-keyword">public</span> T <span class="hljs-title function_">addTopping</span><span class="hljs-params">(Topping topping)</span> &#123;
+            toppings.add(Objects.requireNonNull(topping));
+            <span class="hljs-keyword">return</span> self();
+        &#125;
+
+        <span class="hljs-keyword">abstract</span> Pizza <span class="hljs-title function_">build</span><span class="hljs-params">()</span>;
+
+        <span class="hljs-comment">// Subclasses must override this method to return &quot;this&quot;</span>
+        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> T <span class="hljs-title function_">self</span><span class="hljs-params">()</span>;
+    &#125;
+
+    Pizza(Builder&lt;?&gt; builder) &#123;
+        toppings = builder.toppings.clone(); <span class="hljs-comment">// See Item 50</span>
+    &#125;
+&#125;
+</code></pre>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">import</span> java.util.Objects;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NyPizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Pizza</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">Size</span> &#123;SMALL, MEDIUM, LARGE&#125;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Size size;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Builder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Pizza</span>.Builder&lt;Builder&gt; &#123;
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Size size;
+
+        <span class="hljs-keyword">public</span> <span class="hljs-title function_">Builder</span><span class="hljs-params">(Size size)</span> &#123;
+            <span class="hljs-built_in">this</span>.size = Objects.requireNonNull(size);
+        &#125;
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-keyword">public</span> NyPizza <span class="hljs-title function_">build</span><span class="hljs-params">()</span> &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NyPizza</span>(<span class="hljs-built_in">this</span>);
+        &#125;
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-keyword">protected</span> Builder <span class="hljs-title function_">self</span><span class="hljs-params">()</span> &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">NyPizza</span><span class="hljs-params">(Builder builder)</span> &#123;
+        <span class="hljs-built_in">super</span>(builder);
+        size = builder.size;
+    &#125;
+&#125;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Calzone</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Pizza</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> sauceInside;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Builder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Pizza</span>.Builder&lt;Builder&gt; &#123;
+        <span class="hljs-keyword">private</span> <span class="hljs-type">boolean</span> <span class="hljs-variable">sauceInside</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>; <span class="hljs-comment">// Default</span>
+
+        <span class="hljs-keyword">public</span> Builder <span class="hljs-title function_">sauceInside</span><span class="hljs-params">()</span> &#123;
+            sauceInside = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        &#125;
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-keyword">public</span> Calzone <span class="hljs-title function_">build</span><span class="hljs-params">()</span> &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Calzone</span>(<span class="hljs-built_in">this</span>);
+        &#125;
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-keyword">protected</span> Builder <span class="hljs-title function_">self</span><span class="hljs-params">()</span> &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">Calzone</span><span class="hljs-params">(Builder builder)</span> &#123;
+        <span class="hljs-built_in">super</span>(builder);
+        sauceInside = builder.sauceInside;
+    &#125;
+&#125;
+</code></pre>
+<p>客户端实例化对象代码如下：</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">NyPizza</span> <span class="hljs-variable">pizza</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NyPizza</span>.Builder(SMALL)
+.addTopping(SAUSAGE).addTopping(ONION).build();
+<span class="hljs-type">Calzone</span> <span class="hljs-variable">calzone</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Calzone</span>.Builder()
+.addTopping(HAM).sauceInside().build();
+</code></pre>
+<p>建造者模式非常灵活，一个builder对象可以反复构建多个对象，可以通过builder中的方法调用生成不同的对象。建造者模式的缺点就是生成一个对象前要先创建它的builder对象，性能会稍差一些，但为了未来字段更好扩展，建议还是用建造者模式</p>
+<h3 id="3-使用私有构造函数或枚举类型创建单例"><a class="markdownIt-Anchor" href="#3-使用私有构造函数或枚举类型创建单例"></a> 3. 使用私有构造函数或枚举类型创建单例</h3>
+<p>单例是只实例化一次的类。当类不保存状态或状态都一致，那么它的对象本质上都是一样的，可以用单例模式创建</p>
+<p>实现单例有两种方法。两者都基于私有化构造函数和对外提供 public static 成员，在第一个方法中，该成员是个用final修饰的字段</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Singleton with public final field</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Elvis</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Elvis</span> <span class="hljs-variable">INSTANCE</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Elvis</span>();
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">Elvis</span><span class="hljs-params">()</span> &#123; ... &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">leaveTheBuilding</span><span class="hljs-params">()</span> &#123; ... &#125;
+&#125;
+</code></pre>
+<p>私有构造函数只调用一次，用于初始化public static final 修饰的Elvis类型字段INSTANCE。一旦初始化Elvis类，就只会存在一个Elvis实例。客户端不能再创建别的实例，但是要注意的是拥有特殊权限的客户端可以利用反射调用私有构造函数生成实例</p>
+<pre class="highlight"><code class="java">Constructor&lt;?&gt;[] constructors = Elvis.class.getDeclaredConstructors();
+AccessibleObject.setAccessible(constructors, <span class="hljs-literal">true</span>);
+
+Arrays.stream(constructors).forEach(name -&gt; &#123;
+    <span class="hljs-keyword">if</span> (name.toString().contains(<span class="hljs-string">&quot;Elvis&quot;</span>)) &#123;
+        <span class="hljs-type">Elvis</span> <span class="hljs-variable">instance</span> <span class="hljs-operator">=</span> (Elvis) name.newInstance();
+        instance.leaveTheBuilding();
+    &#125;
+&#125;);
+</code></pre>
+<p>第二种方法，对外提供的 public static 成员是个静态工厂方法</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Singleton with static factory</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Elvis</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Elvis</span> <span class="hljs-variable">INSTANCE</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Elvis</span>();
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">Elvis</span><span class="hljs-params">()</span> &#123; ... &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Elvis <span class="hljs-title function_">getInstance</span><span class="hljs-params">()</span> &#123; <span class="hljs-keyword">return</span> INSTANCE; &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">leaveTheBuilding</span><span class="hljs-params">()</span> &#123; ... &#125;
+&#125;
+</code></pre>
+<p>所有对getInsance()方法的调用都返回相同的对象，但是同样可以通过反射调用私有构造函数创建对象。<br />
+这两种方法要实现可序列化，仅仅在声明中添加implements Serializable是不够的。还要声明所有实例字段未transient，并提供readResolve方法，否则，每次反序列化都会创建一个新实例。JVM在反序列化时会自动调用readResolve方法</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// readResolve method to preserve singleton property</span>
+<span class="hljs-keyword">private</span> Object <span class="hljs-title function_">readResolve</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-comment">// Return the one true Elvis and let the garbage collector</span>
+    <span class="hljs-comment">// take care of the Elvis impersonator.</span>
+    <span class="hljs-keyword">return</span> INSTANCE;
+&#125;
+</code></pre>
+<p>实现单例的第三种方法时声明一个单元素枚举</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Enum singleton - the preferred approach</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">Elvis</span> &#123;
+    INSTANCE;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">leaveTheBuilding</span><span class="hljs-params">()</span> &#123; ... &#125;
+&#125;
+</code></pre>
+<p>这种方法类似于 public 字段方法，但是它更简洁，默认提供了序列化机制，提供了对多个实例化的严格保证，即使面对复杂的序列化或反射攻击也是如此。这种方法可能有点不自然，但是单元素枚举类型通常是实现单例的最佳方法。但是，如果你的单例要继承父类，那么就不能用这种方法</p>
+<h3 id="4-用私有构造函数实施不可实例化"><a class="markdownIt-Anchor" href="#4-用私有构造函数实施不可实例化"></a> 4. 用私有构造函数实施不可实例化</h3>
+<p>工具类不需要实例化，它里面的方法都是public static的，可以通过私有化构造函数使类不可实例化</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Noninstantiable utility class</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UtilityClass</span> &#123;
+    <span class="hljs-comment">// Suppress default constructor for noninstantiability</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">UtilityClass</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AssertionError</span>();
+    &#125; ... <span class="hljs-comment">// Remainder omitted</span>
+&#125;
+</code></pre>
+<p>AssertionError不是必须有的，但可以防止构造函数被意外调用（反射）</p>
+<p>这种用法也防止了类被继承。因为所有子类构造函数都必须显示或者隐式调用父类构造函数，但父类构造函数私有化后就无法调用</p>
+<h3 id="5-依赖注入优于硬连接资源"><a class="markdownIt-Anchor" href="#5-依赖注入优于硬连接资源"></a> 5. 依赖注入优于硬连接资源</h3>
+<p>有些类依赖于一个或多个资源。例如拼写检查程序依赖于字典。错误实现如下：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Inappropriate use of static utility - inflexible &amp; untestable!</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SpellChecker</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Lexicon</span> <span class="hljs-variable">dictionary</span> <span class="hljs-operator">=</span> ...;
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">SpellChecker</span><span class="hljs-params">()</span> &#123;&#125; <span class="hljs-comment">// Noninstantiable</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isValid</span><span class="hljs-params">(String word)</span> &#123; ... &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;String&gt; <span class="hljs-title function_">suggestions</span><span class="hljs-params">(String typo)</span> &#123; ... &#125;
+&#125;
+</code></pre>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Inappropriate use of singleton - inflexible &amp; untestable!</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SpellChecker</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Lexicon</span> <span class="hljs-variable">dictionary</span> <span class="hljs-operator">=</span> ...;
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">SpellChecker</span><span class="hljs-params">(...)</span> &#123;&#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-variable">INSTANCE</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SpellChecker</span>(...);
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isValid</span><span class="hljs-params">(String word)</span> &#123; ... &#125;
+    <span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">suggestions</span><span class="hljs-params">(String typo)</span> &#123; ... &#125;
+&#125;
+</code></pre>
+<p>这两种写法分别是工具类和单例，都假定使用同一个字典，实际情况是不同拼写检查程序依赖不同的字典。</p>
+<p>你可能会想取消dictionary的final修饰，并让SpellChecker类添加更改dictionary的方法。但这种方法在并发环境下会出错。工具类和单例不适用于需要参数化依赖对象</p>
+<p>参数化依赖对象的一种简单模式是，创建对象时将被依赖的对象传递给构造函数。这是依赖注入的一种形式。</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Dependency injection provides flexibility and testability</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SpellChecker</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Lexicon dictionary;
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">SpellChecker</span><span class="hljs-params">(Lexicon dictionary)</span> &#123;
+        <span class="hljs-built_in">this</span>.dictionary = Objects.requireNonNull(dictionary);
+    &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isValid</span><span class="hljs-params">(String word)</span> &#123; ... &#125;
+    <span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">suggestions</span><span class="hljs-params">(String typo)</span> &#123; ... &#125;
+&#125;
+</code></pre>
+<p>依赖注入适用于构造函数、静态工厂方法、建造者模式。</p>
+<p>依赖注入的一个有用变体是将工厂传递给构造函数，这样可以反复创建被依赖的对象。Java8中引入的Supplier&lt;T&gt;非常适合作为工厂。下面是一个生产瓷砖的方法</p>
+<pre class="highlight"><code class="java">Mosaic <span class="hljs-title function_">create</span><span class="hljs-params">(Supplier&lt;? extends Tile&gt; tileFactory)</span> &#123; ... &#125;
+</code></pre>
+<p>尽管依赖注入极大提高了灵活性和可测试性，但它可能会使大型项目变得混乱。通过使用依赖注入框架（如Spring、Dagger、Guice）可以消除这种混乱</p>
+<h3 id="6-避免创建不必要的对象"><a class="markdownIt-Anchor" href="#6-避免创建不必要的对象"></a> 6. 避免创建不必要的对象</h3>
+<p>复用对象可以加快程序运行速度，如果对象是不可变的，那么它总是可以被复用的。</p>
+<p>一个不复用对象的极端例子如下</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">String</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(<span class="hljs-string">&quot;bikini&quot;</span>); <span class="hljs-comment">// DON&#x27;T DO THIS!</span>
+</code></pre>
+<p>该语句每次执行都会创建一个新的String实例。&quot;bikini&quot;本身就是一个String实例，改进的代码如下</p>
+<pre class="highlight"><code class="java"><span class="hljs-type">String</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;bikini&quot;</span>;
+</code></pre>
+<p>这个版本使用单个String实例，而不是每次执行时都会创建一个新的实例。此外，可以保证在同一虚拟机中运行的其它代码都可以复用该对象，只要它们都包含相同的字符串字面量</p>
+<p>通常可以使用静态工厂方法来避免创建不必要的对象。例如，Boolean.valueOf(String) 比构造函数Boolean(String) 更可取，后者在Java9中被废弃了。</p>
+<p>有些对象的创建代价很高，如果要重复使用，最好做缓存。例如，使用正则表达式确定字符串是否为有效的罗马数字</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Performance can be greatly improved!</span>
+<span class="hljs-keyword">static</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isRomanNumeral</span><span class="hljs-params">(String s)</span> &#123;
+    <span class="hljs-keyword">return</span> s.matches(<span class="hljs-string">&quot;^(?=.)M*(C[MD]|D?C&#123;0,3&#125;)&quot;</span> + <span class="hljs-string">&quot;(X[CL]|L?X&#123;0,3&#125;)(I[XV]|V?I&#123;0,3&#125;)$&quot;</span>);
+&#125;
+</code></pre>
+<p>这个方法的问题在于它依赖String.matches方法。虽然 String.matches 是检查字符串是否与正则表达式匹配的最简单方法，但它不适合要求高性能的情况下重复使用，因为它在内部为正则表达式创建了一个Pattern实例，并且只使用了一次就垃圾回收了，创建一个Pattern实例代价很大，因为它需要将正则表达式编译成有限的状态机</p>
+<p>为了提高性能，将正则表达式显示编译成Pattern实例，作为类初始化的一部分，每次调用匹配的方法时都使用这个实例</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Reusing expensive object for improved performance</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RomanNumerals</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Pattern</span> <span class="hljs-variable">ROMAN</span> <span class="hljs-operator">=</span> Pattern.compile(<span class="hljs-string">&quot;^(?=.)M*(C[MD]|D?C&#123;0,3&#125;)&quot;</span> + <span class="hljs-string">&quot;(X[CL]|L?X&#123;0,3&#125;)(I[XV]|V?I&#123;0,3&#125;)$&quot;</span>);
+    <span class="hljs-keyword">static</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isRomanNumeral</span><span class="hljs-params">(String s)</span> &#123;
+        <span class="hljs-keyword">return</span> ROMAN.matcher(s).matches();
+    &#125;
+&#125;
+</code></pre>
+<p>当对象是不可变的时候，我们很容易会想到复用。但是有些情况不那么容易想到复用。例如适配器模式中的适配器，因为适配器中没有它适配对象的状态，所以不需要创建多个适配器。</p>
+<p>一个具体的例子是，KeySet是Map中的适配器，使得Map不仅能提供返回键值对的方法，也能返回所有键的Set，KeySet不需要重复创建，对Map的修改会同步到KeySet实例</p>
+<h3 id="7-排除过时的对象引用"><a class="markdownIt-Anchor" href="#7-排除过时的对象引用"></a> 7. 排除过时的对象引用</h3>
+<p>Java具体垃圾回收机制，会让程序员的工作轻松很多，但是并不意味着需要考虑内存管理，考虑以下简单的堆栈实现</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">import</span> java.util.Arrays;
+<span class="hljs-keyword">import</span> java.util.EmptyStackException;
+
+<span class="hljs-comment">// Can you spot the &quot;memory leak&quot;?</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Stack</span> &#123;
+    <span class="hljs-keyword">private</span> Object[] elements;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">size</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">DEFAULT_INITIAL_CAPACITY</span> <span class="hljs-operator">=</span> <span class="hljs-number">16</span>;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Stack</span><span class="hljs-params">()</span> &#123;
+        elements = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[DEFAULT_INITIAL_CAPACITY];
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">push</span><span class="hljs-params">(Object e)</span> &#123;
+        ensureCapacity();
+        elements[size++] = e;
+    &#125;
+
+    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">pop</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-keyword">if</span> (size == <span class="hljs-number">0</span>)
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">EmptyStackException</span>();
+        <span class="hljs-keyword">return</span> elements[--size];
+    &#125;
+
+    <span class="hljs-comment">/**
+     * Ensure space for at least one more element, roughly
+     * doubling the capacity each time the array needs to grow.
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">ensureCapacity</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-keyword">if</span> (elements.length == size)
+            elements = Arrays.copyOf(elements, <span class="hljs-number">2</span> * size + <span class="hljs-number">1</span>);
+    &#125;
+&#125;
+</code></pre>
+<p>这段代码有一个潜在的内存泄露问题。当栈的长度增加，再收缩时，从栈中pop的对象不会被回收，因为引用仍然还在elements中。解决方法很简单，一旦pop就置空</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">pop</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-keyword">if</span> (size == <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">EmptyStackException</span>();
+    <span class="hljs-type">Object</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> elements[--size];
+    elements[size] = <span class="hljs-literal">null</span>; <span class="hljs-comment">// Eliminate obsolete reference</span>
+    <span class="hljs-keyword">return</span> result;
+&#125;
+</code></pre>
+<p>用null处理过时引用的另一个好处是，如果被意外引用的话会立刻抛NullPointerException</p>
+<p>另外一个常见的内存泄漏是缓存。HashMap的key是对实际对象的强引用，不会被GC回收。WeakHashMap的key如果只有WeakHashMap本身使用，外部没有使用，那么会被GC回收</p>
+<p>内存泄露第三种常见来源是监听器和其它回调。如果客户端注册了回调但是没有显式地取消它们，它们就会一直在内存中。确保回调被及时回收的一种方法是仅存储它们的弱引用，例如，将他它们作为键存储在WeakHashMap中</p>
+<h3 id="8-避免使用终结器和清除器"><a class="markdownIt-Anchor" href="#8-避免使用终结器和清除器"></a> 8. 避免使用终结器和清除器</h3>
+<p>如标题所说</p>
+<h3 id="9-使用-try-with-resources-优于-try-finally"><a class="markdownIt-Anchor" href="#9-使用-try-with-resources-优于-try-finally"></a> 9. 使用 try-with-resources 优于 try-finally</h3>
+<p>Java库中有许多必须通过调用close方法手动关闭的资源，比如InputStream、OutputStream和java.sql.Connection。</p>
+<p>从历史上看，try-finally语句是确保正确关闭资源的最佳方法，即便出现异常或返回</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// try-finally - No longer the best way to close resources!</span>
+<span class="hljs-keyword">static</span> String <span class="hljs-title function_">firstLineOfFile</span><span class="hljs-params">(String path)</span> <span class="hljs-keyword">throws</span> IOException &#123;
+    <span class="hljs-type">BufferedReader</span> <span class="hljs-variable">br</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedReader</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileReader</span>(path));
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-keyword">return</span> br.readLine();
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        br.close();
+    &#125;
+&#125;
+</code></pre>
+<p>这种方式在资源变多时就很糟糕</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// try-finally is ugly when used with more than one resource!</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">copy</span><span class="hljs-params">(String src, String dst)</span> <span class="hljs-keyword">throws</span> IOException &#123;
+    <span class="hljs-type">InputStream</span> <span class="hljs-variable">in</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(src);
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-type">OutputStream</span> <span class="hljs-variable">out</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(dst);
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-type">byte</span>[] buf = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[BUFFER_SIZE];
+        <span class="hljs-type">int</span> n;
+        <span class="hljs-keyword">while</span> ((n = in.read(buf)) &gt;= <span class="hljs-number">0</span>)
+            out.write(buf, <span class="hljs-number">0</span>, n);
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        out.close();
+        &#125;
+    &#125;
+    <span class="hljs-keyword">finally</span> &#123;
+        in.close();
+    &#125;
+&#125;
+</code></pre>
+<p>使用 try-finally 语句关闭资源的正确代码（如前两个代码示例所示）也有一个细微的缺陷。try 块和 finally 块中的代码都能够抛出异常。例如，在 firstLineOfFile 方法中，由于底层物理设备发生故障，对 readLine 的调用可能会抛出异常，而关闭的调用也可能出于同样的原因而失败。在这种情况下，第二个异常将完全覆盖第一个异常。异常堆栈跟踪中没有第一个异常的记录，这可能会使实际系统中的调试变得非常复杂（而这可能是希望出现的第一个异常，以便诊断问题）</p>
+<p>Java7 引入 try-with-resources语句解决了这个问题。要使用这个结构，资源必须实现AutoCloseable接口，这个接口只有一个void close方法，下面是前两个例子的try-with-resources形式</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// try-with-resources - the the best way to close resources!</span>
+<span class="hljs-keyword">static</span> String <span class="hljs-title function_">firstLineOfFile</span><span class="hljs-params">(String path)</span> <span class="hljs-keyword">throws</span> IOException &#123;
+    <span class="hljs-keyword">try</span> (<span class="hljs-type">BufferedReader</span> <span class="hljs-variable">br</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedReader</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileReader</span>(path))) &#123;
+        <span class="hljs-keyword">return</span> br.readLine();
+    &#125;
+&#125;
+</code></pre>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// try-with-resources on multiple resources - short and sweet</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">copy</span><span class="hljs-params">(String src, String dst)</span> <span class="hljs-keyword">throws</span> IOException &#123;
+    <span class="hljs-keyword">try</span> (<span class="hljs-type">InputStream</span> <span class="hljs-variable">in</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(src);<span class="hljs-type">OutputStream</span> <span class="hljs-variable">out</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(dst)) &#123;
+        <span class="hljs-type">byte</span>[] buf = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[BUFFER_SIZE];
+        <span class="hljs-type">int</span> n;
+        <span class="hljs-keyword">while</span> ((n = in.read(buf)) &gt;= <span class="hljs-number">0</span>)
+            out.write(buf, <span class="hljs-number">0</span>, n);
+    &#125;
+&#125;
+</code></pre>
+<p>try-with-resources为开发者提供了更好的异常排查方式。考虑firstLineOfFile方法，如果异常由readLine和不可见close抛出，那么后者异常会被抑制。被抑制的异常不会被抛弃，它们会被打印在堆栈中并标记被抑制。可以通过getSuppressed方法访问它们，该方法是Java7中添加到Throwable中的</p>
+<p>像try-catch-finally一样，try-with-resources也可以写catch语句。下面是firstLineOfFile方法的一个版本，它不抛出异常，但如果无法打开文件或从中读取文件，会返回一个默认值</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// try-with-resources with a catch clause</span>
+<span class="hljs-keyword">static</span> String <span class="hljs-title function_">firstLineOfFile</span><span class="hljs-params">(String path, String defaultVal)</span> &#123;
+    <span class="hljs-keyword">try</span> (<span class="hljs-type">BufferedReader</span> <span class="hljs-variable">br</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedReader</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileReader</span>(path))) &#123;
+        <span class="hljs-keyword">return</span> br.readLine();
+    &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;
+        <span class="hljs-keyword">return</span> defaultVal;
+    &#125;
+&#125;
+</code></pre>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2022/06/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/" title="Effective-Java学习笔记（一）" target="_blank" rel="external">https://zunpan.github.io/2022/06/23/Effective-Java学习笔记（一）/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/06/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Effective-Java学习笔记（二）"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2022/06/22/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" title="跨域问题"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

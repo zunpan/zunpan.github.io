@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Effective-Java学习笔记（四） | panzun</title>
+  <meta name="description" content="第五章 泛型  26. 不要使用原始类型  泛型和原始类型 声明中具有一个或多个类型参数的类或接口就是泛型类或泛型接口。泛型类和泛型接口统称为泛型。 每个泛型都定义了一个原始类型，它是没有任何相关类型参数的泛型的名称。例如，List&lt;E&gt;  对应的原始类型是 List。原始类型的行为就好像所有泛型信息从类型声明中删除了一样。它们的存在主要是为了与之前的代码兼容。  泛型优势 泛型可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective-Java学习笔记（四）">
+<meta property="og:url" content="https://zunpan.github.io/2022/07/14/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="第五章 泛型  26. 不要使用原始类型  泛型和原始类型 声明中具有一个或多个类型参数的类或接口就是泛型类或泛型接口。泛型类和泛型接口统称为泛型。 每个泛型都定义了一个原始类型，它是没有任何相关类型参数的泛型的名称。例如，List&lt;E&gt;  对应的原始类型是 List。原始类型的行为就好像所有泛型信息从类型声明中删除了一样。它们的存在主要是为了与之前的代码兼容。  泛型优势 泛型可以">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221209-134128538.png">
+<meta property="article:published_time" content="2022-07-14T12:17:09.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.276Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="Effective-Java">
+<meta property="article:tag" content="泛型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221209-134128538.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2022/07/14/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%B3%9B%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text"> 第五章 泛型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#26-%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%8E%9F%E5%A7%8B%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text"> 26. 不要使用原始类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E5%92%8C%E5%8E%9F%E5%A7%8B%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 泛型和原始类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E4%BC%98%E5%8A%BF"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 泛型优势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E7%9A%84%E5%AD%90%E7%B1%BB%E5%9E%8B%E8%A7%84%E5%88%99"><span class="toc-number">1.1.3.</span> <span class="toc-text"> 泛型的子类型规则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%95%8C%E9%80%9A%E9%85%8D%E7%AC%A6"><span class="toc-number">1.1.4.</span> <span class="toc-text"> 无界通配符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%B3%9B%E5%9E%8B%E8%80%8C%E4%B8%8D%E7%94%A8%E5%8E%9F%E5%A7%8B%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%BE%8B%E5%A4%96"><span class="toc-number">1.1.5.</span> <span class="toc-text"> 使用泛型而不用原始类型的例外</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#27-%E6%B6%88%E9%99%A4-unchecked-%E8%AD%A6%E5%91%8A"><span class="toc-number">1.2.</span> <span class="toc-text"> 27. 消除 unchecked 警告</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#suppresswarnings%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.2.1.</span> <span class="toc-text"> SuppressWarnings注解</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#28-list-%E4%BC%98%E4%BA%8E%E6%95%B0%E7%BB%84"><span class="toc-number">1.3.</span> <span class="toc-text"> 28. list 优于数组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.3.1.</span> <span class="toc-text"> 数组与泛型的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E6%95%B0%E7%BB%84%E7%9A%84%E5%88%9B%E5%BB%BA%E6%98%AF%E9%9D%9E%E6%B3%95%E7%9A%84"><span class="toc-number">1.3.2.</span> <span class="toc-text"> 泛型数组的创建是非法的</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8list%E6%9B%BF%E4%BB%A3%E6%95%B0%E7%BB%84"><span class="toc-number">1.3.3.</span> <span class="toc-text"> 用List替代数组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#29-%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8%E6%B3%9B%E5%9E%8B"><span class="toc-number">1.4.</span> <span class="toc-text"> 29. 优先使用泛型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E6%B3%9B%E5%9E%8B"><span class="toc-number">1.4.1.</span> <span class="toc-text"> 编写泛型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E5%95%A5%E8%A6%81%E5%88%9B%E5%BB%BA%E6%B3%9B%E5%9E%8B%E6%95%B0%E7%BB%84"><span class="toc-number">1.4.2.</span> <span class="toc-text"> 为啥要创建泛型数组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#30-%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8%E6%B3%9B%E5%9E%8B%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.</span> <span class="toc-text"> 30. 优先使用泛型方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E6%B3%9B%E5%9E%8B%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.1.</span> <span class="toc-text"> 编写泛型方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#31-%E4%BD%BF%E7%94%A8%E6%9C%89%E7%95%8C%E9%80%9A%E9%85%8D%E7%AC%A6%E5%A2%9E%E5%8A%A0-api-%E7%9A%84%E7%81%B5%E6%B4%BB%E6%80%A7"><span class="toc-number">1.6.</span> <span class="toc-text"> 31. 使用有界通配符增加 API 的灵活性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pecs"><span class="toc-number">1.6.1.</span> <span class="toc-text"> PECS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-number">1.6.2.</span> <span class="toc-text"> 一个例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B%E5%8F%82%E6%95%B0%E5%92%8C%E9%80%9A%E9%85%8D%E7%AC%A6%E7%9A%84%E5%AF%B9%E5%81%B6%E6%80%A7"><span class="toc-number">1.6.3.</span> <span class="toc-text"> 类型参数和通配符的对偶性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#32-%E6%98%8E%E6%99%BA%E5%9C%B0%E5%90%88%E7%94%A8%E6%B3%9B%E5%9E%8B%E5%92%8C%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0"><span class="toc-number">1.7.</span> <span class="toc-text"> 32. 明智地合用泛型和可变参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%BD%E8%B1%A1%E6%B3%84%E9%9C%B2"><span class="toc-number">1.7.1.</span> <span class="toc-text"> 抽象泄露</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E5%8F%AF%E5%85%B7%E4%BD%93%E5%8C%96"><span class="toc-number">1.7.2.</span> <span class="toc-text"> 不可具体化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%86%E6%B1%A1%E6%9F%93"><span class="toc-number">1.7.3.</span> <span class="toc-text"> 堆污染</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E5%A3%B0%E6%98%8E%E4%BD%BF%E7%94%A8%E6%B3%9B%E5%9E%8B%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%98%AF%E5%90%88%E6%B3%95%E7%9A%84"><span class="toc-number">1.7.4.</span> <span class="toc-text"> 方法声明使用泛型可变参数是合法的</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8safevarargs%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.7.5.</span> <span class="toc-text"> 使用SafeVarargs的条件</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%8F%8D%E4%BE%8B"><span class="toc-number">1.7.5.1.</span> <span class="toc-text"> 一个反例</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%89%A9%E5%B1%95"><span class="toc-number">1.7.5.1.1.</span> <span class="toc-text"> 扩展</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E6%AD%A3%E7%A1%AE%E4%BE%8B%E5%AD%90"><span class="toc-number">1.7.5.2.</span> <span class="toc-text"> 一个正确例子</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%95%E6%97%B6%E4%BD%BF%E7%94%A8safevarargs"><span class="toc-number">1.7.6.</span> <span class="toc-text"> 何时使用SafeVarargs</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#33-%E8%80%83%E8%99%91%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%BC%82%E6%9E%84%E5%AE%B9%E5%99%A8"><span class="toc-number">1.8.</span> <span class="toc-text"> 33. 考虑类型安全的异构容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E5%AE%B9%E5%99%A8"><span class="toc-number">1.8.1.</span> <span class="toc-text"> 参数化容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E5%AE%B9%E5%99%A8%E7%9A%84%E9%94%AE"><span class="toc-number">1.8.2.</span> <span class="toc-text"> 参数化容器的键</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">1.8.3.</span> <span class="toc-text"> 例子</span></a></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Effective-Java学习笔记（四）" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective-Java学习笔记（四）
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/07/14/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89/" class="article-date">
+	  <time datetime="2022-07-14T12:17:09.000Z" itemprop="datePublished">2022-07-14</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/%E6%B3%9B%E5%9E%8B/" rel="tag">泛型</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/07/14/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 9.3k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 36(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="第五章-泛型"><a class="markdownIt-Anchor" href="#第五章-泛型"></a> 第五章 泛型</h2>
+<h3 id="26-不要使用原始类型"><a class="markdownIt-Anchor" href="#26-不要使用原始类型"></a> 26. 不要使用原始类型</h3>
+<h4 id="泛型和原始类型"><a class="markdownIt-Anchor" href="#泛型和原始类型"></a> 泛型和原始类型</h4>
+<p>声明中具有一个或多个类型参数的类或接口就是泛型类或泛型接口。泛型类和泛型接口统称为泛型。</p>
+<p>每个泛型都定义了一个原始类型，它是没有任何相关类型参数的泛型的名称。例如，<code>List&lt;E&gt;</code>  对应的原始类型是 List。原始类型的行为就好像所有泛型信息从类型声明中删除了一样。它们的存在主要是为了与之前的代码兼容。</p>
+<h4 id="泛型优势"><a class="markdownIt-Anchor" href="#泛型优势"></a> 泛型优势</h4>
+<p>泛型可以帮助编译器在编译过程中发现潜在的类型转换异常，而原始类型不行。</p>
+<h4 id="泛型的子类型规则"><a class="markdownIt-Anchor" href="#泛型的子类型规则"></a> 泛型的子类型规则</h4>
+<p>原始类型 List 和 参数化类型 <code>List&lt;Object&gt;</code> 都可以保存任何类型的对象 ,但是不能把其它泛型对象 , 例如<code>List&lt;String&gt;</code>对象赋给<code>List&lt;Object&gt;</code>引用而可以赋给 List 引用。泛型有子类型规则，<code>List&lt;String&gt;</code> 是原始类型 List 的子类型，而不是参数化类型 <code>List&lt;Object&gt;</code> 的子类型（Item-28）。假如<code>List&lt;String&gt;</code>可以是<code>List&lt;Object&gt;</code>的子类型，那么<code>List&lt;String&gt;</code>的对象赋给<code>List&lt;Object&gt;</code>，通过<code>List&lt;Object&gt;</code>插入非String元素，违反了<code>List&lt;String&gt;</code>只放String的约定</p>
+<h4 id="无界通配符"><a class="markdownIt-Anchor" href="#无界通配符"></a> 无界通配符</h4>
+<p>如果你想使用泛型，但不知道或不关心实际的类型参数是什么，那么可以使用无界通配符 ? 代替。例如，泛型集合 <code>Set&lt;E&gt;</code> 的无界通配符类型是 <code>Set&lt;?&gt;</code>。它是最通用的参数化集合类型，能够容纳任何集合</p>
+<p>无界通配符类型 <code>Set&lt;?&gt;</code> 和原始类型 Set 之间的区别在于通配符类型是安全的，而原始类型不是。将任何元素放入具有原始类型的集合中，很容易破坏集合的类型一致性；而无界通配符类型不能放入元素（除了null）</p>
+<pre class="highlight"><code class="java">Set&lt;Integer&gt; integerSet = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();
+<span class="hljs-comment">// 无界通配符类型Set&lt;?&gt;可以引用任何Set&lt;E&gt;和Set,但是不能往里面放除了null的元素</span>
+Set&lt;?&gt; set1 = integerSet;
+<span class="hljs-comment">// 原始类型Set也可以引用任何Set&lt;E&gt;和Set,但是可以往里面添加元素,会存在类型转换异常</span>
+<span class="hljs-type">Set</span> <span class="hljs-variable">set2</span> <span class="hljs-operator">=</span> integerSet;
+</code></pre>
+<h4 id="使用泛型而不用原始类型的例外"><a class="markdownIt-Anchor" href="#使用泛型而不用原始类型的例外"></a> 使用泛型而不用原始类型的例外</h4>
+<ol>
+<li>类字面量。该规范不允许使用参数化类型（尽管它允许数组类型和基本类型）。换句话说，<code>List.class</code>，<code>String[].class</code> 和 <code>int.class</code> 都是合法的，但是 <code>List&lt;String&gt;.class</code> 和 <code>List&lt;?&gt;.class</code> 不是。</li>
+<li>instanceof 运算符。由于泛型信息在运行时被删除，因此在不是无界通配符类型之外的参数化类型使用 instanceof 操作符是非法的。使用无界通配符类型代替原始类型不会以任何方式影响 instanceof 运算符的行为。在这种情况下，尖括号和问号只是多余的。下面的例子是使用通用类型 instanceof 运算符的首选方法：</li>
+</ol>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Legitimate use of raw type - instanceof operator</span>
+<span class="hljs-keyword">if</span> (o <span class="hljs-keyword">instanceof</span> Set) &#123; <span class="hljs-comment">// Raw type</span>
+    Set&lt;?&gt; s = (Set&lt;?&gt;) o; <span class="hljs-comment">// Wildcard type</span>
+    ...
+&#125;
+</code></pre>
+<p>总之，使用原始类型可能会在运行时导致异常，所以不要轻易使用它们。它们仅用于与引入泛型之前的遗留代码进行兼容。快速回顾一下，<code>Set&lt;Object&gt;</code> 是一个参数化类型，表示可以包含任何类型的对象的集合，<code>Set&lt;?&gt;</code> 是一个无界通配符类型，表示只能包含某种未知类型的对象的集合，Set 是一个原始类型，它没有使用泛型。前两个是安全的，后一个不安全</p>
+<p>为便于参考，本条目中介绍的术语（以及后面将要介绍的一些术语）总结如下：</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Example</th>
+<th>Item</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parameterized type</td>
+<td>List&lt;String&gt;</td>
+<td>Item-26</td>
+</tr>
+<tr>
+<td>Actual type parameter</td>
+<td>String</td>
+<td>Item-26</td>
+</tr>
+<tr>
+<td>Generic type</td>
+<td>List&lt;E&gt;</td>
+<td>Item-26, Item-29</td>
+</tr>
+<tr>
+<td>Formal type parameter</td>
+<td>E</td>
+<td>Item-26</td>
+</tr>
+<tr>
+<td>Unbounded wildcard type</td>
+<td>List&lt;?&gt;</td>
+<td>Item-26</td>
+</tr>
+<tr>
+<td>Raw type</td>
+<td>List</td>
+<td>Item-26</td>
+</tr>
+<tr>
+<td>Bounded type parameter</td>
+<td>&lt;E extends Number&gt;</td>
+<td>Item-29</td>
+</tr>
+<tr>
+<td>Recursive type bound</td>
+<td>&lt;T extends Comparable&lt;T&gt;&gt;</td>
+<td>Item-30</td>
+</tr>
+<tr>
+<td>Bounded wildcard type</td>
+<td>List&lt;? extends Number&gt;</td>
+<td>Item-31</td>
+</tr>
+<tr>
+<td>Generic method</td>
+<td>static &lt;E&gt; List&lt;E&gt; asList(E[] a)</td>
+<td>Item-30</td>
+</tr>
+<tr>
+<td>Type token</td>
+<td>String.class</td>
+<td>Item-33</td>
+</tr>
+</tbody>
+</table>
+<h3 id="27-消除-unchecked-警告"><a class="markdownIt-Anchor" href="#27-消除-unchecked-警告"></a> 27. 消除 unchecked 警告</h3>
+<p>消除所有 unchecked 警告可以确保代码是类型安全的，运行时不会出现 ClassCastException。如果不能消除警告，但是可以证明引发警告的代码是类型安全的，那么可以使用 SuppressWarnings(“unchecked”) 注解来抑制警告。</p>
+<h4 id="suppresswarnings注解"><a class="markdownIt-Anchor" href="#suppresswarnings注解"></a> SuppressWarnings注解</h4>
+<p>SuppressWarnings 注解可以用于任何声明中，从单个局部变量声明到整个类。请总是在尽可能小的范围上使用 SuppressWarnings 注解。通常用在一个变量声明或一个非常短的方法或构造函数。不要在整个类中使用 SuppressWarnings。这样做可能会掩盖关键警告。</p>
+<p>如果你发现自己在一个超过一行的方法或构造函数上使用 SuppressWarnings 注解，那么你可以将其移动到局部变量声明中</p>
+<p>将 SuppressWarnings 注释放在 return 语句上是非法的，因为它不是声明。你可能想把注释放在整个方法上，但是不要这样做。相反，应该声明一个局部变量来保存返回值并添加注解</p>
+<p>每次使用 SuppressWarnings(“unchecked”) 注解时，要添加一条注释，说明这样做是安全的。这将帮助他人理解代码，更重要的是，它将降低其他人修改代码而产生不安全事件的几率。如果你觉得写这样的注释很难，那就继续思考合适的方式，你最终可能会发现，unchecked 操作毕竟是不安全的。</p>
+<p>总之，unchecked 警告很重要。不要忽视他们。每个 unchecked 警告都代表了在运行时发生 ClassCastException 的可能性。尽最大努力消除这些警告。如果不能消除 unchecked 警告，但是可以证明引发该警告的代码是类型安全的，那么可以在尽可能狭窄的范围内使用 @SuppressWarnings(“unchecked”) 注释来抑制警告。在注释中记录你决定抑制警告的理由。</p>
+<h3 id="28-list-优于数组"><a class="markdownIt-Anchor" href="#28-list-优于数组"></a> 28. list 优于数组</h3>
+<h4 id="数组与泛型的区别"><a class="markdownIt-Anchor" href="#数组与泛型的区别"></a> 数组与泛型的区别</h4>
+<ol>
+<li>
+<p>数组是协变的, 如果 Sub 是 Super 的一个子类型，那么数组类型 Sub[] 就是数组类型 Super[] 的一个子类型。相比之下，泛型是不变的：对于任何两个不同类型 Type1 和 Type2，<code>List&lt;Type1&gt;</code> 既不是 <code>List&lt;Type2&gt;</code> 的子类型，也不是 <code>List&lt;Type2&gt;</code> 的父类型。</p>
+</li>
+<li>
+<p>数组是具体化的。这意味着数组在运行时知道并强制执行他们的元素类型。如前所述，如果试图将 String 元素放入一个 Long 类型的数组中，就会得到 ArrayStoreException。相比之下，泛型是通过擦除来实现的，这意味着它们只在编译时执行类型约束，并在运行时丢弃（或擦除）元素类型信息。擦除允许泛型与不使用泛型的遗留代码自由交互操作（Item-26），确保在 Java 5 中平稳过渡</p>
+</li>
+</ol>
+<h4 id="泛型数组的创建是非法的"><a class="markdownIt-Anchor" href="#泛型数组的创建是非法的"></a> 泛型数组的创建是非法的</h4>
+<p>由于这些基本差异，数组和泛型不能很好地混合。例如，创建泛型、参数化类型或类型参数的数组是非法的。因此，这些数组创建表达式都不是合法的：<code>new List&lt;E&gt;[]、new List&lt;String&gt;[]、new E[]</code>。所有这些都会在编译时导致泛型数组创建错误。</p>
+<p>考虑以下代码片段：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Why generic array creation is illegal - won&#x27;t compile!</span>
+List&lt;String&gt;[] stringLists = <span class="hljs-keyword">new</span> <span class="hljs-title class_">List</span>&lt;String&gt;[<span class="hljs-number">1</span>]; <span class="hljs-comment">// (1)</span>
+List&lt;Integer&gt; intList = List.of(<span class="hljs-number">42</span>); <span class="hljs-comment">// (2)</span>
+Object[] objects = stringLists; <span class="hljs-comment">// (3)</span>
+objects[<span class="hljs-number">0</span>] = intList; <span class="hljs-comment">// (4)</span>
+<span class="hljs-type">String</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> stringLists[<span class="hljs-number">0</span>].get(<span class="hljs-number">0</span>); <span class="hljs-comment">// (5)</span>
+</code></pre>
+<p>假设创建泛型数组的第 1 行是合法的。第 2 行创建并初始化一个包含单个元素的 <code>List&lt;Integer&gt;</code>。第 3 行将 <code>List&lt;String&gt;</code> 数组存储到 Object 类型的数组变量中，这是合法的，因为数组是协变的。第 4 行将 <code>List&lt;Integer&gt;</code> 存储到 Object 类型的数组的唯一元素中，这是成功的，因为泛型是由擦除实现的：<code>List&lt;Integer&gt;</code> 实例的运行时类型是 List，<code>List&lt;String&gt;[]</code> 实例的运行时类型是 <code>List[]</code>，因此这个赋值不会生成 ArrayStoreException。现在我们有麻烦了。我们将一个 <code>List&lt;Integer&gt;</code> 实例存储到一个数组中，该数组声明只保存 <code>List&lt;String&gt;</code> 实例。在第 5 行，我们从这个数组的唯一列表中检索唯一元素。编译器自动将检索到的元素转换为 String 类型，但它是一个 Integer 类型的元素，因此我们在运行时得到一个 ClassCastException。为了防止这种情况发生，第 1 行（创建泛型数组）必须生成编译时错误。</p>
+<h4 id="用list替代数组"><a class="markdownIt-Anchor" href="#用list替代数组"></a> 用List替代数组</h4>
+<p>当你在转换为数组类型时遇到泛型数组创建错误或 unchecked 强制转换警告时，通常最好的解决方案是使用集合类型 <code>List&lt;E&gt;</code>，而不是数组类型 <code>E[]</code>。你可能会牺牲一些简洁性和性能，但作为交换，你可以获得更好地类型安全性和互操作性。</p>
+<p>总之，数组和泛型有非常不同的类型规则。数组是协变的、具体化的；泛型是不可变的和可被擦除的。因此，数组提供了运行时类型安全性，而不是编译时类型安全性，对于泛型来说相反。一般来说，数组和泛型不能很好的混合，如果你发现将它们混合在一起并得到编译时错误或警告，那么你的第一个反应应该是将数组替换为 list。</p>
+<h3 id="29-优先使用泛型"><a class="markdownIt-Anchor" href="#29-优先使用泛型"></a> 29. 优先使用泛型</h3>
+<h4 id="编写泛型"><a class="markdownIt-Anchor" href="#编写泛型"></a> 编写泛型</h4>
+<p>在将原始类型修改成泛型时, 可能会遇到不能创建泛型数组的问题，有两种解决方法</p>
+<ol>
+<li>创建 Object 数组并将其强制转换为 E[] 类型（字段的类型是 E[] ,将Object数组强转成 E[] 可以成功，但是方法返回 E[]给客户端，由编译器添加隐式强转就会失败,因为隐式强转是将Object数组转成声明的具体类型数组）。现在，编译器将发出一个警告来代替错误。这种用法是合法的，但（一般而言）不是类型安全的。编译器可能无法证明你的程序是类型安全的，但你可以。你必须说服自己，unchecked 的转换不会损害程序的类型安全性。所涉及的数组（元素）存储在私有字段中，从未返回给客户端或传递给任何其它方法(传到外面就会发生隐式强转)。添加元素时，元素也是 E 类型，因此 unchecked 的转换不会造成任何损害。一旦你证明了 unchecked 的转换是安全的，就将警告限制在尽可能小的范围内（Item-27）。</li>
+<li>将字段的类型从 E[] 更改为 Object[]。编译器会产生类似的错误和警告，处理方法也和上面类似</li>
+</ol>
+<p>方法1优势：可读性更好，因为数组声明为 E[] 类型，这清楚地表明它只包含 E 的实例。它也更简洁，只需要在创建数组的地方做一次强转，其它地方读取数组元素不用强转成 E 类型<br />
+方法1劣势：会造成堆污染（Item-32）：数组的运行时类型与其编译时类型不匹配（除非 E 恰好是 Object）</p>
+<h4 id="为啥要创建泛型数组"><a class="markdownIt-Anchor" href="#为啥要创建泛型数组"></a> 为啥要创建泛型数组</h4>
+<p>Item-28 鼓励优先使用列表而不是数组。但是在泛型中使用列表并不总是可能或可取的。Java 本身不支持列表，因此一些泛型（如ArrayList）必须在数组之上实现。其它泛型（如HashMap）用数组实现来提高性能</p>
+<p>总之，泛型比需要在客户端代码中转换的类型更安全、更容易使用。在设计新类型时，请确保客户端可以在不使用类型转换的情况下使用它们。这通常意味着使类型具有通用性。如果你有任何应该是泛型但不是泛型的现有类型，请对它们进行泛化。这将使这些类型的新用户在不破坏现有客户端的情况下更容易使用。</p>
+<h3 id="30-优先使用泛型方法"><a class="markdownIt-Anchor" href="#30-优先使用泛型方法"></a> 30. 优先使用泛型方法</h3>
+<p>类可以是泛型的，方法也可以是泛型的</p>
+<h4 id="编写泛型方法"><a class="markdownIt-Anchor" href="#编写泛型方法"></a> 编写泛型方法</h4>
+<p>编写泛型方法类似于编写泛型。类型参数列表声明类型参数，它位于方法的修饰符与其返回类型之间。例如，类型参数列表为 <code>&lt;E&gt;</code>，返回类型为 <code>Set&lt;E&gt;</code></p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Generic method</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;E&gt; Set&lt;E&gt; <span class="hljs-title function_">union</span><span class="hljs-params">(Set&lt;E&gt; s1, Set&lt;E&gt; s2)</span> &#123;
+    Set&lt;E&gt; result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;(s1);
+    result.addAll(s2);
+    <span class="hljs-keyword">return</span> result;
+&#125;
+</code></pre>
+<p>至少对于简单的泛型方法，这就是（要注意细节的）全部。该方法编译时不生成任何警告，并且提供了类型安全性和易用性。这里有一个简单的程序来演示。这个程序不包含转换，编译时没有错误或警告：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Simple program to exercise generic method</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+    Set&lt;String&gt; guys = Set.of(<span class="hljs-string">&quot;Tom&quot;</span>, <span class="hljs-string">&quot;Dick&quot;</span>, <span class="hljs-string">&quot;Harry&quot;</span>);
+    Set&lt;String&gt; stooges = Set.of(<span class="hljs-string">&quot;Larry&quot;</span>, <span class="hljs-string">&quot;Moe&quot;</span>, <span class="hljs-string">&quot;Curly&quot;</span>);
+    Set&lt;String&gt; aflCio = union(guys, stooges);
+    System.out.println(aflCio);
+&#125;
+</code></pre>
+<p>当你运行程序时，它会打印出 [Moe, Tom, Harry, Larry, Curly, Dick]。（输出元素的顺序可能不同）。</p>
+<p>union 方法的一个限制是，所有三个集合（输入参数和返回值）的类型必须完全相同。你可以通过使用有界通配符类型（Item-31）使方法更加灵活。</p>
+<h3 id="31-使用有界通配符增加-api-的灵活性"><a class="markdownIt-Anchor" href="#31-使用有界通配符增加-api-的灵活性"></a> 31. 使用有界通配符增加 API 的灵活性</h3>
+<h4 id="pecs"><a class="markdownIt-Anchor" href="#pecs"></a> PECS</h4>
+<p>为了获得满足里氏代换原则，应对表示生产者或消费者入参使用通配符类型。如果输入参数既是生产者优势消费者，使用精确的类型</p>
+<p>PECS助记符：PECS 表示生产者应使用 extends，消费者应使用 super。换句话说，如果参数化类型表示 T 生产者，则使用 <code>&lt;? extends T&gt;</code>；如果它表示一个 T 消费者，则使用 <code>&lt;? super T&gt;</code>。<strong>不要使用有界通配符类型作为返回类型。</strong> 它将强制用户在客户端代码中使用通配符类型，而不是为用户提供额外的灵活性</p>
+<h4 id="一个例子"><a class="markdownIt-Anchor" href="#一个例子"></a> 一个例子</h4>
+<p>接下来让我们将注意力转移到 Item-30 中的 max 方法，以下是原始声明：</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Comparable</span>&lt;T&gt;&gt; T <span class="hljs-title function_">max</span><span class="hljs-params">(List&lt;T&gt; list)</span>
+</code></pre>
+<p>下面是使用通配符类型的修正声明：</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Comparable</span>&lt;? <span class="hljs-built_in">super</span> T&gt;&gt; T <span class="hljs-title function_">max</span><span class="hljs-params">(List&lt;? extends T&gt; list)</span>
+</code></pre>
+<p>这里使用了两次 PECS。第一次是参数列表，list作为生产者生成 T 的实例，所以我们将类型从 <code>List&lt;T&gt;</code> 更改为 <code>List&lt;? extends T&gt;</code>(个人认为这里没有必要改，调用一次max方法只能传入一个类型的List，如果是两个参数，第一个参数的类型决定了T，第二个参数的类型如果是List&lt;? extends T&gt;，那么类型参数必须是T或T的子类。但是如果是泛型类声明的T，那这个改动是有意义的)。第二次是是类型参数 T。这是我们第一次看到通配符应用于类型参数。最初，T 被指定为继承 <code>Comparable&lt;T&gt;</code>，但是 Comparable&lt;T&gt; 消费 T 实例。因此，将参数化类型 <code>Comparable&lt;T&gt;</code> 替换为有界通配符类型 <code>Comparable&lt;? super T&gt;</code>，Comparable 始终是消费者，所以一般应优先使用 <code>Comparable&lt;? super T&gt;</code> 而不是 <code>Comparable&lt;T&gt;</code>，比较器也是如此；因此，通常应该优先使用 <code>Comparator&lt;? super T&gt;</code> 而不是 <code>Comparator&lt;T&gt;</code>。</p>
+<p>修订后的 max 声明可能是本书中最复杂的方法声明。增加的复杂性真的能给你带来什么好处吗？是的。下面是一个简单的列表案例，它在原来的声明中不允许使用，但经修改的声明允许：</p>
+<pre class="highlight"><code class="java">List&lt;ScheduledFuture&lt;?&gt;&gt; scheduledFutures = ... ;
+</code></pre>
+<p>不能将原始方法声明应用于此列表的原因是 ScheduledFuture 没有实现 <code>Comparable&lt;ScheduledFuture&gt;</code>。相反，它是 Delayed 的一个子接口，继承了 <code>Comparable&lt;Delayed&gt;</code>。换句话说，ScheduledFuture 的实例不仅仅可以与其它 ScheduledFuture 实例进行比较，还可以与任何 Delayed 实例比较，但是原始方法只能和 ScheduledFuture 实例比较。更通俗来说，通配符用于支持不直接实现 Comparable（或 Comparator）但继承了实现 Comparable（或 Comparator）的类型的类型。</p>
+<h4 id="类型参数和通配符的对偶性"><a class="markdownIt-Anchor" href="#类型参数和通配符的对偶性"></a> 类型参数和通配符的对偶性</h4>
+<p>类型参数和通配符之间存在对偶性，对偶性指实现方式不同但效果一样。例如，下面是swap方法的两种可能声明，第一个使用无界类型参数（Item-30），第二个使用无界通配符：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Two possible declarations for the swap method</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;E&gt; <span class="hljs-keyword">void</span> <span class="hljs-title function_">swap</span><span class="hljs-params">(List&lt;E&gt; list, <span class="hljs-type">int</span> i, <span class="hljs-type">int</span> j)</span>;
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">swap</span><span class="hljs-params">(List&lt;?&gt; list, <span class="hljs-type">int</span> i, <span class="hljs-type">int</span> j)</span>;
+</code></pre>
+<p>这两个声明哪个更好？在公共API中第二个更好，因为它更简单(客户端可以传入原始类型)。传入一个任意列表，该方法交换索引元素，不需要担心类型参数。通常，如果类型参数在方法声明中只出现一次，则用通配符替换它。如果它是一个无界类型参数，用一个无界通配符替换它；如果它是有界类型参数，则用有界通配符替换它。</p>
+<p>交换的第二个声明有一个问题。下面的实现无法编译， list 的类型是 <code>List&lt;?&gt;</code>，你不能在 <code>List&lt;?&gt;</code> 中放入除 null 以外的任何值。</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">swap</span><span class="hljs-params">(List&lt;?&gt; list, <span class="hljs-type">int</span> i, <span class="hljs-type">int</span> j)</span> &#123;
+  list.set(i, list.set(j, list.get(i)));
+&#125;
+</code></pre>
+<p>幸运的是，有一种方法可以实现，而无需求助于不安全的强制类型转换或原始类型。其思想是编写一个私有助手方法来捕获通配符类型。为了捕获类型，helper 方法必须是泛型方法。它看起来是这样的：</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">swap</span><span class="hljs-params">(List&lt;?&gt; list, <span class="hljs-type">int</span> i, <span class="hljs-type">int</span> j)</span> &#123;
+  swapHelper(list, i, j);
+&#125;
+<span class="hljs-comment">// Private helper method for wildcard capture</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> &lt;E&gt; <span class="hljs-keyword">void</span> <span class="hljs-title function_">swapHelper</span><span class="hljs-params">(List&lt;E&gt; list, <span class="hljs-type">int</span> i, <span class="hljs-type">int</span> j)</span> &#123;
+  list.set(i, list.set(j, list.get(i)));
+&#125;
+</code></pre>
+<p>swapHelper 方法指导 list 是一个 <code>List&lt;E&gt;</code>。因此，它指导它从这个列表中得到的任何值都是 E 类型的，并且将 E 类型的任何值放入这个列表中都是安全的。这个稍微复杂的实现可以正确编译。它允许我们导出基于通配符的声明，同时在内部利用更复杂的泛型方法。swap 方法的客户端不必面对更复杂的 swapHelper 声明，但它们确实从中受益。值得注意的是，helper 方法具有我们认为对于公共方法过于复杂而忽略的签名。</p>
+<p>总之，在 API 中使用通配符类型虽然很棘手，但可以使其更加灵活。如果你编写的库将被广泛使用，则必须考虑通配符类型的正确使用。记住基本规则：生产者使用 extends，消费者使用 super（PECS）。还要记住，所有的 comparable 和 comparator 都是消费者</p>
+<h3 id="32-明智地合用泛型和可变参数"><a class="markdownIt-Anchor" href="#32-明智地合用泛型和可变参数"></a> 32. 明智地合用泛型和可变参数</h3>
+<h4 id="抽象泄露"><a class="markdownIt-Anchor" href="#抽象泄露"></a> 抽象泄露</h4>
+<p>可变参数方法（Item-53）和泛型都是在 Java 5 中添加，因此你可能认为它们能够优雅地交互；可悲的是，它们并不能。可变参数的目的是允许客户端向方法传递可变数量的参数，但这是一个抽象泄漏：当你调用可变参数方法时，将创建一个数组来保存参数；该数组本应是实现细节，却是可见的。因此，当可变参数具有泛型或参数化类型时，会出现令人困惑的编译器警告。</p>
+<h4 id="不可具体化"><a class="markdownIt-Anchor" href="#不可具体化"></a> 不可具体化</h4>
+<p>回想一下 Item-28，不可具体化类型是指其运行时表示的信息少于其编译时表示的信息，并且几乎所有泛型和参数化类型都是不可具体化的。如果方法声明其可变参数为不可具体化类型，编译器将在声明生生成警告。如果方法是在其推断类型不可具体化的可变参数上调用的，编译器也会在调用时生成警告。生成的警告就像这样：</p>
+<pre class="highlight"><code class="java">warning: [unchecked] Possible heap pollution from parameterized vararg type List&lt;String&gt;
+</code></pre>
+<h4 id="堆污染"><a class="markdownIt-Anchor" href="#堆污染"></a> 堆污染</h4>
+<p>当参数化类型的变量引用不属于该类型的对象时，就会发生堆污染。它会导致编译器自动生成的强制类型转换失败，违反泛型系统的基本保证。</p>
+<p>例如，考虑这个方法，它来自 Item-26，但做了些修改：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Mixing generics and varargs can violate type safety!</span>
+<span class="hljs-comment">// 泛型和可变参数混合使用可能违反类型安全原则！</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">dangerous</span><span class="hljs-params">(List&lt;String&gt;... stringLists)</span> &#123;
+    List&lt;Integer&gt; intList = List.of(<span class="hljs-number">42</span>);
+    Object[] objects = stringLists;
+    objects[<span class="hljs-number">0</span>] = intList; <span class="hljs-comment">// Heap pollution</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> stringLists[<span class="hljs-number">0</span>].get(<span class="hljs-number">0</span>); <span class="hljs-comment">// ClassCastException</span>
+&#125;
+</code></pre>
+<h4 id="方法声明使用泛型可变参数是合法的"><a class="markdownIt-Anchor" href="#方法声明使用泛型可变参数是合法的"></a> 方法声明使用泛型可变参数是合法的</h4>
+<p>这个例子提出了一个有趣的问题：为什么方法声明中使用泛型可变参数是合法的，而显式创建泛型数组是非法的？答案是，带有泛型或参数化类型的可变参数的方法在实际开发中非常有用，因此语言设计人员选择忍受这种不一致性。事实上，Java 库导出了几个这样的方法，包括 <code>Arrays.asList(T... a)</code>、<code>Collections.addAll(Collection&lt;? super T&gt; c, T... elements)</code> 以及 <code>EnumSet.of(E first, E... rest)</code>。它们与前面显示的危险方法不同，这些库方法是类型安全的。</p>
+<p>在 Java 7 之前，使用泛型可变参数的方法的作者对调用点上产生的警告无能为力。使得这些 API 难以使用。用户必须忍受这些警告，或者在每个调用点（Item-27）使用 @SuppressWarnings(“unchecked”) 注释消除这些警告。这种做法乏善可陈，既损害了可读性，也忽略了标记实际问题的警告。</p>
+<p>在 Java 7 中添加了 SafeVarargs 注释，以允许使用泛型可变参数的方法的作者自动抑制客户端警告。本质上，SafeVarargs 注释构成了方法作者的一个承诺，即该方法是类型安全的。 作为这个承诺的交换条件，编译器同意不对调用可能不安全的方法的用户发出警告。</p>
+<h4 id="使用safevarargs的条件"><a class="markdownIt-Anchor" href="#使用safevarargs的条件"></a> 使用SafeVarargs的条件</h4>
+<ol>
+<li>方法没有修改数组元素</li>
+<li>数组的引用没有逃逸（这会使不受信任的代码能够访问数组）</li>
+</ol>
+<p>换句话说，如果可变参数数组仅用于将可变数量的参数从调用方传输到方法（毕竟这是可变参数的目的），那么该方法是安全的。</p>
+<h5 id="一个反例"><a class="markdownIt-Anchor" href="#一个反例"></a> 一个反例</h5>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// UNSAFE - Exposes a reference to its generic parameter array!</span>
+<span class="hljs-keyword">static</span> &lt;T&gt; T[] toArray(T... args) &#123;
+  <span class="hljs-keyword">return</span> args;
+&#125;
+</code></pre>
+<p>这个方法直接返回了泛型可变参数数组引用，违反了上面的条件2，它可以将堆污染传播到调用堆栈上。</p>
+<p>考虑下面的泛型方法，该方法接受三个类型为 T 的参数，并返回一个包含随机选择的两个参数的数组：</p>
+<pre class="highlight"><code class="java">
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+  String[] attributes = pickTwo(<span class="hljs-string">&quot;Good&quot;</span>, <span class="hljs-string">&quot;Fast&quot;</span>, <span class="hljs-string">&quot;Cheap&quot;</span>);
+&#125;
+
+<span class="hljs-keyword">static</span> &lt;T&gt; T[] pickTwo(T a, T b, T c) &#123;
+  <span class="hljs-keyword">switch</span>(ThreadLocalRandom.current().nextInt(<span class="hljs-number">3</span>)) &#123;
+    <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>: <span class="hljs-keyword">return</span> toArray(a, b);
+    <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>: <span class="hljs-keyword">return</span> toArray(a, c);
+    <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: <span class="hljs-keyword">return</span> toArray(b, c);
+  &#125;
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AssertionError</span>(); <span class="hljs-comment">// Can&#x27;t get here</span>
+&#125;
+</code></pre>
+<p>这段代码编译时不会生成任何警告，运行时会抛出 ClassCastException，尽管它不包含可见的强制类型转换。你没有看到的是，编译器在 pickTwo 返回的值上生成了一个隐藏的 String[] 转换。转换失败，因为 Object[] 实际指向的数组是Object类型的不是String，强转失败。</p>
+<p>这个示例的目的是让人明白，让另一个方法访问泛型可变参数数组是不安全的，只有两个例外：将数组传递给另一个使用 @SafeVarargs 正确注释的可变参数方法是安全的，将数组传递给仅计算数组内容的某个函数的非可变方法也是安全的。</p>
+<h6 id="扩展"><a class="markdownIt-Anchor" href="#扩展"></a> 扩展</h6>
+<p>如果 main 方法直接调用 toArray 方法，不会出现 ClassCastException，为什么？泛型不是被擦除了吗，args在运行时不是一个Object[] 吗？非也，运行时args的类型是Object[]，但是指向的数组是 String 类型的, 所以编译器添加的强转是可以成功的。下面的例子里，toArray1方法在字节码层面和toArray3方法是一样的，在调用toArray1方法前会先生成 String[]，将引用传递给toArray1，</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+    String [] arr1 = toArray1(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;Cat&quot;</span>);
+    <span class="hljs-comment">// ClassCastException</span>
+    String [] arr2 = toArray2(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;Cat&quot;</span>);
+    String [] arr3 = toArray3(<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123;<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;Cat&quot;</span>&#125;);
+    <span class="hljs-comment">// ClassCastException,多层调用泛型可变参数数组会导致编译器没有足够信息创建真实类型的对象数组(存疑，从字节码来看也是创建了String[])</span>
+    String[] arr4 = toArray1Crust1(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;Cat&quot;</span>);
+    String[] arr5 = toArray1Crust2(<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123;<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;Cat&quot;</span>&#125;);
+    String[] arr6 = toArray1Crust3(<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123;<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;Cat&quot;</span>&#125;);
+    <span class="hljs-comment">// 泛型方法嵌套没问题</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> toString1(<span class="hljs-string">&quot;Alice&quot;</span>);
+&#125;
+
+<span class="hljs-keyword">static</span> &lt;T&gt; T[] toArray1(T... args) &#123;
+    <span class="hljs-keyword">return</span> args;
+&#125;
+<span class="hljs-keyword">static</span> &lt;T&gt; T[] toArray2(T a, T b, T c) &#123;
+    System.out.println(a.getClass());
+    <span class="hljs-comment">// 泛型数组实际类型是Object</span>
+    T[] result = (T[]) <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[<span class="hljs-number">3</span>];
+    result[<span class="hljs-number">0</span>] = a;
+    result[<span class="hljs-number">1</span>] = b;
+    result[<span class="hljs-number">2</span>] = c;
+    <span class="hljs-keyword">return</span> result;
+&#125;
+<span class="hljs-keyword">static</span> &lt;T&gt; T[] toArray3(T[] arr)&#123;
+    <span class="hljs-keyword">return</span> arr;
+&#125;
+<span class="hljs-keyword">static</span> &lt;T&gt; T[] toArray1Crust1(T...args)&#123;
+    <span class="hljs-keyword">return</span> toArray1(args);
+&#125;
+<span class="hljs-keyword">static</span> &lt;T&gt; T[] toArray1Crust2(T[] args)&#123;
+    <span class="hljs-keyword">return</span> toArray1(args);
+&#125;
+<span class="hljs-keyword">static</span> String[] toArray1Crust3(String[] args)&#123;
+    <span class="hljs-keyword">return</span> toArray1(args);
+&#125;
+
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> &lt;T&gt; T <span class="hljs-title function_">toString1</span><span class="hljs-params">(T s)</span> &#123;
+    <span class="hljs-keyword">return</span> toString2(s);
+&#125;
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;T&gt; T <span class="hljs-title function_">toString2</span><span class="hljs-params">(T s)</span>&#123;
+    <span class="hljs-keyword">return</span> s;
+&#125;
+</code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E6%B3%9B%E5%9E%8B/IMG_20221209-134128538.png" alt="图 1" /></p>
+<h5 id="一个正确例子"><a class="markdownIt-Anchor" href="#一个正确例子"></a> 一个正确例子</h5>
+<p>下面是一个安全使用泛型可变参数的典型示例。该方法接受任意数量的列表作为参数，并返回一个包含所有输入列表的元素的序列列表。因为该方法是用 @SafeVarargs 注释的，所以它不会在声明或调用点上生成任何警告：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Safe method with a generic varargs parameter</span>
+<span class="hljs-meta">@SafeVarargs</span>
+<span class="hljs-keyword">static</span> &lt;T&gt; List&lt;T&gt; <span class="hljs-title function_">flatten</span><span class="hljs-params">(List&lt;? extends T&gt;... lists)</span> &#123;
+  List&lt;T&gt; result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+  <span class="hljs-keyword">for</span> (List&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">T</span>&gt; list : lists)
+    result.addAll(list);
+  <span class="hljs-keyword">return</span> result;
+&#125;
+</code></pre>
+<h4 id="何时使用safevarargs"><a class="markdownIt-Anchor" href="#何时使用safevarargs"></a> 何时使用SafeVarargs</h4>
+<p>决定何时使用 SafeVarargs 注释的规则很简单：在每个带有泛型或参数化类型的可变参数的方法上使用 @SafeVarargs，这样它的用户就不会被不必要的和令人困惑的编译器警告所困扰。</p>
+<p>请注意，SafeVarargs 注释只能出现在不能覆盖的方法上，因为不可能保证所有可能覆盖的方法都是安全的。在 Java 8 中，注释只能出现在静态方法和final实例方法；在 Java 9 中，它在私有实例方法上也是合法的。</p>
+<p>使用 SafeVarargs 注释的另一种选择是接受 Item-28 的建议，并用 List 参数替换可变参数（它是一个伪装的数组）。下面是将这种方法应用到我们的 flatten 方法时的效果。注意，只有参数声明发生了更改：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// List as a typesafe alternative to a generic varargs parameter</span>
+<span class="hljs-keyword">static</span> &lt;T&gt; List&lt;T&gt; <span class="hljs-title function_">flatten</span><span class="hljs-params">(List&lt;List&lt;? extends T&gt;&gt; lists)</span> &#123;
+  List&lt;T&gt; result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+  <span class="hljs-keyword">for</span> (List&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">T</span>&gt; list : lists)
+    result.addAll(list);
+  <span class="hljs-keyword">return</span> result;
+&#125;
+</code></pre>
+<p>然后可以将此方法与静态工厂方法 List.of 一起使用，以允许可变数量的参数。注意，这种方法依赖于 List.of 声明是用 @SafeVarargs 注释的：</p>
+<pre class="highlight"><code class="java">audience = flatten(List.of(friends, romans, countrymen));
+</code></pre>
+<p>这种方法的优点是编译器可以证明该方法是类型安全的。你不必使用 SafeVarargs 注释来保证它的安全性，也不必担心在确定它的安全性时可能出错。主要的缺点是客户端代码比较冗长，可能会比较慢。</p>
+<p>这种技巧也可用于无法编写安全的可变参数方法的情况，如第 147 页中的 toArray 方法。它的列表类似于 List.of 方法，我们甚至不用写；Java 库的作者为我们做了这些工作。pickTwo 方法变成这样：</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">static</span> &lt;T&gt; List&lt;T&gt; <span class="hljs-title function_">pickTwo</span><span class="hljs-params">(T a, T b, T c)</span> &#123;
+  <span class="hljs-keyword">switch</span>(rnd.nextInt(<span class="hljs-number">3</span>)) &#123;
+    <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>: <span class="hljs-keyword">return</span> List.of(a, b);
+    <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>: <span class="hljs-keyword">return</span> List.of(a, c);
+    <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: <span class="hljs-keyword">return</span> List.of(b, c);
+  &#125;
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AssertionError</span>();
+&#125;
+</code></pre>
+<p>main 方法是这样的：</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+  List&lt;String&gt; attributes = pickTwo(<span class="hljs-string">&quot;Good&quot;</span>, <span class="hljs-string">&quot;Fast&quot;</span>, <span class="hljs-string">&quot;Cheap&quot;</span>);
+&#125;
+</code></pre>
+<p>生成的代码是类型安全的，因为它只使用泛型，而不使用数组（List在运行时没有强转，数组会强转）。</p>
+<p>总之，可变参数方法和泛型不能很好地交互，并且数组具有与泛型不同的类型规则。虽然泛型可变参数不是类型安全的，但它们是合法的。如果选择使用泛型（或参数化）可变参数编写方法，首先要确保该方法是类型安全的，然后使用 @SafeVarargs 对其进行注释。</p>
+<h3 id="33-考虑类型安全的异构容器"><a class="markdownIt-Anchor" href="#33-考虑类型安全的异构容器"></a> 33. 考虑类型安全的异构容器</h3>
+<h4 id="参数化容器"><a class="markdownIt-Anchor" href="#参数化容器"></a> 参数化容器</h4>
+<p>如果你需要存储某种类型的集合，例如存储String的Set，那么<code>Set&lt;String&gt;</code>就足够了，又比如存储 String-Value 键值对，那么<code>Map&lt;String,Integer&gt;</code>就足够了</p>
+<h4 id="参数化容器的键"><a class="markdownIt-Anchor" href="#参数化容器的键"></a> 参数化容器的键</h4>
+<p>如果你要存储任意类型的集合。例如，一个数据库行可以有任意多列，我们希望用一个Map保存该行每列元素。那么我们可以使用参数化容器的键</p>
+<h4 id="例子"><a class="markdownIt-Anchor" href="#例子"></a> 例子</h4>
+<p>Favorites 类，允许客户端存储和检索任意多种类型对象。Class 类的对象将扮演参数化键的角色。Class 对象被称为类型标记</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Typesafe heterogeneous container pattern - client</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+    <span class="hljs-type">Favorites</span> <span class="hljs-variable">f</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Favorites</span>();
+    f.putFavorite(String.class, <span class="hljs-string">&quot;Java&quot;</span>);
+    f.putFavorite(Integer.class, <span class="hljs-number">0xcafebabe</span>);
+    f.putFavorite(Class.class, Favorites.class);
+    <span class="hljs-type">String</span> <span class="hljs-variable">favoriteString</span> <span class="hljs-operator">=</span> f.getFavorite(String.class);
+    <span class="hljs-type">int</span> <span class="hljs-variable">favoriteInteger</span> <span class="hljs-operator">=</span> f.getFavorite(Integer.class);
+    Class&lt;?&gt; favoriteClass = f.getFavorite(Class.class);
+    System.out.printf(<span class="hljs-string">&quot;%s %x %s%n&quot;</span>, favoriteString,favoriteInteger, favoriteClass.getName());
+&#125;
+</code></pre>
+<p>Favorites实例是类型安全的：当你向它请求一个 String 类型时，它永远不会返回一个 Integer 类型。<br />
+Favorites实例也是异构的：所有键都是不同类型的，普通 Map 的键是固定一个类型，因此，我们将 Favorites 称为一个<strong>类型安全异构容器</strong>。</p>
+<p>Favorites 的实现非常简短：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Typesafe heterogeneous container pattern - implementation</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Favorites</span> &#123;
+  <span class="hljs-keyword">private</span> Map&lt;Class&lt;?&gt;, Object&gt; favorites = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();
+
+  <span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-keyword">void</span> <span class="hljs-title function_">putFavorite</span><span class="hljs-params">(Class&lt;T&gt; type, T instance)</span> &#123;
+    favorites.put(Objects.requireNonNull(type), instance);
+  &#125;
+
+  <span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">getFavorite</span><span class="hljs-params">(Class&lt;T&gt; type)</span> &#123;
+    <span class="hljs-keyword">return</span> type.cast(favorites.get(type));
+  &#125;
+&#125;
+</code></pre>
+<p>通配符类型的键意味着每个键都可以有不同的参数化类型：一个可以是 <code>Class&lt;String&gt;</code>，下一个是 <code>Class&lt;Integer&gt;</code>，等等。这就是异构的原理。</p>
+<p>favorites 的值类型仅仅是 Object。换句话说，Map 不保证键和值之间的类型关系</p>
+<p>putFavorite 的实现很简单：它只是将从给定 Class 对象到给定对象的映射关系放入 favorites 中。如前所述，这将丢弃键和值之间的「类型关联」；将无法确定值是键的实例。但这没关系，因为 getFavorites 方法可以重新建立这个关联。</p>
+<p>getFavorite 的实现比 putFavorite 的实现更复杂。首先，它从 favorites 中获取与给定 Class 对象对应的值。这是正确的对象引用返回，但它有错误的编译时类型：它是 Object（favorites 的值类型），我们需要返回一个 T。因此，getFavorite 的实现通过使用 Class 的 cast 方法，将对象引用类型动态转化为所代表的 Class 对象。</p>
+<p>cast 方法是 Java 的 cast 运算符的动态模拟。它只是检查它的参数是否是类对象表示的类型的实例。如果是，则返回参数；否则它将抛出 ClassCastException。我们知道 getFavorite 中的强制转换调用不会抛出 ClassCastException。也就是说，我们知道 favorites 中的值总是与其键的类型匹配。</p>
+<p>如果 cast 方法只是返回它的参数，那么它会为我们做什么呢？cast 方法的签名充分利用了 Class 类是泛型的这一事实。其返回类型为 Class 对象的类型参数：</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Class</span>&lt;T&gt; &#123;
+    T <span class="hljs-title function_">cast</span><span class="hljs-params">(Object obj)</span>;
+&#125;
+</code></pre>
+<p>这正是 getFavorite 方法所需要的。它使我们能够使 Favorites 类型安全，而不需要对 T 进行 unchecked 的转换。</p>
+<p>Favorites 类有两个值得注意的限制。</p>
+<ul>
+<li>
+<p>恶意客户端很容易通过使用原始形式的类对象破坏 Favorites 实例的类型安全。通过使用原始类型 HashSet（Item-26），可以轻松地将 String 类型放入 <code>HashSet&lt;Integer&gt;</code> 中。为了获得运行时的类型安全，让 putFavorite 方法检查实例是否是 type 表示的类型的实例，使用动态转换：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Achieving runtime type safety with a dynamic cast</span>
+<span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-keyword">void</span> <span class="hljs-title function_">putFavorite</span><span class="hljs-params">(Class&lt;T&gt; type, T instance)</span> &#123;
+    favorites.put(type, type.cast(instance));
+&#125;
+</code></pre>
+</li>
+<li>
+<p>Favorites 类不能用于不可具体化的类型（Item-28）。换句话说，你可以存储的 Favorites 实例类型为 String 或 String[]，但不能存储 <code>List&lt;String&gt;</code>。原因是你不能为 <code>List&lt;String&gt;</code> 获取 Class 对象，<code>List&lt;String&gt;.class</code> 是一个语法错误</p>
+</li>
+</ul>
+<p>Favorites 使用的类型标记是无界的：getFavorite 和 put-Favorite 接受任何 Class 对象。有时你可能需要限制可以传递给方法的类型。这可以通过有界类型标记来实现，它只是一个类型标记，使用有界类型参数（Item-30）或有界通配符（Item-31）对可以表示的类型进行绑定。</p>
+<p>annotation API（Item-39）广泛使用了有界类型标记。例如，下面是在运行时读取注释的方法。这个方法来自 AnnotatedElement 接口，它是由表示类、方法、字段和其他程序元素的反射类型实现的：</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> &lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Annotation</span>&gt;
+    T <span class="hljs-title function_">getAnnotation</span><span class="hljs-params">(Class&lt;T&gt; annotationType)</span>;
+</code></pre>
+<p>参数 annotationType 是表示注释类型的有界类型标记。该方法返回该类型的元素注释（如果有的话），或者返回 null（如果没有的话）。本质上，带注释的元素是一个类型安全的异构容器，其键是注释类型。</p>
+<p>假设你有一个 <code>Class&lt;?&gt;</code> 类型的对象，并且希望将其传递给一个需要有界类型标记（例如 getAnnotation）的方法。你可以将对象强制转换为 <code>Class&lt;? extends Annotation&gt;</code>，但是这个强制转换是 unchecked 的，因此它将生成一个编译时警告（Item-27）。幸运的是，Class 类提供了一个实例方法，可以安全地（动态地）执行这种类型的强制转换。该方法叫做 asSubclass，它将 Class 对象强制转换为它所调用的类对象，以表示由其参数表示的类的子类。如果转换成功，则该方法返回其参数；如果失败，则抛出 ClassCastException。</p>
+<p>下面是如何使用 asSubclass 方法读取在编译时类型未知的注释。这个方法编译没有错误或警告：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Use of asSubclass to safely cast to a bounded type token</span>
+<span class="hljs-keyword">static</span> Annotation <span class="hljs-title function_">getAnnotation</span><span class="hljs-params">(AnnotatedElement element,String annotationTypeName)</span> &#123;
+    Class&lt;?&gt; annotationType = <span class="hljs-literal">null</span>; <span class="hljs-comment">// Unbounded type token</span>
+    <span class="hljs-keyword">try</span> &#123;
+        annotationType = Class.forName(annotationTypeName);
+    &#125; <span class="hljs-keyword">catch</span> (Exception ex) &#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalArgumentException</span>(ex);
+    &#125;
+    <span class="hljs-keyword">return</span> element.getAnnotation(annotationType.asSubclass(Annotation.class));
+&#125;
+</code></pre>
+<p>总之，以集合的 API 为例的泛型在正常使用时将每个容器的类型参数限制为固定数量。你可以通过将类型参数放置在键上而不是容器上来绕过这个限制。你可以使用 Class 对象作为此类类型安全异构容器的键。以这种方式使用的 Class 对象称为类型标记。还可以使用自定义键类型。例如，可以使用 DatabaseRow 类型表示数据库行（容器），并使用泛型类型 <code>Column&lt;T&gt;</code> 作为它的键</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2022/07/14/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89/" title="Effective-Java学习笔记（四）" target="_blank" rel="external">https://zunpan.github.io/2022/07/14/Effective-Java学习笔记（四）/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/07/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89/" title="Effective-Java学习笔记（五）"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2022/07/07/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/" title="Effective-Java学习笔记（三）"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>深入理解Java虚拟机学习笔记 | panzun</title>
+  <meta name="description" content="第一部分 走近Java  1. 走近Java  1.1 概述 Java不仅仅是一门编程语言，还是一个由一系列计算机软件和规范组成的技术体系 Java优点：1. 一次编写，到处运行；2. 避免了绝大部分内存泄露和指针越界问题；3. 实现了热点代码检测和运行时编译及优化，越运行性能越好；4. 完善的类库  1.2 Java技术体系 广义上，Kotlin等运行在JVM上的编程语言都属于Java技术体系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解Java虚拟机学习笔记">
+<meta property="og:url" content="https://zunpan.github.io/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="第一部分 走近Java  1. 走近Java  1.1 概述 Java不仅仅是一门编程语言，还是一个由一系列计算机软件和规范组成的技术体系 Java优点：1. 一次编写，到处运行；2. 避免了绝大部分内存泄露和指针越界问题；3. 实现了热点代码检测和运行时编译及优化，越运行性能越好；4. 完善的类库  1.2 Java技术体系 广义上，Kotlin等运行在JVM上的编程语言都属于Java技术体系">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230610-225849195.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230610-231416313.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230615-210628087.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-192458680.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-194355057.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-194608417.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-200529059.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-222215679.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230619-205928722.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230619-220636571.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230621-005225729.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230621-005601185.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230621-011120062.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230623-183852237.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-201447667.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-202324451.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-203214503.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-204146049.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-210623950.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-211020700.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-213003554.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-225424687.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-163141458.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-164655072.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-210502176.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-213506046.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-221938700.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230716-221512875.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230716-222826226.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230716-223643829.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230716-223855413.png">
+<meta property="article:published_time" content="2023-06-10T15:30:14.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.285Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="深入理解Java虚拟机">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230610-225849195.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86-%E8%B5%B0%E8%BF%91java"><span class="toc-number">1.</span> <span class="toc-text"> 第一部分 走近Java</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%B5%B0%E8%BF%91java"><span class="toc-number">1.1.</span> <span class="toc-text"> 1. 走近Java</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#11-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 1.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#12-java%E6%8A%80%E6%9C%AF%E4%BD%93%E7%B3%BB"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 1.2 Java技术体系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#13-java%E5%8F%91%E5%B1%95%E5%8F%B2"><span class="toc-number">1.1.3.</span> <span class="toc-text"> 1.3 Java发展史</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%B6%E6%97%8F"><span class="toc-number">1.1.4.</span> <span class="toc-text"> 1.4 Java虚拟机家族</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#15-%E5%B1%95%E6%9C%9Bjava%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%AA%E6%9D%A5"><span class="toc-number">1.1.5.</span> <span class="toc-text"> 1.5 展望Java技术的未来</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text"> 第二部分 自动内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8"><span class="toc-number">2.1.</span> <span class="toc-text"> 2. Java内存区域与内存溢出异常</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#21-%E6%A6%82%E8%BF%B0"><span class="toc-number">2.1.1.</span> <span class="toc-text"> 2.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#22-%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F"><span class="toc-number">2.1.2.</span> <span class="toc-text"> 2.2 运行时数据区域</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#23-hotspot%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AF%B9%E8%B1%A1%E6%8E%A2%E7%A7%98"><span class="toc-number">2.1.3.</span> <span class="toc-text"> 2.3 HotSpot虚拟机对象探秘</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#231-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-number">2.1.3.1.</span> <span class="toc-text"> 2.3.1 对象的创建</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#232-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="toc-number">2.1.3.2.</span> <span class="toc-text"> 2.3.2 对象的内存布局</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#233-%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D"><span class="toc-number">2.1.3.3.</span> <span class="toc-text"> 2.3.3 对象的访问定位</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#24-%E5%AE%9E%E7%8E%B0outofmemoryerror%E5%BC%82%E5%B8%B8"><span class="toc-number">2.1.4.</span> <span class="toc-text"> 2.4 实现：OutOfMemoryError异常</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#241-java%E5%A0%86%E6%BA%A2%E5%87%BA"><span class="toc-number">2.1.4.1.</span> <span class="toc-text"> 2.4.1 Java堆溢出</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#242-%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88%E5%92%8C%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="toc-number">2.1.4.2.</span> <span class="toc-text"> 2.4.2 虚拟机栈和本地方法栈溢出</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#243-%E6%96%B9%E6%B3%95%E5%8C%BA%E5%92%8C%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0%E6%BA%A2%E5%87%BA"><span class="toc-number">2.1.4.3.</span> <span class="toc-text"> 2.4.3 方法区和运行时常量池溢出</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#244-%E6%9C%AC%E6%9C%BA%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA"><span class="toc-number">2.1.4.4.</span> <span class="toc-text"> 2.4.4 本机直接内存溢出</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E4%B8%8E%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5"><span class="toc-number">2.2.</span> <span class="toc-text"> 3. 垃圾收集器与内存分配策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#31-%E6%A6%82%E8%BF%B0"><span class="toc-number">2.2.1.</span> <span class="toc-text"> 3.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#32-%E5%88%A4%E6%96%AD%E5%AF%B9%E8%B1%A1%E6%98%AF%E5%90%A6%E5%AD%98%E6%B4%BB%E7%9A%84%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.2.</span> <span class="toc-text"> 3.2 判断对象是否存活的算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#33-%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.3.</span> <span class="toc-text"> 3.3 垃圾收集算法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#331-%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%90%86%E8%AE%BA"><span class="toc-number">2.2.3.1.</span> <span class="toc-text"> 3.3.1 分代收集理论</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#332-%E6%A0%87%E8%AE%B0-%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.3.2.</span> <span class="toc-text"> 3.3.2 标记-清除算法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#333-%E6%A0%87%E8%AE%B0-%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.3.3.</span> <span class="toc-text"> 3.3.3 标记-复制算法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#334-%E6%A0%87%E8%AE%B0-%E6%95%B4%E7%90%86%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.3.4.</span> <span class="toc-text"> 3.3.4 标记-整理算法</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#34-hotspot%E7%9A%84%E7%AE%97%E6%B3%95%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.4.</span> <span class="toc-text"> 3.4 HotSpot的算法细节实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#341-%E6%A0%B9%E8%8A%82%E7%82%B9%E6%9E%9A%E4%B8%BE"><span class="toc-number">2.2.4.1.</span> <span class="toc-text"> 3.4.1 根节点枚举</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#342-%E5%AE%89%E5%85%A8%E7%82%B9"><span class="toc-number">2.2.4.2.</span> <span class="toc-text"> 3.4.2 安全点</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#343-%E5%AE%89%E5%85%A8%E5%8C%BA%E5%9F%9F"><span class="toc-number">2.2.4.3.</span> <span class="toc-text"> 3.4.3 安全区域</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#344-%E8%AE%B0%E5%BF%86%E9%9B%86%E4%B8%8E%E5%8D%A1%E8%A1%A8"><span class="toc-number">2.2.4.4.</span> <span class="toc-text"> 3.4.4 记忆集与卡表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#345-%E5%86%99%E5%B1%8F%E9%9A%9C"><span class="toc-number">2.2.4.5.</span> <span class="toc-text"> 3.4.5 写屏障</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#346-%E5%B9%B6%E5%8F%91%E7%9A%84%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90"><span class="toc-number">2.2.4.6.</span> <span class="toc-text"> 3.4.6 并发的可达性分析</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#35-%E7%BB%8F%E5%85%B8%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.5.</span> <span class="toc-text"> 3.5 经典垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#351-serial%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.5.1.</span> <span class="toc-text"> 3.5.1 Serial收集器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#352-parnew%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.5.2.</span> <span class="toc-text"> 3.5.2 ParNew收集器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#353-parallel-scavenge%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.5.3.</span> <span class="toc-text"> 3.5.3 Parallel Scavenge收集器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#354-serial-old%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.5.4.</span> <span class="toc-text"> 3.5.4 Serial Old收集器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#355-parallel-old%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.5.5.</span> <span class="toc-text"> 3.5.5 Parallel Old收集器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#356-cms%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.5.6.</span> <span class="toc-text"> 3.5.6 CMS收集器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#357-garbage-firstg1%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.5.7.</span> <span class="toc-text"> 3.5.7 Garbage First（G1）收集器</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#36-%E4%BD%8E%E5%BB%B6%E8%BF%9F%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.6.</span> <span class="toc-text"> 3.6 低延迟垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#361-shenandoah%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.6.1.</span> <span class="toc-text"> 3.6.1 Shenandoah收集器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#362-zgc%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.6.2.</span> <span class="toc-text"> 3.6.2 ZGC收集器</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#37-%E9%80%89%E6%8B%A9%E5%90%88%E9%80%82%E7%9A%84%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.7.</span> <span class="toc-text"> 3.7 选择合适的垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#371-epsilon%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">2.2.7.1.</span> <span class="toc-text"> 3.7.1 Epsilon收集器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#372-%E6%94%B6%E9%9B%86%E5%99%A8%E7%9A%84%E6%9D%83%E8%A1%A1"><span class="toc-number">2.2.7.2.</span> <span class="toc-text"> 3.7.2 收集器的权衡</span></a></li></ol></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-深入理解Java虚拟机学习笔记" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      深入理解Java虚拟机学习笔记
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-date">
+	  <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">深入理解Java虚拟机</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 8.9k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 32(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="第一部分-走近java"><a class="markdownIt-Anchor" href="#第一部分-走近java"></a> 第一部分 走近Java</h2>
+<h3 id="1-走近java"><a class="markdownIt-Anchor" href="#1-走近java"></a> 1. 走近Java</h3>
+<h4 id="11-概述"><a class="markdownIt-Anchor" href="#11-概述"></a> 1.1 概述</h4>
+<p>Java不仅仅是一门编程语言，还是一个由一系列计算机软件和规范组成的技术体系</p>
+<p>Java优点：1. 一次编写，到处运行；2. 避免了绝大部分内存泄露和指针越界问题；3. 实现了热点代码检测和运行时编译及优化，越运行性能越好；4. 完善的类库</p>
+<h4 id="12-java技术体系"><a class="markdownIt-Anchor" href="#12-java技术体系"></a> 1.2 Java技术体系</h4>
+<p>广义上，Kotlin等运行在JVM上的编程语言都属于Java技术体系<br />
+传统上，JCP定义的Java技术体系包含：1. Java程序设计语言；2. 各种硬件平台上的Java虚拟机实现；3. Class文件格式；4 Java类库API；5. 来自商业机构和开源社区的第三方Java类库</p>
+<p>JDK：Java程序设计语言+Java虚拟机+Java类库<br />
+JRE：Java类库API中的Java SE API子集和Java虚拟机<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230610-225849195.png" alt="图 1" /></p>
+<h4 id="13-java发展史"><a class="markdownIt-Anchor" href="#13-java发展史"></a> 1.3 Java发展史</h4>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230610-231416313.png" alt="图 2" /></p>
+<h4 id="14-java虚拟机家族"><a class="markdownIt-Anchor" href="#14-java虚拟机家族"></a> 1.4 Java虚拟机家族</h4>
+<ul>
+<li>Sun Classic/Exact VM。Sun Classic是世界上第一款商用Java虚拟机，纯解释执行代码，如果外挂即时编译器会完全接管执行，两者不能混合工作。Exact VM解决了许多问题但是碰上了引进的HotSpot，生命周期很短</li>
+<li>HotSpot VM：使用最广泛的Java虚拟机。HotSpot继承了前者的优点，也有许多新特性，例如热点代码探测技术。JDK 8中的HotSpot融合了BEA JRockit优秀特性</li>
+<li>Mobile/Embedded VM：针对移动和嵌入式市场的虚拟机</li>
+<li>BEA JRockit/IBM J9 VM：JRockit专注服务端应用，不关注程序启动速度，全靠编译器编译后执行。J9定位类似HotSpot</li>
+<li>BEA Liquid VM/Azul VM：和专用硬件绑定，更高性能的虚拟机</li>
+<li>Apache Harmony/Google Android Dalvik VM：Harmony被吸收进IBM的JDK 7以及Android SDK，Dalvik被ART虚拟机取代</li>
+<li>Microsoft JVM：Windows系统下性能最好的Java虚拟机，因侵权被抹去</li>
+</ul>
+<h4 id="15-展望java技术的未来"><a class="markdownIt-Anchor" href="#15-展望java技术的未来"></a> 1.5 展望Java技术的未来</h4>
+<ul>
+<li>无语言倾向：Graal VM可以作为“任何语言”的运行平台</li>
+<li>新一代即时编译器：Graal编译器，取代C2（HotSpot中编译耗时长但代码优化质量高的即时编译器）</li>
+<li>向Native迈进：Substrate VM提前编译代码，显著降低内存和启动时间</li>
+<li>灵活的胖子：经过一系列重构与开放，提高开放性和扩展性</li>
+<li>语言语法持续增强：增加语法糖和语言功能</li>
+</ul>
+<h2 id="第二部分-自动内存管理"><a class="markdownIt-Anchor" href="#第二部分-自动内存管理"></a> 第二部分 自动内存管理</h2>
+<h3 id="2-java内存区域与内存溢出异常"><a class="markdownIt-Anchor" href="#2-java内存区域与内存溢出异常"></a> 2. Java内存区域与内存溢出异常</h3>
+<h4 id="21-概述"><a class="markdownIt-Anchor" href="#21-概述"></a> 2.1 概述</h4>
+<p>C、C++程序员需要自己管理内存，Java程序员在虚拟机自动内存管理机制下不需要为每一个new操作写对应的delete/free代码，但是一旦出现内存泄露和溢出，不了解虚拟机就很难排错</p>
+<h4 id="22-运行时数据区域"><a class="markdownIt-Anchor" href="#22-运行时数据区域"></a> 2.2 运行时数据区域</h4>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230615-210628087.png" alt="图 3" /></p>
+<ul>
+<li>程序计数器：当前线程执行的下一条指令的地址；线程私有；不会OOM</li>
+<li>虚拟机栈：Java方法执行的线程内存模型，每个方法执行时，JVM都会创建一个栈帧用于存储局部变量表、操作数栈、动态连接、方法出口等信息；线程私有；会栈溢出和OOM</li>
+<li>局部变量表：存放的变量的类型有8种基本数据类型、对象引用和returnAddress类型（指向字节码指令的地址），这些变量除了64位的long和double占两个变量槽，其它占1个。局部变量表的大小在编译器确定</li>
+<li>本地方法栈：和虚拟机栈作用类似，区别在于只是为本地（Native）方法服务，HotSpot将两者合二为一</li>
+<li>堆：“几乎”所有对象实例都在此分配内存；可分代，也不分代；逻辑上连续，物理上可以不连续；会OOM</li>
+<li>方法区：也叫“非堆”，存储已加载的类型信息、常量、静态变量、即时编译器编译后的代码缓存等数据；实现上，之前HotSpot使用永久代实现方法区，目的是方便垃圾回收，但是这样有OOM问题，JDK8废弃永久代改为使用本地内存的元空间，主要存放类型信息，其它移到堆；内存回收目标主要是常量池和类型信息</li>
+<li>运行时常量池：Class文件中的常量池表存放编译期生成的各种字面量和符号引用，这部分内容在类加载后放到方法区的运行时常量池；具有动态性，运行时产生的常量也可以放入运行时常量池，String类的intern()利用了这个特性；会OOM</li>
+<li>直接内存：不是运行时数据区的一部分，也不是Java虚拟机规范里定义的内存区域；NIO使用Native函数库直接分配堆外内存；会OOM</li>
+</ul>
+<h4 id="23-hotspot虚拟机对象探秘"><a class="markdownIt-Anchor" href="#23-hotspot虚拟机对象探秘"></a> 2.3 HotSpot虚拟机对象探秘</h4>
+<h5 id="231-对象的创建"><a class="markdownIt-Anchor" href="#231-对象的创建"></a> 2.3.1 对象的创建</h5>
+<ol>
+<li>当JVM碰到new指令，首先检查指令参数能否在常量池中定位到一个类的符号引用，并且检查该类是否已被加载、解析和初始化，如果没有就进行类加载过程</li>
+<li>JVM为新生对象分配内存。
+<ul>
+<li>对象所需内存大小在类加载后可确定，分配方法有两种：当垃圾收集器（Serial、ParNew）能空间压缩整理时，堆是规整的，分配内存就是把指针向空闲空间方向移动对象大小的距离，这种叫“指针碰撞”，使用CMS收集器的堆是不规整的，需要维护空闲列表来分配内存。</li>
+<li>内存分配可能线程不安全，例如线程在给A分配内存，指针来没来得及修改，另一线程创建对象B又同时使用了原来的指针来分配内存。解决方法有两个：1.对分配内存空间的动作进行同步处理，JVM采用CAS+失败重试的方式保证原子性；2.预先给每个线程分配一小块内存，称为本地线程分配缓冲（TLAB），线程分配内存先在TLAB上分配，TLAB用完了再同步分配新的缓存区</li>
+</ul>
+</li>
+<li>JVM将分配到的内存空间（不包括对象头）初始化为零值，这步保证对象的实例字段可以不赋初始值就直接使用</li>
+<li>JVM对对象进行必要的设置，例如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的GC分代年龄等信息，这些信息存放在对象的对象头中</li>
+<li>执行构造函数，即Class文件中的<code>&lt;init&gt;()</code></li>
+</ol>
+<h5 id="232-对象的内存布局"><a class="markdownIt-Anchor" href="#232-对象的内存布局"></a> 2.3.2 对象的内存布局</h5>
+<ul>
+<li>
+<p>对象头</p>
+<ul>
+<li>用于存储对象自身的运行时数据，如HashCode、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳，称为“Mark Word”。这部分数据长度32比特或64比特，Bitmap存储，为了在极小空间存储更多数据，不同状态的对象用不同标志位表示不同存储内容<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-192458680.png" alt="图 4" /></li>
+<li>类型指针，即对象指向它的类型元数据的指针，JVM通过该指针来确定对象是哪个类的实例。若对象是数组，还必须记录数组长度</li>
+</ul>
+</li>
+<li>
+<p>实例数据，包括父类继承下来的，和子类中定义的字段</p>
+</li>
+<li>
+<p>对齐填充，HotSpot要求对象大小必须是8字节的整数倍，不够就对齐填充</p>
+</li>
+</ul>
+<h5 id="233-对象的访问定位"><a class="markdownIt-Anchor" href="#233-对象的访问定位"></a> 2.3.3 对象的访问定位</h5>
+<p>通过栈上的reference数据来访问堆上的具体对象，访问方式由虚拟机实现决定，主流有两种</p>
+<ul>
+<li>句柄访问。Java堆会划分出一块内存来作为句柄池，reference中存储的是对象的句柄地址，句柄中包含了对象实例数据与类型数据各自具体的地址信息。优点是对象被移动时只需要改变句柄中的实例数据指针<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-194355057.png" alt="图 5" /></li>
+<li>直接指针访问。reference存储的就是对象地址，类型数据指针在对象中。优点是节省一次指针定位的时间开销，HotSpot使用此方式来访问对象<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-194608417.png" alt="图 6" /></li>
+</ul>
+<h4 id="24-实现outofmemoryerror异常"><a class="markdownIt-Anchor" href="#24-实现outofmemoryerror异常"></a> 2.4 实现：OutOfMemoryError异常</h4>
+<h5 id="241-java堆溢出"><a class="markdownIt-Anchor" href="#241-java堆溢出"></a> 2.4.1 Java堆溢出</h5>
+<pre class="highlight"><code class="java"><span class="hljs-comment">/**
+ * VM options:-Xms20m -Xmx20m -XX:+HeapDumpOnOutOfMemoryError 
+ * <span class="hljs-doctag">@author</span> panjiahao.cs@foxmail.com
+ * <span class="hljs-doctag">@date</span> 2023/6/18 19:54
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HeapOOM</span> &#123;
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OOMObject</span>&#123;
+
+    &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+        ArrayList&lt;OOMObject&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+
+        <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)&#123;
+            list.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OOMObject</span>());
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-200529059.png" alt="图 7" /></p>
+<p>排查思路：首先确认导致OOM的对象是否是必要的，也就是是分清楚是内存泄露了还是内存溢出了</p>
+<p>如果是内存泄露了，可以通过工具查看泄露对象到GC Roots的引用链，定位到产生内存泄露的代码的具体位置</p>
+<p>如果是内存溢出了，可以调大堆空间，优化生命周期过长的对象</p>
+<h5 id="242-虚拟机栈和本地方法栈溢出"><a class="markdownIt-Anchor" href="#242-虚拟机栈和本地方法栈溢出"></a> 2.4.2 虚拟机栈和本地方法栈溢出</h5>
+<p>HotSpot不区分虚拟机栈和本地方法栈，所以-Xoss（本地方法栈大小）参数没效果，栈容量由-Xss参数设定。</p>
+<p>当线程请求的栈深度大于虚拟机所允许的最大深度，将抛出StackOverflowError异常；当扩展栈容量无法申请到足够内存，将抛出OutOfMemoryError异常。HotSpot不支持扩展栈容量</p>
+<h5 id="243-方法区和运行时常量池溢出"><a class="markdownIt-Anchor" href="#243-方法区和运行时常量池溢出"></a> 2.4.3 方法区和运行时常量池溢出</h5>
+<p>JDK8使用元空间取代了永久代，运行时常量池移动到了堆中，所以可能会产生堆内存的OOM</p>
+<p>方法区的主要职责是存放类型信息，如类名、访问修饰符、常量池、字段描述、方法描述等。用CGLib不断生成增强类，可能产生元空间的OOM</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">/**
+ * VM Args：-XX:MaxMetaspaceSize=10M
+ * <span class="hljs-doctag">@author</span> panjiahao.cs@foxmail.com
+ * <span class="hljs-doctag">@date</span> 2023/6/18 22:13
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JavaMethodAreaOOM</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+        <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)&#123;
+            <span class="hljs-type">Enhancer</span> <span class="hljs-variable">enhancer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Enhancer</span>();
+            enhancer.setSuperclass(HeapOOM.OOMObject.class);
+            enhancer.setUseCache(<span class="hljs-literal">false</span>);
+            enhancer.setCallback(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MethodInterceptor</span>() &#123;
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">intercept</span><span class="hljs-params">(Object obj, Method method, Object[] objects, MethodProxy proxy)</span> <span class="hljs-keyword">throws</span> Throwable &#123;
+                    <span class="hljs-keyword">return</span> proxy.invokeSuper(obj,args);
+                &#125;
+            &#125;);
+            enhancer.create();
+        &#125;
+    &#125;
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OOMObject</span>&#123;
+
+    &#125;
+&#125;
+</code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230618-222215679.png" alt="图 8" /></p>
+<h5 id="244-本机直接内存溢出"><a class="markdownIt-Anchor" href="#244-本机直接内存溢出"></a> 2.4.4 本机直接内存溢出</h5>
+<p>直接内存通过-XX:MaxDirectMemorySize参数来指定，默认与Java堆最大值一致</p>
+<p>虽然使用DirectByteBuffer分配内存会OOM，但它抛出异常时并没有真正向操作系统申请内存，而是通过计算得知无法分配就手动抛异常，真正申请内存的方法是Unsafe::allocateMemory()</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">/**
+ * VM Args:-Xmx20M -XX:MaxDirectMemorySize=10M
+ * <span class="hljs-doctag">@author</span> panjiahao.cs@foxmail.com
+ * <span class="hljs-doctag">@date</span> 2023/6/19 20:38
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DirectMemoryOOM</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">_1MB</span> <span class="hljs-operator">=</span> <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IllegalAccessException &#123;
+        <span class="hljs-type">Field</span> <span class="hljs-variable">unsafeField</span> <span class="hljs-operator">=</span> Unsafe.class.getDeclaredFields()[<span class="hljs-number">0</span>];
+        unsafeField.setAccessible(<span class="hljs-literal">true</span>);
+        <span class="hljs-type">Unsafe</span> <span class="hljs-variable">unsafe</span> <span class="hljs-operator">=</span> (Unsafe) unsafeField.get(<span class="hljs-literal">null</span>);
+        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;
+            unsafe.allocateMemory(_1MB);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230619-205928722.png" alt="图 9" /></p>
+<p>由直接内存导致的内存溢出，一个明显的特征是Heap Dump文件不会看到有什么明显的异常情况。如果内存溢出后产生的Dump文件很小，而程序中又直接或间接使用了DirectMemory（NIO），可以重点检查直接内存</p>
+<h3 id="3-垃圾收集器与内存分配策略"><a class="markdownIt-Anchor" href="#3-垃圾收集器与内存分配策略"></a> 3. 垃圾收集器与内存分配策略</h3>
+<h4 id="31-概述"><a class="markdownIt-Anchor" href="#31-概述"></a> 3.1 概述</h4>
+<p>线程独占的程序计数器、虚拟机栈、本地方法栈3个区域的内存分配和回收都具备确定性。</p>
+<p>而Java堆和方法区有显著的不确定性：一个接口的多个实现类需要的内存可能不一样，一个方法不同分支需要的内存也不同，只有处于运行期间，才知道程序会创建哪些对象，这部分内存的分配和回收是动态的</p>
+<h4 id="32-判断对象是否存活的算法"><a class="markdownIt-Anchor" href="#32-判断对象是否存活的算法"></a> 3.2 判断对象是否存活的算法</h4>
+<ul>
+<li>引用计数法。看似简单，但必须配合大量额外处理才能正确工作，譬如简单的引用计数法无法解决对象循环引用</li>
+<li>可达性分析算法。从GC Roots对象开始，根据引用关系向下搜索，走过的路径称为“引用链”，引用链上对象仍然存活，不在引用链上的对象可回收。<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230619-220636571.png" alt="图 10" /></li>
+</ul>
+<p><strong>GC Roots对象包括以下几种：</strong></p>
+<ul>
+<li>虚拟机栈中引用的对象。例如方法参数、局部变量等</li>
+<li>方法区中类静态属性引用的对象。例如Java类的引用类型静态变量</li>
+<li>方法区中常量引用的对象。例如字符串常量池里的引用</li>
+<li>本地方法栈JNI引用的对象</li>
+<li>Java虚拟机内部的引用，如基本数据类型对应的Class对象，一些常驻的异常对象（比如NullPointException、OutOfMemoryError）、还有系统类加载器</li>
+<li>所有被同步锁（synchronized）持有的对象</li>
+<li>反映Java虚拟机内部情况的JMXBean、JVMTI中注册的回调、本地代码缓存等</li>
+<li>根据用户选用的垃圾收集器以及回收区域，临时加入其它对象。目的是当某个区域垃圾回收时，该区域的对象也可能被别的区域的对象引用</li>
+</ul>
+<p><strong>引用包含以下几种类型：</strong></p>
+<ul>
+<li>强引用：被强引用引用的对象不会被回收</li>
+<li>软引用：被软引用引用的对象在OOM前会被回收</li>
+<li>弱引用：被弱引用引用的对象在下一次垃圾回收时被回收</li>
+<li>虚引用：虚引用不会影响对象的生存时间，唯一目的是能在对象被回收时收到一个系统通知</li>
+</ul>
+<p>即便对象已经不可达，也不是立即标记为可回收，对象真正死亡要经历两次标记过程：可达性分析发现不可达就第一次标记；如果对象重写了finalize()方法且没过JVM调用过，那么该对象会被放到队列中，由Finalizer线程去执行finalize()方法，这是对象自救的最后一次机会，只要重新与引用链上任意对象建立关联就行，譬如把this赋给某个对象的成员变量，第二次标记时就会被移除“即将回收”集合</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">/**
+ * 此代码演示了两点：
+ * 1.对象可以在被GC时自我拯救。
+ * 2.这种自救的机会只有一次，因为一个对象的finalize()方法最多只会被系统自动调用一次
+ * <span class="hljs-doctag">@author</span> panjiahao.cs@foxmail.com
+ * <span class="hljs-doctag">@date</span> 2023/6/20 21:52
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FinalizeEscapeGC</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">FinalizeEscapeGC</span> <span class="hljs-variable">SAVE_HOOK</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">isAlive</span><span class="hljs-params">()</span>&#123;
+        System.out.println(<span class="hljs-string">&quot;yes, i am still alive&quot;</span>);
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">finalize</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Throwable &#123;
+        <span class="hljs-built_in">super</span>.finalize();
+        System.out.println(<span class="hljs-string">&quot;finalize method executed! :)&quot;</span>);
+        FinalizeEscapeGC.SAVE_HOOK = <span class="hljs-built_in">this</span>;
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;
+        SAVE_HOOK = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FinalizeEscapeGC</span>();
+
+        SAVE_HOOK = <span class="hljs-literal">null</span>;
+        System.gc();
+        Thread.sleep(<span class="hljs-number">500</span>);
+        <span class="hljs-keyword">if</span> (SAVE_HOOK != <span class="hljs-literal">null</span>) &#123;
+            SAVE_HOOK.isAlive();
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            System.out.println(<span class="hljs-string">&quot;no ,i am dead! :(&quot;</span>);
+        &#125;
+
+        <span class="hljs-comment">// 自救失败</span>
+        SAVE_HOOK = <span class="hljs-literal">null</span>;
+        System.gc();
+        Thread.sleep(<span class="hljs-number">500</span>);
+        <span class="hljs-keyword">if</span> (SAVE_HOOK != <span class="hljs-literal">null</span>) &#123;
+            SAVE_HOOK.isAlive();
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            System.out.println(<span class="hljs-string">&quot;no ,i am dead! :(&quot;</span>);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>方法区没有强制要垃圾回收，例如JDK11的ZGC不支持类卸载。</p>
+<p>方法区主要回收两部分：废弃的常量和不再使用的类型。</p>
+<p>回收废弃常量和回收堆中的对象非常类似<br />
+回收“不再使用的类”需要满足三个条件：</p>
+<ul>
+<li>该类所有实例已被回收，包括子类实例</li>
+<li>加载该类的类加载器已被回收，这个条件很难</li>
+<li>该类对象的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法</li>
+</ul>
+<h4 id="33-垃圾收集算法"><a class="markdownIt-Anchor" href="#33-垃圾收集算法"></a> 3.3 垃圾收集算法</h4>
+<p>从如何判定对象消亡的角度出发，GC算法可以划分为“引用计数式”和“追踪式”，这两类也被称作“直接垃圾收集”和“间接垃圾收集”。本节介绍追踪式垃圾收集</p>
+<h5 id="331-分代收集理论"><a class="markdownIt-Anchor" href="#331-分代收集理论"></a> 3.3.1 分代收集理论</h5>
+<p>分代收集理论建立在两个假说上：</p>
+<ul>
+<li>弱分代假说：绝大多数对象都是朝生夕灭的</li>
+<li>强分代假说：熬过越多次垃圾收集过程的对象就越难以消亡</li>
+</ul>
+<p>分代收集在遇到对象之间存在跨代引用时需要遍历其它代的所有对象来确定是否还存在跨代引用，性能负担大，所以给分代收集理论添加第三个假说：</p>
+<ul>
+<li>跨代引用假说：跨代引用相对于同代引用来说占极少数</li>
+</ul>
+<p>分代收集的名词定义：</p>
+<ul>
+<li>
+<p>部分收集（Partial GC）：指目标不是完整收集整个Java堆的垃圾收集，其中又分为：</p>
+<ul>
+<li>新生代收集（Minor GC/Young GC）：指目标只是新生代的垃圾收集</li>
+<li>老年代收集（Major GC/Old GC）：指目标只是老年代的垃圾收集。目前只有CMS会有单独收集老年代的行为</li>
+<li>混合收集（Mixed GC）：指目标是收集整个新生代以及部分老年代的垃圾收集。目前只有G1会有这种行为</li>
+</ul>
+</li>
+<li>
+<p>整堆收集（Full GC）：收集整个Java堆和方法区的垃圾</p>
+</li>
+</ul>
+<h5 id="332-标记-清除算法"><a class="markdownIt-Anchor" href="#332-标记-清除算法"></a> 3.3.2 标记-清除算法</h5>
+<p>标记所有需要回收的对象，标记完成后，统一回收<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230621-005225729.png" alt="图 11" /></p>
+<p>缺点：执行效率不稳定；内存空间碎片化</p>
+<h5 id="333-标记-复制算法"><a class="markdownIt-Anchor" href="#333-标记-复制算法"></a> 3.3.3 标记-复制算法</h5>
+<p>将内存划分为大小相等的两块，每次只使用一块。当这一块的内存用完了，就将还存活着的对象复制到另一外上面，然后再把已使用过的内存空间一次性清理掉</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230621-005601185.png" alt="图 12" /></p>
+<p>优点：对于多数对象都是可回收的情况，算法复制开销小；没有碎片<br />
+缺点：可用内存小了一半；需要空间担保</p>
+<p>1:1划分新生代太浪费空间，HotSpot将新生代划分成Eden:Survivor0:Survivor0 = 8:1:1，每次可以用Eden和一块Survivor，垃圾回收时把存活对象写到另一块Survivor，然后清理掉Eden和已用过的Survivor，当Survivor空间不足以容纳一次Minor GC之后存活的对象时，就需要依赖老年代进行分配担保</p>
+<h5 id="334-标记-整理算法"><a class="markdownIt-Anchor" href="#334-标记-整理算法"></a> 3.3.4 标记-整理算法</h5>
+<p>标记所有存活的对象，然后移动到内存空间一端，清理掉边界以外的内存<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230621-011120062.png" alt="图 13" /></p>
+<p>优点：解决了标记-清除算法造成的空间碎片化问题<br />
+缺点：整理期间，用户应用程序暂停，这段时间被称为“Stop The World”</p>
+<p>整理即移动对象，移动则内存回收时会更复杂，不移动则内存分配会更复杂。从GC停顿时间来看，不移动对象停顿时间短；从吞吐量来看，移动对象更划算。</p>
+<p>HotSpot里关注吞吐量的Parallel Scavenge收集器采用标记-整理算法，关注延迟的CMS收集器采用标记-清除算法</p>
+<h4 id="34-hotspot的算法细节实现"><a class="markdownIt-Anchor" href="#34-hotspot的算法细节实现"></a> 3.4 HotSpot的算法细节实现</h4>
+<h5 id="341-根节点枚举"><a class="markdownIt-Anchor" href="#341-根节点枚举"></a> 3.4.1 根节点枚举</h5>
+<p>固定作为GC Root的节点主要在全局性的引用（例如常量或类静态属性）与执行上下文（例如栈帧中的本地变量表），Java程序越来越庞大，逐个作为起点进行可达性分析会消耗大量时间</p>
+<p>目前，所有收集器在根节点枚举时和整理内存碎片一样必须暂停用户线程，可达性分析算法可以和用户线程一起并发。为了降低STW时间，在不扫描全部的GC Root节点情况下，得知哪些地方存在对象引用，HotSpot提供了OopMap的数据结构保存引用的位置信息</p>
+<h5 id="342-安全点"><a class="markdownIt-Anchor" href="#342-安全点"></a> 3.4.2 安全点</h5>
+<p>OopMap可以帮助HotSpot快速完成GC Root枚举，但是如果为每条改变OomMap内容的指令都生成对应的OopMap，会需要大量额外存储空间</p>
+<p>因此HotSpot没有为每条指令都生成OopMap，只在特定位置生成，这些位置称为安全点。用户程序只有在执行到安全点才能停顿下来垃圾回收。</p>
+<p>安全点的选取考虑：不能太少以至于让收集器等待时间太长，也不能太频繁以至于增大内存负担</p>
+<p>如何在垃圾回收时让所有线程（不包括执行JNI调用的线程）都跑到最近的安全点，然后停顿下来。有两种方案：</p>
+<ul>
+<li>抢先式中断：先把用户线程全部中断，如果发现有用户线程不在安全点上就恢复这个线程，过一会再中断直至它跑到安全点。现在几乎不使用</li>
+<li>主动式中断：设置一个标志位，各个线程执行时主动轮询这个标志，一旦为真主动中断挂起。HotSpot使用内存保护陷阱的方式将轮询操作精简至只有一条汇编指令</li>
+</ul>
+<h5 id="343-安全区域"><a class="markdownIt-Anchor" href="#343-安全区域"></a> 3.4.3 安全区域</h5>
+<p>当用户线程处于Sleep或者Blocked状态时不能执行到安全点。针对这种情况，引入安全区域。</p>
+<p>安全区域是指在某一段代码片段中，引用关系不会发生变化，在这个区域中任意地方开始GC都是安全的。</p>
+<p>当用户线程执行到安全区域时，首先标识自己进入了安全区域，这样在GC时，虚拟机就不会去管这些已标识自己进入安全区域的线程。当线程离开安全区域时，它检查虚拟机是否完成了根节点枚举（或者其它需要暂停用户线程的阶段），如果完成了就继续执行，否则等待直到收到可以离开安全区域的信号为止。</p>
+<h5 id="344-记忆集与卡表"><a class="markdownIt-Anchor" href="#344-记忆集与卡表"></a> 3.4.4 记忆集与卡表</h5>
+<p>记忆集是一种记录从非收集区域指向收集区域的指针集合的抽象数据结构，用于解决对象跨代引用带来的问题</p>
+<p>记忆集最简单的实现是非收集区域中所有含跨代引用的对象数组，这种结构浪费太多空间，可以粗化记录粒度：</p>
+<ul>
+<li>字长精度：每个记录精确到一个机器字长（就是处理器的寻址位数，如32或64），该字包含跨代指针</li>
+<li>卡精度：每个记录精确到一块内存区域，该区域有对象含有跨代指针</li>
+</ul>
+<p>卡精度使用卡表实现，卡表的实现是一个字节数组，字节数组每个元素都对应着一块特定大小的内存块，称为卡页。只要卡页内有一个或更多对象的字段存在跨代引用，卡表中对应的数组元素的值标识为1，称为变脏。垃圾收集时，只要筛选出卡表中变脏的元素就可以知道哪些卡页内存块有跨代引用，把它们放入GC Roots中一起扫描</p>
+<h5 id="345-写屏障"><a class="markdownIt-Anchor" href="#345-写屏障"></a> 3.4.5 写屏障</h5>
+<p>卡表元素变脏的时间点是引用类型字段赋值那一刻，HotSpot通过写屏障来维护卡表状态。写屏障可以看作JVM层面对“引用类型字段赋值”这个动作的AOP切面。</p>
+<p>写屏障会导致伪共享问题，伪共享是指，现代CPU的缓存系统是以缓存行为单位存储的，当多线程修改相互独立的变量时，如果这些变量恰好共享同一个缓存行，就会彼此影响（写回、无效化或者同步）而导致性能降低</p>
+<p>伪共享的一种简单解决方法是不采用无条件的写屏障，而是先检查卡表标记，只有卡表元素未被标记时才将其变脏。HotSpot参数-XX:+UseCondCardMark决定是否开启卡表更新，开启会多一次判断开销，但能够避免伪共享带来的性能损耗</p>
+<h5 id="346-并发的可达性分析"><a class="markdownIt-Anchor" href="#346-并发的可达性分析"></a> 3.4.6 并发的可达性分析</h5>
+<p>可达性分析在标记阶段会暂停用户线程以在一致性的快照上进行对象图的遍历，不一致情况下会出现“对象消失”问题。原因可以由三色标记方法推导</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230623-183852237.png" alt="图 14" /></p>
+<p>白色：表示对象尚未被垃圾收集器访问过。显然在可达性分析刚开始时，所有对象都是白的，若在分析结束阶段，仍然是白色的对象是不可达<br />
+黑色：表示对象已经被垃圾收集器访问过，且这个对象的所有引用都已经扫描过。黑色对象代表已经扫描过，是安全存活的，如果有其它对象引用指向了黑色对象，无须重新扫描一遍。黑色对象不可能直接（不经过灰色对象）指向某个白色对象<br />
+灰色：表示对象已经被垃圾收集器访问过，但这个对象上至少存在一个引用还没有被扫描过</p>
+<p>当且仅当以下两个条件同时满足时，会产生“对象消失”问题，即原本应该黑色的对象被误标为白色：</p>
+<ul>
+<li>赋值器插入了一条或多条从黑色对象到白色对象的新引用</li>
+<li>赋值器删除了全部从灰色对象到该白色对象的直接或间接引用</li>
+</ul>
+<p>解决并发扫描时的对象消失问题，只需破坏两个条件之一即可，因此有两种方案：</p>
+<ul>
+<li>增量更新。增量更新破坏条件一，当黑色对象插入新的指向白色对象的引用关系时，就将这个新插入的引用记录下来，等并发扫描结束后，再以这个黑色对象为根，重新扫描一次。可以理解为，黑色对象一旦新插入指向白色对象的引用之后，它就变回灰色对象</li>
+<li>原始快照。当灰色对象要删除指向白色对象的引用关系时，就将这个要删除的引用记录下来，在并发扫描结束之后，再将这些记录过的引用关系中的灰色对象为根，重新扫描一次。可以理解为，无论引用关系删除与否，都会按照刚开始扫描那一刻的对象图快照进行搜索</li>
+</ul>
+<p>对引用关系记录的插入和删除都是通过写屏障实现。</p>
+<h4 id="35-经典垃圾收集器"><a class="markdownIt-Anchor" href="#35-经典垃圾收集器"></a> 3.5 经典垃圾收集器</h4>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-201447667.png" alt="图 15" /></p>
+<p>图中连线表示可以搭配使用</p>
+<h5 id="351-serial收集器"><a class="markdownIt-Anchor" href="#351-serial收集器"></a> 3.5.1 Serial收集器</h5>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-202324451.png" alt="图 16" /></p>
+<p>适合资源（cpu和内存）受限的场景，新生代一两百兆以内的垃圾收集停顿时间最多一百多毫秒以内</p>
+<h5 id="352-parnew收集器"><a class="markdownIt-Anchor" href="#352-parnew收集器"></a> 3.5.2 ParNew收集器</h5>
+<p>实质是多线程版的Serial</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-203214503.png" alt="图 17" /></p>
+<h5 id="353-parallel-scavenge收集器"><a class="markdownIt-Anchor" href="#353-parallel-scavenge收集器"></a> 3.5.3 Parallel Scavenge收集器</h5>
+<p>与ParNew类似，不同点是其它收集器关注停顿时间，Parallel Scavenge收集器目标是可控制的吞吐量</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-204146049.png" alt="图 18" /></p>
+<p>-XX:MaxGCPauseMillis控制最大垃圾收集停顿时间，-XX:GCTimeRatio直接设置吞吐量，-XX:+UseAdaptiveSizePolicy会根据系统运行情况动态调整虚拟机参数以获得最合适的停顿时间或者最大的吞吐量</p>
+<h5 id="354-serial-old收集器"><a class="markdownIt-Anchor" href="#354-serial-old收集器"></a> 3.5.4 Serial Old收集器</h5>
+<p>Serial收集器的老年代版本</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-210623950.png" alt="图 19" /></p>
+<h5 id="355-parallel-old收集器"><a class="markdownIt-Anchor" href="#355-parallel-old收集器"></a> 3.5.5 Parallel Old收集器</h5>
+<p>Parallel Scavenge的老年代版本，在注重吞吐量或者处理器资源稀缺场合，可以考虑使用Parallel Scavenge+Parallel Old</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-211020700.png" alt="图 20" /></p>
+<h5 id="356-cms收集器"><a class="markdownIt-Anchor" href="#356-cms收集器"></a> 3.5.6 CMS收集器</h5>
+<p>四步骤：<br />
+1）初始标记<br />
+2）并发标记<br />
+3）重新标记<br />
+4）并发清理</p>
+<p>初始标记和重新标记仍然要暂停用户线程。初始标记仅仅标记GC Roots能直接关联的对象，速度很快；并发标记从关联对象开始遍历整个对象图，不需要暂停用户线程；重新标记用来修正并发标记期间的变动（增量更新）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-213003554.png" alt="图 21" /></p>
+<p>优点：并发收集、低停顿<br />
+缺点：</p>
+<ul>
+<li>对处理器资源敏感。并发会占用处理器，降低吞吐量</li>
+<li>无法处理“浮动垃圾”。“浮动垃圾”指并发标记和清理期间用户线程产生的垃圾在下一次GC时清理，预留空间不足会，预留空间不足会导致“Concurrent Mode Failure”进而导致Full GC或者Serial Old重新回收老年代。</li>
+<li>内存空间碎片化</li>
+</ul>
+<h5 id="357-garbage-firstg1收集器"><a class="markdownIt-Anchor" href="#357-garbage-firstg1收集器"></a> 3.5.7 Garbage First（G1）收集器</h5>
+<p>开创面向局部收集的设计思路和基于Region的内存布局形式</p>
+<p>局部收集只收集范围不是新生代或老年代，而是堆中任意部分。</p>
+<p>基于Region的堆内存布局：G1不再坚持固定大小和数量的分代区域划分，而是把连续的堆划分为多个大小相等的独立区域Region，每个Region都可以根据需要扮演新生代或者老年代。超过Region容量一半的对象会被存到Humongous区域中，超过整个Region容量的对象会被存到N个连续的Humongous Region中，G1大多数行为把Humongous Region当老年代处理<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230628-225424687.png" alt="图 22" /></p>
+<p>四个步骤：</p>
+<ul>
+<li>初始标记：标记GC Roots能直接关联的对象，修改TAMS指针的值，让下一阶段用户并发运行时能正确在可用的Region中分配新对象</li>
+<li>并发标记：递归扫描对象图。扫描完成后重新处理SATB记录下的在并发时有引用变动的对象</li>
+<li>最终标记：处理并发阶段遗留的少量SATB记录</li>
+<li>筛选回收：负责更新Region统计数据，制定回收计划</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-163141458.png" alt="图 23" /></p>
+<h4 id="36-低延迟垃圾收集器"><a class="markdownIt-Anchor" href="#36-低延迟垃圾收集器"></a> 3.6 低延迟垃圾收集器</h4>
+<p>垃圾收集器“不可能三角”：内存占用、吞吐量、延迟。延迟是最重要指标</p>
+<p>下图，浅色表示挂起用户线程，深色表示gc线程和用户线程并发</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-164655072.png" alt="图 24" /></p>
+<p>Shenandoah和ZGC在可管理的堆容量下，停顿时间基本是固定的，两者被命名为低延迟垃圾收集器</p>
+<h5 id="361-shenandoah收集器"><a class="markdownIt-Anchor" href="#361-shenandoah收集器"></a> 3.6.1 Shenandoah收集器</h5>
+<p>目标：能在任何堆内存大小下都可以把GC停顿时间限制在10ms以内</p>
+<p>Shenandoah和G1有相似的堆内存布局，在初始标记、并发标记等阶段的处理思路高度一致。<br />
+有三个明显的不同：</p>
+<ul>
+<li>支持并发的整理算法</li>
+<li>默认不分代，即不使用专门的新生代Region和老年代Region</li>
+<li>放弃G1中耗费大量内存和计算资源去维护的记忆集，改为“连接矩阵”记录跨Region的引用关系</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-210502176.png" alt="图 25" /></p>
+<p>收集器的工作分为九个阶段：</p>
+<ul>
+<li>初始标记：与G1一样，首先标记GC Roots直接关联的对象，停顿时间与堆大小无关，与GC Roots数量有关</li>
+<li>并发标记：与G1一样，遍历对象图，与用户线程并发，时间取决于对象数量和对象图的结构复杂程度</li>
+<li>最终标记：与G1一样，处理剩余的SATB扫描，统计价值最高的Region组成回收集，有一小段停顿时间</li>
+<li>并发清理：清理一个存活对象都没有的Region</li>
+<li>并发回收：将回收集中的存活对象复制到未被使用的Region中，通过读屏障和“Brooks Pointers”转发指针解决和用户线程并发产生的问题</li>
+<li>初始引用更新：一个非常短暂的停顿，用于确保所有并发回收阶段中收集器线程都已完成分配对象移动任务</li>
+<li>并发引用更新：真正开始进行引用更新，与用户线程并发</li>
+<li>最终引用更新：修正存在于GC Roots中的引用，停顿时间与GC Roots的数量有关</li>
+<li>并发清理：经过并发回收和引用更新后，整个回收集的Region已经没有存货对象，回收这些Region的内存空间</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-213506046.png" alt="图 26" /></p>
+<p>对象移动和用户程序并发，原来的解决方案是在被移动对象原有的内存上设置保护陷阱，一旦用户程序访问到原有的地址就产生自陷中断，进入预设的异常处理器，将访问转发到新对象。这个方案会导致用户态频繁切换到核心态</p>
+<p>Brooks Pointers是在原有对象布局结构的最前面加一个新的引用字段，移动前指向自己，移动后指向新对象。这里需要用CAS解决对象访问的并发问题</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230701-221938700.png" alt="图 27" /></p>
+<h5 id="362-zgc收集器"><a class="markdownIt-Anchor" href="#362-zgc收集器"></a> 3.6.2 ZGC收集器</h5>
+<p>ZGC收集器是一款基于Region内存布局的，不设分代的，使用了读屏障、染色指针和内存多重映射等技术来实现可并发的标记-整理算法的，以低延迟为首要目标的一款垃圾收集器。收集过程全程可并发，短暂停顿时间只与GC Roots大小相关而与堆内存大小无关</p>
+<ol>
+<li>
+<p>ZGC的Region是动态的：动态创建和销毁、动态大小</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230716-221512875.png" alt="图 28" /></p>
+</li>
+<li>
+<p>染色指针：把标记信息记在引用对象的指针上，标记信息有4个bit，虚拟机可以直接从指针中看到其引用对 象的三色标记状态、是否进入了重分配集（即被移动过）、是否只能通过finalize()方法才能被访问到</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230716-222826226.png" alt="图 29" /></p>
+<p>三大优势：</p>
+<ul>
+<li>染色指针可以使得一旦某个Region的存活对象被移走之后，这个Region立即就能够被释放和重用 掉，而不必等待整个堆中所有指向该Region的引用都被修正后才能清理</li>
+<li>染色指针可以大幅减少在垃圾收集过程中内存屏障的使用数量，设置内存屏障，尤其是写屏障的 目的通常是为了记录对象引用的变动情况，如果将这些信息直接维护在指针中，显然就可以省去一些专门的记录操作</li>
+<li>染色指针可以作为一种可扩展的存储结构用来记录更多与对象标记、重定位过程相关的数据，以 便日后进一步提高性能</li>
+</ul>
+<p>标志位影响了寻址地址，ZGC通过多重映射，将不同标志位的指针映射到同一内存区域</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230716-223643829.png" alt="图 30" /></p>
+</li>
+<li>
+<p>ZGC的收集过程分为四大阶段</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20230716-223855413.png" alt="图 31" /></p>
+<ul>
+<li>并发标记：与G1、Shenandoah类似，区别是标记在指针上而不是对象上，标记会更新染色指针的Marked 0、Marked 1标志位</li>
+<li>并发预备重分配：根据特定的查询条件统计得出本次收集过程要清理哪些Region，将这些Region组成重分配集</li>
+<li>并发重分配：把重分配集中的存活对象复制到新的Region上，并为重分配集中的每个Region维护一个转发表，记录从旧对象到新对象的转向关系</li>
+<li>并发重映射：修正整个堆中指向重分配集中旧对象的所 有引用</li>
+</ul>
+</li>
+</ol>
+<h4 id="37-选择合适的垃圾收集器"><a class="markdownIt-Anchor" href="#37-选择合适的垃圾收集器"></a> 3.7 选择合适的垃圾收集器</h4>
+<h5 id="371-epsilon收集器"><a class="markdownIt-Anchor" href="#371-epsilon收集器"></a> 3.7.1 Epsilon收集器</h5>
+<p>不收集垃圾，负责堆的管理与布局、对象的分配、与解释器的协作、与编译器的协作、与监控子系统协作等职责</p>
+<p>响应微服务而生，在堆内存耗尽前就退出，不收集垃圾就非常合适</p>
+<h5 id="372-收集器的权衡"><a class="markdownIt-Anchor" href="#372-收集器的权衡"></a> 3.7.2 收集器的权衡</h5>
+<p>三个因素：</p>
+<ul>
+<li>应用程序关注点是什么？吞吐量、延时还是内存占用</li>
+<li>基础设施如何？处理器的数量、内存大小、操作系统</li>
+<li>JDK的发行商是谁？版本号是多少</li>
+</ul>
+<p>例如直接面向用户的B/S系统，延迟是主要关注点。</p>
+<ul>
+<li>预算充足就用商业的</li>
+<li>预算不足但能掌控基础设施，可以尝试ZGC</li>
+<li>对ZGC的稳定性有疑虑就考虑Shenandoah</li>
+<li>软硬件和JDK都老的考虑CMS</li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="深入理解Java虚拟机学习笔记" target="_blank" rel="external">https://zunpan.github.io/2023/06/10/深入理解Java虚拟机学习笔记/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="大话设计模式学习笔记"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" title="Excel比对与合并系统"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

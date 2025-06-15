@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Effective-Java学习笔记（二） | panzun</title>
+  <meta name="description" content="第三章 对象的通用方法  10. 覆盖 equals 方法时应遵守的约定  不覆盖equals方法的情况   类的每个实例本质上都是唯一的。例如Thread类，它是活动实体类而不是值类   该类不需要提供逻辑相等测试。例如java.util.regex.Pattern可以覆盖equals方法来检查两个Pattern实例是否表示完全相同的正则表达式，但是这个类的设计人员认为客户端不需要这个功能，所">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective-Java学习笔记（二）">
+<meta property="og:url" content="https://zunpan.github.io/2022/06/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="第三章 对象的通用方法  10. 覆盖 equals 方法时应遵守的约定  不覆盖equals方法的情况   类的每个实例本质上都是唯一的。例如Thread类，它是活动实体类而不是值类   该类不需要提供逻辑相等测试。例如java.util.regex.Pattern可以覆盖equals方法来检查两个Pattern实例是否表示完全相同的正则表达式，但是这个类的设计人员认为客户端不需要这个功能，所">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-30T11:50:05.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.274Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="Effective-Java">
+<meta property="article:tag" content="对象的通用方法">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2022/06/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text"> 第三章 对象的通用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E8%A6%86%E7%9B%96-equals-%E6%96%B9%E6%B3%95%E6%97%B6%E5%BA%94%E9%81%B5%E5%AE%88%E7%9A%84%E7%BA%A6%E5%AE%9A"><span class="toc-number">1.1.</span> <span class="toc-text"> 10. 覆盖 equals 方法时应遵守的约定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 不覆盖equals方法的情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E6%97%B6%E6%9C%BA"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 覆盖equals方法的时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E8%A7%84%E8%8C%83"><span class="toc-number">1.1.3.</span> <span class="toc-text"> 覆盖equals方法的规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AB%98%E8%B4%A8%E9%87%8F%E6%9E%84%E5%BB%BAequals%E6%96%B9%E6%B3%95%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.1.4.</span> <span class="toc-text"> 高质量构建equals方法的步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E8%AD%A6%E5%91%8A"><span class="toc-number">1.1.5.</span> <span class="toc-text"> 一些警告</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E5%BD%93%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E6%97%B6%E6%80%BB%E6%98%AF%E8%A6%86%E7%9B%96hashcode%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text"> 11. 当覆盖equals方法时，总是覆盖hashCode方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#object%E7%B1%BB%E4%B8%ADhashcode%E6%96%B9%E6%B3%95%E7%9A%84%E8%A7%84%E8%8C%83"><span class="toc-number">1.2.1.</span> <span class="toc-text"> Object类中hashCode方法的规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%A3%E5%88%97%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.2.</span> <span class="toc-text"> 散列算法设计步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E6%95%A3%E5%88%97%E5%80%BC"><span class="toc-number">1.2.3.</span> <span class="toc-text"> 缓存散列值</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E5%A7%8B%E7%BB%88%E8%A6%86%E7%9B%96tostring%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.</span> <span class="toc-text"> 12. 始终覆盖toString方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E6%98%8E%E6%99%BA%E5%9C%B0%E8%A6%86%E7%9B%96clone%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text"> 13. 明智地覆盖clone方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cloneable%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.4.1.</span> <span class="toc-text"> Cloneable接口的作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#clone-%E6%96%B9%E6%B3%95%E8%A7%84%E8%8C%83"><span class="toc-number">1.4.2.</span> <span class="toc-text"> clone 方法规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96clone%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.3.</span> <span class="toc-text"> 覆盖clone方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82"><span class="toc-number">1.4.4.</span> <span class="toc-text"> 一些细节</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.5.</span> <span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E8%80%83%E8%99%91%E5%AE%9E%E7%8E%B0-comparable-%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.5.</span> <span class="toc-text"> 14. 考虑实现 Comparable 接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#compareto%E6%96%B9%E6%B3%95%E7%BA%A6%E5%AE%9A"><span class="toc-number">1.5.1.</span> <span class="toc-text"> compareTo方法约定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E5%86%99-compareto-%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.2.</span> <span class="toc-text"> 编写 compareTo 方法</span></a></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Effective-Java学习笔记（二）" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective-Java学习笔记（二）
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/06/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/" class="article-date">
+	  <time datetime="2022-06-30T11:50:05.000Z" itemprop="datePublished">2022-06-30</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" rel="tag">对象的通用方法</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/06/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 6k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 21(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="第三章-对象的通用方法"><a class="markdownIt-Anchor" href="#第三章-对象的通用方法"></a> 第三章 对象的通用方法</h2>
+<h3 id="10-覆盖-equals-方法时应遵守的约定"><a class="markdownIt-Anchor" href="#10-覆盖-equals-方法时应遵守的约定"></a> 10. 覆盖 equals 方法时应遵守的约定</h3>
+<h4 id="不覆盖equals方法的情况"><a class="markdownIt-Anchor" href="#不覆盖equals方法的情况"></a> 不覆盖equals方法的情况</h4>
+<ul>
+<li>
+<p>类的每个实例本质上都是唯一的。例如Thread类，它是活动实体类而不是值类</p>
+</li>
+<li>
+<p>该类不需要提供逻辑相等测试。例如<code>java.util.regex.Pattern</code>可以覆盖equals方法来检查两个Pattern实例是否表示完全相同的正则表达式，但是这个类的设计人员认为客户端不需要这个功能，所以没有覆盖</p>
+</li>
+<li>
+<p>父类已经覆盖了equals方法，父类的行为也适合于这个类。例如大多数Set的equals从AbstractSet继承，List从AbstractList继承，Map从AbstractMap继承</p>
+</li>
+<li>
+<p>类是私有的并且你确信它的equals方法永远不会被调用。保险起见，你可以按如下方式覆盖equals方法，以确保它不会被意外调用</p>
+<pre class="highlight"><code class="java"><span class="hljs-meta">@Override</span>
+<span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">equals</span><span class="hljs-params">(Object o)</span> &#123;
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AssertionError</span>(); <span class="hljs-comment">// Method is never called</span>
+&#125;
+</code></pre>
+</li>
+</ul>
+<h4 id="覆盖equals方法的时机"><a class="markdownIt-Anchor" href="#覆盖equals方法的时机"></a> 覆盖equals方法的时机</h4>
+<p>当一个类有一个逻辑相等的概念，而这个概念不同于仅判断对象的同一性（相同对象的引用），并且父类没有覆盖 equals。对于值类通常是这样。值类只是表示值的类，例如 Integer 或 String。程序员希望发现它们在逻辑上是否等价，而不是它们是否引用相同的对象。覆盖 equals 方法不仅是为了满足程序员的期望，它还使实例能够作为 Map 的键或 Set 元素时，具有可预测的、理想的行为。</p>
+<p>单例模式的值类不需要覆盖equals方法。例如，枚举类型就是单例值类。逻辑相等就是引用相等。</p>
+<h4 id="覆盖equals方法的规范"><a class="markdownIt-Anchor" href="#覆盖equals方法的规范"></a> 覆盖equals方法的规范</h4>
+<ul>
+<li>
+<p>反身性：对于任何非空的参考值x，<code>x.equals(x)</code>必须返回true</p>
+</li>
+<li>
+<p>对称性：<code>x.equals(y)</code>与<code>y.equals(x)</code>的值要么都为true要么为false</p>
+</li>
+<li>
+<p>传递性：对于非空引用x，y，z，如果<code>x.equals(y)</code>返回true，<code>y.equals(z)</code>返回true，那么<code>x.equals(z)</code>也返回true</p>
+</li>
+<li>
+<p>一致性：对于任何非空的引用值 x 和 y，<code>x.equals(y)</code> 的多次调用必须一致地返回 true 或一致地返回 false，前提是不修改 equals 中使用的信息。</p>
+</li>
+<li>
+<p>非空性：对于非空引用x，<code>x.equals(null)</code>返回false，不需要显示判断是否为null，因为equals方法需要将参数转为成相同类型，转换之前会使用instanceof运算符来检查类型是否正确，如果为null，也会返回false</p>
+<pre class="highlight"><code class="java"><span class="hljs-meta">@Override</span>
+<span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">equals</span><span class="hljs-params">(Object o)</span> &#123;
+    <span class="hljs-keyword">if</span> (!(o <span class="hljs-keyword">instanceof</span> MyType))
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    <span class="hljs-type">MyType</span> <span class="hljs-variable">mt</span> <span class="hljs-operator">=</span> (MyType) o;
+    ...
+&#125;
+</code></pre>
+</li>
+</ul>
+<h4 id="高质量构建equals方法的步骤"><a class="markdownIt-Anchor" href="#高质量构建equals方法的步骤"></a> 高质量构建equals方法的步骤</h4>
+<p>1、使用==检查参数是否是this对象的引用，如果是，返回true，这是一种性能优化，如果比较的开销很大，这种优化很有必要<br />
+2、使用instanceof运算符检查参数是否有正确类型。<br />
+3、将参数转换为正确的类型。因为在转换前进行了instanceof判断，所以肯定可以强转成功<br />
+4、对类中的每个有意义的字段检查是否和参数的相应字段匹配</p>
+<p>对于不是float和double的基本类型字段，使用==比较；对应对象引用字段，递归调用equals方法；对于float字段，使用静态方法<code>Float.compare(float,float)</code>方法；对于double字段，使用<code>Double.compare(double,double)</code>。float和double字段的特殊处理是由于<code>Float.NaN</code>,-0.0f 和类似的双重值的存在；对于数组字段，使用<code>Arrays.equals</code>方法。</p>
+<p>一些对象引用字段可能允许null出现。为了避免可能出现NullPointerException，请使用<code>Objects.equals(Object,Object)</code>来检查对象的字段是否相等。</p>
+<p>对于某些类，字段比较非常复杂，如果是这样，可以存储字段的规范形式，以便equals方法进行开销较小的比较。这种技术最适合于不可变类；如果对象可以修改，则必须使规范形式保持最新</p>
+<p>equals 方法的性能可能会受到字段比较顺序的影响。为了获得最佳性能，你应该首先比较那些更可能不同、比较成本更低的字段。不能比较不属于对象逻辑状态的字段，例如用于同步操作的锁字段。派生字段可以不比较，这样可以提高性能，但是如果派生字段包括了对象的所有信息，比如说多边形面积，可以从边和顶点计算得出，那么先比较面积，面积不一样就肯定不是同一个对象，这样可以减小开销</p>
+<h4 id="一些警告"><a class="markdownIt-Anchor" href="#一些警告"></a> 一些警告</h4>
+<ul>
+<li>覆盖equals方法时，也要覆盖hashCode方法</li>
+<li>考虑任何形式的别名都不是一个好主意。例如，File类不应该尝试将引用同一文件的符号链接等同起来</li>
+<li>不要用别的类型替换equals方法的Object类型</li>
+</ul>
+<h3 id="11-当覆盖equals方法时总是覆盖hashcode方法"><a class="markdownIt-Anchor" href="#11-当覆盖equals方法时总是覆盖hashcode方法"></a> 11. 当覆盖equals方法时，总是覆盖hashCode方法</h3>
+<h4 id="object类中hashcode方法的规范"><a class="markdownIt-Anchor" href="#object类中hashcode方法的规范"></a> Object类中hashCode方法的规范</h4>
+<ul>
+<li>应用程序执行期间对对象重复调用hashCode方法，它必须返回相同的值，前提是不修改equals方法中用于比较的信息。这个值不需要在应用程序的不同执行之间保持一致</li>
+<li>如果<code>equals(Object)</code>方法返回true，那么在这两个对象上调用hashCode方法必须产生相同的整数结果</li>
+<li>如果<code>equals(Object)</code>方法返回false，hashCode方法的值不需要一定不同，但是，不同对象的hashCode不一样可以提高散列表性能</li>
+</ul>
+<p>当没有覆盖hashCode方法时，将违反第二条规范：逻辑相等的对象必须有相等的散列码。两个不同的对象在逻辑上是相等的，但它们的hashCode一般不相等。例如用Item-10中的PhoneNumber类实例作为HashMap的键</p>
+<pre class="highlight"><code class="java">Map&lt;PhoneNumber, String&gt; m = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();
+m.put(<span class="hljs-keyword">new</span> <span class="hljs-title class_">PhoneNumber</span>(<span class="hljs-number">707</span>, <span class="hljs-number">867</span>, <span class="hljs-number">5309</span>), <span class="hljs-string">&quot;Jenny&quot;</span>);
+</code></pre>
+<p>此时，你可能期望<code>m.get(new PhoneNumber(707, 867,5309))</code> 返回「Jenny」，但是它返回 null。因为PhoneNumber类没有覆盖hashCode方法，插入到HashMap和从HashMap中获取的实例具有不相同的散列码，这违法了hashCode方法规范。因此，get方法查找电话号码的散列桶与put方法存储电话号码的散列桶不同。</p>
+<p>解决这个问题有一个最简单但很糟糕的实现</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// The worst possible legal hashCode implementation - never use!</span>
+<span class="hljs-meta">@Override</span>
+<span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">hashCode</span><span class="hljs-params">()</span> &#123; <span class="hljs-keyword">return</span> <span class="hljs-number">42</span>; &#125;
+</code></pre>
+<p>它确保了逻辑相等的对象具有相同的散列码。同时它也很糟糕，因为每个对象的散列码都相同了。每个对象都分配到一个存储桶中，散列表退化成链表。</p>
+<h4 id="散列算法设计步骤"><a class="markdownIt-Anchor" href="#散列算法设计步骤"></a> 散列算法设计步骤</h4>
+<p>一个好的散列算法大概率为逻辑不相等对象生成不相同的散列码。理想情况下，一个散列算法应该在所有int值上均匀合理分布所有不相等对象。实现理想情况很困难，但实现一个类似的并不难，这里有一个简单的方式：<br />
+1、声明一个名为 result 的int变量，并将其初始化为对象中第一个重要字段的散列码c，如步骤2.a中计算的那样<br />
+2、对象中剩余的重要字段f，执行以下操作：<br />
+a. 为字段计算一个整数散列码c : 如果字段是基本数据类型,计算<code>Type.hashCode(f)</code>,其中type是 f 类型对应的包装类 ; 如果字段是对象引用,并且该类的equals方法通过递归调用equals方法来比较字段,则递归调用字段上的hashCode方法。如果需要更复杂的比较，则为该字段计算一个【canonical representation】，并在canonical representation上调用hashCode方法。如果字段的值为空，则使用0（或其它常数，但0是惯用的）；如果字段是一个数组，则对数组中每个重要元素都计算散列码，并用2.b步骤逐个组合。如果数组中没有重要元素，则使用常量，最好不是0。如果所有元素都很重要，那么使用<code>Arrays.hashCode</code></p>
+<p>b. 将2.a步骤中计算的散列码合并到result变量，如下所示</p>
+<pre class="highlight"><code class="java">result = <span class="hljs-number">31</span> * result + c;
+</code></pre>
+<p>3、返回result变量</p>
+<p>步骤2.b中的乘法说明result依赖字段的顺序，如果类具有多个类似字段，那么乘法会产生更好的hash性能。例如字符串hash算法中如果省略乘法，那么不同顺序的字符串都会有相同的散列码。</p>
+<p>选择31是因为它是奇素数。如果是偶数，乘法运算就会溢出，信息就会丢失，因为乘法运算等同于移位。使用素数的好处不太明显，但它是传统用法。31有一个很好的特性，可以用移位和减法来代替乘法，从而在某些体系结构上获得更好的性能：<code>31 * i == (i &lt;&lt;5) – i</code>。现代虚拟机自动进行这种优化。</p>
+<p>根据前面的步骤，给PhoneNumber类写一个hashCode方法</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Typical hashCode method</span>
+<span class="hljs-meta">@Override</span>
+<span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">hashCode</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-type">int</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> Short.hashCode(areaCode);
+    result = <span class="hljs-number">31</span> * result + Short.hashCode(prefix);
+    result = <span class="hljs-number">31</span> * result + Short.hashCode(lineNum);
+    <span class="hljs-keyword">return</span> result;
+&#125;
+</code></pre>
+<p>因为这个方法返回一个简单的确定的计算结果，它的唯一输入是 PhoneNumber 实例中的三个重要字段，所以很明显，相等的 PhoneNumber 实例具有相等的散列码。实际上，这个方法是 PhoneNumber 的一个非常好的 hashCode 方法实现，与 Java 库中的 hashCode 方法实现相当。它很简单，速度也相当快，并且合理地将不相等的电话号码分散到不同的散列桶中。</p>
+<p>虽然这个Item里的方法可以提供一个相当不错的散列算法，但它不是最先进的，对于大多数用途是足够的，如果需要不太可能产生冲突的散列算法。请参阅 Guava 的 com.google.common.hash.Hashing</p>
+<p>Objects类有一个静态方法，它接受任意数量的对象并返回它们的散列码。这个名为<code>hash</code>的方法允许你编写只有一行代码的hashCode方法，它的质量可以与本Item提供的编写方法媲美。但不幸的是它们运行得很慢，因为它需要创建数组来传递可变数量的参数，如果有参数是原始类型的，则需要进行装箱和拆箱。推荐只在性能不重要的情况下使用这种散列算法。下面是使用这个静态方法编写的PhoneNumber的散列算法</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// One-line hashCode method - mediocre performance</span>
+<span class="hljs-meta">@Override</span>
+<span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">hashCode</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-keyword">return</span> Objects.hash(lineNum, prefix, areaCode);
+&#125;
+</code></pre>
+<h4 id="缓存散列值"><a class="markdownIt-Anchor" href="#缓存散列值"></a> 缓存散列值</h4>
+<p>如果类是不可变的，并且计算散列码的成本非常高，那么可以考虑在对象中缓存散列码，而不是每次调用重新计算。如果这个类的对象会被用作散列键，那么应该在创建对象时就计算散列码。要不然就在第一次调用时计算散列码</p>
+<h3 id="12-始终覆盖tostring方法"><a class="markdownIt-Anchor" href="#12-始终覆盖tostring方法"></a> 12. 始终覆盖toString方法</h3>
+<p>虽然 Object 提供 toString 方法的实现，但它返回的字符串通常不是类的用户希望看到的。它由后跟「at」符号（@）的类名和散列码的无符号十六进制表示（例如 PhoneNumber@163b91）组成。toString 的通用约定是这么描述的，返回的字符串应该是「简洁但信息丰富的表示，易于阅读」。虽然有人认为 PhoneNumber@163b91 简洁易懂，但与 707-867-5309 相比，它的信息量并不大。toString 约定接着描述，「建议所有子类覆盖此方法。」好建议，确实！</p>
+<p>虽然它不如遵守euals和hashCode约定（Item10和Item11）那么重要，但是提供一个好的toString方法更便于调试。当对象被传递给 println、printf、字符串连接操作符或断言或由调试器打印时，将自动调用 toString 方法。即使你从来没有调用 toString 对象，其他人也可能使用。例如，使用该对象的组件可以在日志错误消息中包含对象的字符串表示。如果你不覆盖 toString，该消息可能完全无用。</p>
+<h3 id="13-明智地覆盖clone方法"><a class="markdownIt-Anchor" href="#13-明智地覆盖clone方法"></a> 13. 明智地覆盖clone方法</h3>
+<h4 id="cloneable接口的作用"><a class="markdownIt-Anchor" href="#cloneable接口的作用"></a> Cloneable接口的作用</h4>
+<p>Cloneable接口的作用是声明类可克隆，但是接口不包含任何方法，类的clone方法继承自Object，并且Object类的clone方法是受保护的，无法跨包调用，虽然可以通过反射调用，但也不能保证对象具有可访问的 clone 方法（如果类没有覆盖clone方法可以通过获取父类Object调用clone方法，但是如果类没实现Cloneable接口调用会抛出CloneNotSupportedException）。</p>
+<p>既然 Cloneable 接口不包含任何方法，用它来做什么呢？它决定了 Object 类受保护的 clone 实现的行为：如果一个类实现了 Cloneable 接口，Object 类的 clone 方法则返回该类实例的逐字段拷贝；没实现 Cloneable 接口调用 clone 方法会抛出 CloneNotSupportedException。这是接口非常不典型的一种使用方式，不应该效仿。通常，类实现接口可以表明类能够为其客户端做些什么。在本例中，它修改了父类上受保护的方法的行为。</p>
+<h4 id="clone-方法规范"><a class="markdownIt-Anchor" href="#clone-方法规范"></a> clone 方法规范</h4>
+<p>虽然规范没有说明，但是在实践中，实现 Cloneable 接口的类应该提供一个功能正常的 public clone 方法。</p>
+<p>clone方法的一般约定很薄弱。下面的内容是从Object规范复制过来的</p>
+<pre class="highlight"><code class="text">Creates and returns a copy of this object. The precise meaning of “copy” may depend on the class of the object. The general intent is that, for any object x,the expression
+
+x.clone() != x
+will be true, and the expression
+
+x.clone().getClass() == x.getClass()
+will be true, but these are not absolute requirements. While it is typically the case that
+
+x.clone().equals(x)
+will be true, this is not an absolute requirement.
+</code></pre>
+<p>clone方法创建并返回对象的副本。「副本」的确切含义可能取决于对象的类。通常，对于任何对象 x，表达式 x.clone() != x、x.clone().getClass() == x.getClass() 以及 x.clone().equals(x) 的值都将为 true，但都不是绝对的。（equals方法应覆盖为比较对象中的字段才能得到true，默认实现是比较对象地址，结果永远为false）</p>
+<p>按照约定，clone方法返回的对象应该通过调用super.clone() 来获得。如果一个类和它的所有父类（Object类除外）都遵守这个约定，表达式 <code>x.clone().getClass() == x.getClass()</code> 则为 true</p>
+<p>按照约定，返回的对象应该独立于被克隆的对象。为了实现这种独立性，可能需要在super.clone() 前修改对象的一个或多个字段</p>
+<p>这种机制有点类似于构造方法链，只是没有强制执行：</p>
+<ul>
+<li>如果一个类的clone方法返回的实例不是通过调用 super.clone() 而是通过调用构造函数获得的，编译器不会报错，但是如果这个类的子类调用super.clone()，由此产生的对象将是错误的，影响子类clone方法正常工作</li>
+<li>如果覆盖clone方法的类是final修饰的，那么可以忽略这个约定，因为不会有子类</li>
+<li>如果一个final修饰的类的clone方法不调用super.clone()。该类没有理由实现Cloneable接口，因为它不依赖于Object的clone方法</li>
+</ul>
+<h4 id="覆盖clone方法"><a class="markdownIt-Anchor" href="#覆盖clone方法"></a> 覆盖clone方法</h4>
+<ol>
+<li>如果类是不可变的，不要提供clone方法</li>
+<li>如果类的字段都是基本类型或不可变对象的引用，那么直接这个类的clone方法直接调用super.clone()即可</li>
+<li>如果类的字段包含可变对象的引用，需要递归调用可变对象的深拷贝方法</li>
+</ol>
+<h4 id="一些细节"><a class="markdownIt-Anchor" href="#一些细节"></a> 一些细节</h4>
+<ol>
+<li>
+<p>和构造函数一样，不要在clone方法中调用可覆盖方法。如果clone方法调用一个在子类中被覆盖的方法，这个方法将在子类修复其在克隆中的状态之前执行，很可能导致克隆和原始对象的破坏。</p>
+</li>
+<li>
+<p>Object的clone方法被声明为抛出CloneNotSupportedException，但是覆盖方法时 try-catch 异常就行，不抛出受检查异常的方法更容易使用</p>
+</li>
+<li>
+<p>设计可继承的类时不要实现 Cloneable接口（如果实现了，子类就必须对外提供clone方法）。你可以选择通过实现一个功能正常的受保护克隆方法来模拟 Object 的行为，该方法声明为抛出 CloneNotSupportedException。这给子类实现 Cloneable 或不实现 Cloneable 的自由。或者，你可以选择不实现一个有效的克隆方法，并通过提供以下退化的克隆实现来防止子类实现它：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// clone method for extendable class not supporting Cloneable</span>
+<span class="hljs-meta">@Override</span>
+<span class="hljs-keyword">protected</span> <span class="hljs-keyword">final</span> Object <span class="hljs-title function_">clone</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> CloneNotSupportedException &#123;
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CloneNotSupportedException</span>();
+&#125;
+</code></pre>
+</li>
+<li>
+<p>如果你编写了一个实现了 Cloneable 接口的线程安全类，请记住它的 clone 方法必须正确同步，就像其他任何方法一样。</p>
+</li>
+</ol>
+<h4 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h4>
+<p>回顾一下，所有实现 Cloneable 接口的类都应该使用一个返回类型为类本身的公有方法覆盖 clone。这个方法应该首先调用 super.clone()，然后「修复」任何需要「修复」的字段。通常，这意味着复制任何包含对象内部「深层结构」的可变对象，并将克隆对象对这些对象的引用替换为对其副本的引用。虽然这些内部副本通常可以通过递归调用 clone 来实现，但这并不总是最好的方法。如果类只包含基本数据类型的字段或对不可变对象的引用，那么很可能不需要修复任何字段。这条规则也有例外。例如，表示序列号或其他唯一 ID 的字段需要修复，即使它是基本数据类型或不可变的。</p>
+<p>搞这么复杂真的有必要吗？答案是否定的。如果你扩展了一个已经实现了 Cloneable 接口的类，那么除了实现行为良好的 clone 方法之外，你别无选择。否则，最好提供对象复制的替代方法。一个更好的对象复制方法是提供一个复制构造函数或复制工厂。复制构造函数是一个简单的构造函数，它接受单个参数，其类型是包含构造函数的类，例如</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Copy constructor</span>
+<span class="hljs-keyword">public</span> <span class="hljs-title function_">Yum</span><span class="hljs-params">(Yum yum)</span> &#123; ... &#125;;
+</code></pre>
+<p>复制工厂与复制构造函数的静态工厂（Item-1）类似：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Copy factory</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Yum <span class="hljs-title function_">newInstance</span><span class="hljs-params">(Yum yum)</span> &#123; ... &#125;;
+</code></pre>
+<p>复制构造函数方法及其静态工厂变体与克隆方法相比有许多优点：</p>
+<ol>
+<li>它们不依赖于易发生风险的语言外对象创建机制（Object的clone方法是native的）；</li>
+<li>他们不要求无法强制执行的约定（clone方法一定要先调用super.clone()）；</li>
+<li>它们与 final 字段不冲突（clone方法不能修改final字段）；</li>
+<li>它们不会抛出不必要的 checked 异常；</li>
+<li>而且不需要强制类型转换。</li>
+<li>可以提供类型转换构造函数</li>
+</ol>
+<p>考虑到与 Cloneable 相关的所有问题，新的接口不应该继承它，新的可扩展类不应该实现它。通常，复制功能最好由构造函数或工厂提供。这个规则的一个明显的例外是数组，最好使用 clone 方法来复制数组。</p>
+<h3 id="14-考虑实现-comparable-接口"><a class="markdownIt-Anchor" href="#14-考虑实现-comparable-接口"></a> 14. 考虑实现 Comparable 接口</h3>
+<p>与本章讨论的其它方法不同，compareTo 方法不是 Object 中声明的，而是 Comparable 接口中的唯一方法。一个类实现Comparable，表明实例具有自然顺序（字母或数字或时间顺序）。Java 库中的所有值类以及所有枚举类型（Item-34）都实现了 Comparable接口</p>
+<h4 id="compareto方法约定"><a class="markdownIt-Anchor" href="#compareto方法约定"></a> compareTo方法约定</h4>
+<p>compareTo 方法的一般约定类似于 equals 方法：<br />
+将一个对象与指定对象进行顺序比较。当该对象小于、等于或大于指定对象时，对应返回一个负整数、零或正整数。如果指定对象的类型阻止它与该对象进行比较，则抛出 ClassCastException</p>
+<p>在下面的描述中， <code>sgn(expression)</code> 表示数学中的符号函数，它被定义为：根据传入表达式的值是负数、零或正数，对应返回-1、0或1。</p>
+<ul>
+<li>实现类必须确保所有 x 和 y 满足 <code>sgn(x.compareTo(y)) == -sgn(y.compareTo(x))</code>（这意味着 x.compareTo(y) 当且仅当 y.compareTo(x) 抛出异常时才抛出异常）</li>
+<li>实现类还必须确保关系是可传递的：<code>(x.compareTo(y) &gt; 0 &amp;&amp; y.compareTo(z) &gt; 0)</code> 意味着 <code>x.compareTo(z) &gt; 0</code></li>
+<li>最后，实现类必须确保 <code>x.compareTo(y) == 0</code> 时，所有的 z 满足 <code>sgn(x.compareTo(z)) == sgn(y.compareTo(z))</code></li>
+<li>强烈建议 <code>(x.compareTo(y)== 0) == (x.equals(y))</code> 成立，但这不是必需的。一般来说，任何实现 Comparable 接口并违法此条件的类都应该清除地注明这一事实。推荐的表述是“Note: This class has a natural ordering that is inconsistent with equals.”</li>
+</ul>
+<p>与equals方法不同，equals方法入参是Object类型，而compareTo方法不需要和不同类型的对象比较：当遇到不同类型的对象时，允许抛出ClassCastException</p>
+<p>就像违反 hashCode 约定的类可以破坏依赖 hash 的其他类一样，违反 compareTo 约定的类也可以破坏依赖 Comparable 的其他类。依赖 Comparable 的类包括排序集合 TreeSet 和 TreeMap，以及实用工具类 Collections 和 Arrays，它们都包含搜索和排序算法。</p>
+<p>compareTo的约定和equals约定有相同的限制：反身性、对称性和传递性。如果要向实现 Comparable 的类中添加值组件，不要继承它；编写一个不相关的类，其中包含第一个类的实例。然后提供返回所包含实例的「视图」方法。这使你可以自由地在包含类上实现你喜欢的任何 compareTo 方法，同时允许它的客户端在需要时将包含类的实例视为被包含类的实例。</p>
+<p>compareTo 约定的最后一段是一个强烈建议而不是要求，它只是简单地说明了 compareTo 方法所施加地同等性检验通常应该与 equals 方法返回相同的结果。如果一个类的 compareTo 方法强加了一个与 equals 不一致的顺序，那么这个类仍然可以工作，但是包含该类元素的有序集合可能无法遵守集合接口（Collection、Set 或 Map）的一般约定。这是因为这些接口的一般约定是根据 equals 方法定义的，但是有序集合使用 compareTo 代替了 equals 实施同等性建议，这是需要注意的地方</p>
+<p>例如，考虑 BigDecimal 类，它的 compareTo 方法与 equals 不一致。如果你创建一个空的 HashSet 实例，然后添加 new BigDecimal(“1.0”) 和 new BigDecimal(“1.00”)，那么该 HashSet 将包含两个元素，因为添加到该集合的两个 BigDecimal 实例在使用 equals 方法进行比较时结果是不相等的。但是，如果你使用 TreeSet 而不是 HashSet 执行相同的过程，那么该集合将只包含一个元素，因为使用 compareTo 方法比较两个 BigDecimal 实例时结果是相等的。（有关详细信息，请参阅 BigDecimal 文档。）</p>
+<h4 id="编写-compareto-方法"><a class="markdownIt-Anchor" href="#编写-compareto-方法"></a> 编写 compareTo 方法</h4>
+<ol>
+<li>
+<p>递归调用引用字段的 compareTo 方法。如果引用字段没有实现 Comparable，或者需要一个非标准的排序，那么应使用比较器</p>
+</li>
+<li>
+<p>基本字段类型使用包装类的静态 compare 方法比较</p>
+</li>
+<li>
+<p>从最重要字段开始比较</p>
+</li>
+<li>
+<p>考虑使用 <code>java.util.Comparator</code>接口的比较器构造方法</p>
+</li>
+</ol>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2022/06/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Effective-Java学习笔记（二）" target="_blank" rel="external">https://zunpan.github.io/2022/06/30/Effective-Java学习笔记（二）/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/07/07/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/" title="Effective-Java学习笔记（三）"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2022/06/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/" title="Effective-Java学习笔记（一）"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

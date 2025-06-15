@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Git学习笔记 | panzun</title>
+  <meta name="description" content="新建git项目 在一个目录下执行 git init   克隆git项目 在一个目录下执行 git clone [ssh&#x2F;https]address   管理修改  将文件修改添加到暂存区 git add filename   将暂存区的修改提交到本地仓库 git commit -m &amp;#x27;commitMessage&amp;#x27; [filename]  每次修改完要先add到暂存区，然后co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git学习笔记">
+<meta property="og:url" content="https://zunpan.github.io/2022/05/06/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="新建git项目 在一个目录下执行 git init   克隆git项目 在一个目录下执行 git clone [ssh&#x2F;https]address   管理修改  将文件修改添加到暂存区 git add filename   将暂存区的修改提交到本地仓库 git commit -m &amp;#x27;commitMessage&amp;#x27; [filename]  每次修改完要先add到暂存区，然后co">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182004482.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182049814.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182120438.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182132647.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182213769.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182248093.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182317262.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182329060.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182350124.png">
+<meta property="article:published_time" content="2022-05-06T13:47:10.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.277Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182004482.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2022/05/06/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E5%BB%BAgit%E9%A1%B9%E7%9B%AE"><span class="toc-number">1.</span> <span class="toc-text"> 新建git项目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%8B%E9%9A%86git%E9%A1%B9%E7%9B%AE"><span class="toc-number">1.1.</span> <span class="toc-text"> 克隆git项目</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E4%BF%AE%E6%94%B9"><span class="toc-number">2.</span> <span class="toc-text"> 管理修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E6%96%87%E4%BB%B6%E4%BF%AE%E6%94%B9%E6%B7%BB%E5%8A%A0%E5%88%B0%E6%9A%82%E5%AD%98%E5%8C%BA"><span class="toc-number">2.1.</span> <span class="toc-text"> 将文件修改添加到暂存区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E6%9A%82%E5%AD%98%E5%8C%BA%E7%9A%84%E4%BF%AE%E6%94%B9%E6%8F%90%E4%BA%A4%E5%88%B0%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93"><span class="toc-number">2.2.</span> <span class="toc-text"> 将暂存区的修改提交到本地仓库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4%E4%BF%A1%E6%81%AF%E8%A7%84%E8%8C%83"><span class="toc-number">2.2.1.</span> <span class="toc-text"> 提交信息规范</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#type%E5%BF%85%E9%A1%BB"><span class="toc-number">2.2.1.1.</span> <span class="toc-text"> type(必须)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#scope%E5%8F%AF%E9%80%89"><span class="toc-number">2.2.1.2.</span> <span class="toc-text"> scope(可选)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#subject%E5%BF%85%E9%A1%BB"><span class="toc-number">2.2.1.3.</span> <span class="toc-text"> subject(必须)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%B7%A5%E4%BD%9C%E5%8C%BA%E5%92%8C%E6%9A%82%E5%AD%98%E5%8C%BA%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="toc-number">2.3.</span> <span class="toc-text"> 查看工作区和暂存区的不同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%9A%82%E5%AD%98%E5%8C%BA%E5%92%8C%E7%89%88%E6%9C%AC%E5%BA%93%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="toc-number">2.4.</span> <span class="toc-text"> 查看暂存区和版本库的不同</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E4%BF%AE%E6%94%B9"><span class="toc-number">3.</span> <span class="toc-text"> 删除修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E6%96%87%E4%BB%B6%E5%B7%B2%E7%BB%8F%E5%8A%A0%E5%85%A5%E7%89%88%E6%9C%AC%E5%BA%93%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B"><span class="toc-number">3.1.</span> <span class="toc-text"> 在文件已经加入版本库的情况下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E6%96%87%E4%BB%B6%E6%B2%A1%E6%9C%89%E5%8A%A0%E5%85%A5%E7%89%88%E6%9C%AC%E5%BA%93%E7%9A%84%E6%97%B6%E5%80%99"><span class="toc-number">3.2.</span> <span class="toc-text"> 在文件没有加入版本库的时候</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6"><span class="toc-number">4.</span> <span class="toc-text"> 删除文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="toc-number">5.</span> <span class="toc-text"> 远程仓库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E6%98%AF%E5%90%A6%E8%83%BDssh%E7%99%BB%E5%BD%95%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="toc-number">5.1.</span> <span class="toc-text"> 检测是否能ssh登录远程仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="toc-number">5.2.</span> <span class="toc-text"> 添加远程仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="toc-number">5.3.</span> <span class="toc-text"> 查看远程仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%93%E5%8F%96%E5%90%88%E5%B9%B6%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="toc-number">5.4.</span> <span class="toc-text"> 抓取&#x2F;合并远程仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E9%80%81%E5%88%B0%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="toc-number">5.5.</span> <span class="toc-text"> 推送到远程仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E5%85%B3%E8%81%94"><span class="toc-number">5.6.</span> <span class="toc-text"> 删除远程仓库关联</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86"><span class="toc-number">6.</span> <span class="toc-text"> 分支管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E5%B9%B6%E5%88%87%E6%8D%A2%E5%88%86%E6%94%AF"><span class="toc-number">6.1.</span> <span class="toc-text"> 新建并切换分支</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E6%94%AF"><span class="toc-number">6.2.</span> <span class="toc-text"> 查看分支</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%94%AF%E6%93%8D%E4%BD%9C"><span class="toc-number">6.3.</span> <span class="toc-text"> 分支操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%88%E5%B9%B6"><span class="toc-number">6.4.</span> <span class="toc-text"> 合并</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%88%86%E6%94%AF"><span class="toc-number">6.5.</span> <span class="toc-text"> 删除分支</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%86%B2%E7%AA%81"><span class="toc-number">6.6.</span> <span class="toc-text"> 解决冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6%E6%83%85%E5%86%B5"><span class="toc-number">6.7.</span> <span class="toc-text"> 查看分支合并情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bug%E5%88%86%E6%94%AF"><span class="toc-number">6.8.</span> <span class="toc-text"> bug分支</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E6%8F%90%E4%BA%A4"><span class="toc-number">6.9.</span> <span class="toc-text"> 复制提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E9%80%81%E5%88%86%E6%94%AF"><span class="toc-number">6.10.</span> <span class="toc-text"> 推送分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C"><span class="toc-number">7.</span> <span class="toc-text"> 多人协作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%90%86"><span class="toc-number">8.</span> <span class="toc-text"> 代理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="toc-number">8.1.</span> <span class="toc-text"> 设置代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E6%B6%88%E4%BB%A3%E7%90%86"><span class="toc-number">8.2.</span> <span class="toc-text"> 取消代理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#github%E6%90%9C%E7%B4%A2%E5%91%BD%E4%BB%A4"><span class="toc-number">9.</span> <span class="toc-text"> github搜索命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%93%E5%BA%93%E6%90%9C%E7%B4%A2"><span class="toc-number">9.1.</span> <span class="toc-text"> 仓库搜索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#issue%E6%90%9C%E7%B4%A2"><span class="toc-number">9.2.</span> <span class="toc-text"> issue搜索</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%B6%E7%A2%8E"><span class="toc-number">10.</span> <span class="toc-text"> 零碎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%B2%E7%BB%8F%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6%E5%8F%96%E6%B6%88%E8%BF%BD%E8%B8%AA"><span class="toc-number">10.1.</span> <span class="toc-text"> 已经提交的文件取消追踪</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Git学习笔记" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Git学习笔记
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/05/06/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-date">
+	  <time datetime="2022-05-06T13:47:10.000Z" itemprop="datePublished">2022-05-06</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Git/" rel="tag">Git</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/05/06/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.5k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 9(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="新建git项目"><a class="markdownIt-Anchor" href="#新建git项目"></a> 新建git项目</h2>
+<p>在一个目录下执行</p>
+<pre class="highlight"><code class="shell">git init
+</code></pre>
+<h3 id="克隆git项目"><a class="markdownIt-Anchor" href="#克隆git项目"></a> 克隆git项目</h3>
+<p>在一个目录下执行</p>
+<pre class="highlight"><code class="shell">git clone [ssh/https]address
+</code></pre>
+<h2 id="管理修改"><a class="markdownIt-Anchor" href="#管理修改"></a> 管理修改</h2>
+<h3 id="将文件修改添加到暂存区"><a class="markdownIt-Anchor" href="#将文件修改添加到暂存区"></a> 将文件修改添加到暂存区</h3>
+<pre class="highlight"><code class="shell">git add filename
+</code></pre>
+<h3 id="将暂存区的修改提交到本地仓库"><a class="markdownIt-Anchor" href="#将暂存区的修改提交到本地仓库"></a> 将暂存区的修改提交到本地仓库</h3>
+<pre class="highlight"><code class="shell">git commit -m &#x27;commitMessage&#x27; [filename]
+</code></pre>
+<p>每次修改完要先add到暂存区，然后commit才能把你修改的东西提交的本地仓库</p>
+<h4 id="提交信息规范"><a class="markdownIt-Anchor" href="#提交信息规范"></a> 提交信息规范</h4>
+<p>commit message格式</p>
+<pre class="highlight"><code class="text">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+</code></pre>
+<h5 id="type必须"><a class="markdownIt-Anchor" href="#type必须"></a> type(必须)</h5>
+<p>用于说明git commit的类别，只允许使用下面的标识。</p>
+<p>feat：新功能（feature）。</p>
+<p>fix/to：修复bug，可以是QA发现的BUG，也可以是研发自己发现的BUG。</p>
+<ul>
+<li>fix：产生diff并自动修复此问题。适合于一次提交直接修复问题</li>
+<li>to：只产生diff不自动修复此问题。适合于多次提交。最终修复问题提交时使用fix</li>
+</ul>
+<p>docs：文档（documentation）。</p>
+<p>style：格式（不影响代码运行的变动）。</p>
+<p>refactor：重构（即不是新增功能，也不是修改bug的代码变动）。</p>
+<p>perf：优化相关，比如提升性能、体验。</p>
+<p>test：增加测试。</p>
+<p>chore：构建过程或辅助工具的变动。</p>
+<p>revert：回滚到上一个版本。</p>
+<p>merge：代码合并。</p>
+<p>sync：同步主线或分支的Bug。</p>
+<h5 id="scope可选"><a class="markdownIt-Anchor" href="#scope可选"></a> scope(可选)</h5>
+<p>scope用于说明 commit 影响的范围，比如数据层、控制层、视图层等等，视项目不同而不同。</p>
+<p>例如在Angular，可以是location，browser，compile，compile，rootScope， ngHref，ngClick，ngView等。如果你的修改影响了不止一个scope，你可以使用*代替。</p>
+<h5 id="subject必须"><a class="markdownIt-Anchor" href="#subject必须"></a> subject(必须)</h5>
+<p>subject是commit目的的简短描述，不超过50个字符。</p>
+<p>建议使用中文（感觉中国人用中文描述问题能更清楚一些）。</p>
+<ul>
+<li>结尾不加句号或其他标点符号。</li>
+<li>根据以上规范git commit message将是如下的格式：</li>
+</ul>
+<pre class="highlight"><code class="text">fix(DAO):用户查询缺少username属性 
+feat(Controller):用户查询接口开发
+</code></pre>
+<h3 id="查看工作区和暂存区的不同"><a class="markdownIt-Anchor" href="#查看工作区和暂存区的不同"></a> 查看工作区和暂存区的不同</h3>
+<pre class="highlight"><code class="shell">git diff [filename]
+</code></pre>
+<h3 id="查看暂存区和版本库的不同"><a class="markdownIt-Anchor" href="#查看暂存区和版本库的不同"></a> 查看暂存区和版本库的不同</h3>
+<pre class="highlight"><code class="shell">git diff --cached [filename]
+</code></pre>
+<h2 id="删除修改"><a class="markdownIt-Anchor" href="#删除修改"></a> 删除修改</h2>
+<h3 id="在文件已经加入版本库的情况下"><a class="markdownIt-Anchor" href="#在文件已经加入版本库的情况下"></a> 在文件已经加入版本库的情况下</h3>
+<ol>
+<li>
+<p>如果文件修改后没有add进暂存区，我们可以用</p>
+<pre class="highlight"><code class="shell">git checkout -- filename
+</code></pre>
+<p>取消工作区的修改，恢复到和版本库一摸一样的状态</p>
+</li>
+<li>
+<p>如果文件修改后已经add进暂存区了，我们可以用</p>
+<pre class="highlight"><code class="shell">git reset HEAD filename
+</code></pre>
+<p>取消暂存区的修改，恢复到工作区有修改的状态，这是查看git status</p>
+<p>会看到</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182004482.png" alt="图 6" /></p>
+<p>要撤销工作区的修改就用上面的checkout</p>
+</li>
+<li>
+<p>如果文件修改后已经commit到了本地仓库，那么我们只能使用版本回退了</p>
+<pre class="highlight"><code class="shell">git reset --hard [commitID]
+</code></pre>
+<p>commitID可以通过git log 或者 git reflog查看。git log 查看当前版本的所有commit，git reflog查看所有commit，所以回退到了老版本后想回到新版本后得先git reflog 查看新版本的commitID</p>
+</li>
+</ol>
+<h3 id="在文件没有加入版本库的时候"><a class="markdownIt-Anchor" href="#在文件没有加入版本库的时候"></a> 在文件没有加入版本库的时候</h3>
+<p>这种情况一般是新生成的文件，工作区可以任意编辑，因为版本库中没有，所以不需要checkout（checkout在没有add的时候恢复至版本库状态）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182049814.png" alt="图 7" /></p>
+<p>如果add进了暂存区，此时和上面一样，可以使用</p>
+<pre class="highlight"><code class="shell">git resset HEAD filename
+</code></pre>
+<p>恢复至工作区有修改的状态</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182120438.png" alt="图 8" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182132647.png" alt="图 9" /></p>
+<h2 id="删除文件"><a class="markdownIt-Anchor" href="#删除文件"></a> 删除文件</h2>
+<p>如果文件已经处于tracked状态（已经被add了）,当你要删除文件的时候，可以采用命令：</p>
+<pre class="highlight"><code class="shell">rm filename
+</code></pre>
+<p><strong>这个时候</strong>（也就是说这个时候只执行了rm test.txt）有两种情况</p>
+<p>第一种情况:的确要把test.txt删掉，那么可以执行</p>
+<pre class="highlight"><code class="shell">git rm test.txt 或者  git add test.txt
+git commit -m &quot;remove test.txt&quot;
+</code></pre>
+<p>然后文件就被删掉了，这种情况想恢复只能用版本回退了，但是之前的版本也没有提交这个文件，那这个就永远消失了</p>
+<p>第二种情况:删错文件了，不应该删test.txt，注意这时只执行了rm test.txt，还没有提交，所以可以执行</p>
+<pre class="highlight"><code class="shell">git checkout test.txt
+</code></pre>
+<p>将文件恢复。</p>
+<p><strong>并不是说</strong>执行完git commit -m &quot;remove test.txt&quot;后还能用checkout恢复，commit之后版本库里的文件也没了，自然没办法用checkout恢复，而是要用其他的办法（版本回退）</p>
+<h2 id="远程仓库"><a class="markdownIt-Anchor" href="#远程仓库"></a> 远程仓库</h2>
+<h3 id="检测是否能ssh登录远程仓库"><a class="markdownIt-Anchor" href="#检测是否能ssh登录远程仓库"></a> 检测是否能ssh登录远程仓库</h3>
+<pre class="highlight"><code class="shell">ssh -T git@github.com
+</code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182213769.png" alt="图 10" /></p>
+<h3 id="添加远程仓库"><a class="markdownIt-Anchor" href="#添加远程仓库"></a> 添加远程仓库</h3>
+<pre class="highlight"><code class="shell">git remote add origin git@github.com:username/reponame.git
+</code></pre>
+<h3 id="查看远程仓库"><a class="markdownIt-Anchor" href="#查看远程仓库"></a> 查看远程仓库</h3>
+<pre class="highlight"><code class="shell">git remote
+</code></pre>
+<h3 id="抓取合并远程仓库"><a class="markdownIt-Anchor" href="#抓取合并远程仓库"></a> 抓取/合并远程仓库</h3>
+<pre class="highlight"><code class="shell">git fetch origin
+git merge origin/master
+</code></pre>
+<h3 id="推送到远程仓库"><a class="markdownIt-Anchor" href="#推送到远程仓库"></a> 推送到远程仓库</h3>
+<pre class="highlight"><code class="shell">git push -u origin master
+</code></pre>
+<p>-u 表示把本地的master分支和远程仓库origin的master分支关联</p>
+<p>后面就可以用</p>
+<pre class="highlight"><code class="shell">git push origin master
+</code></pre>
+<h3 id="删除远程仓库关联"><a class="markdownIt-Anchor" href="#删除远程仓库关联"></a> 删除远程仓库关联</h3>
+<pre class="highlight"><code class="shell">git remote rm origin
+</code></pre>
+<h2 id="分支管理"><a class="markdownIt-Anchor" href="#分支管理"></a> 分支管理</h2>
+<h3 id="新建并切换分支"><a class="markdownIt-Anchor" href="#新建并切换分支"></a> 新建并切换分支</h3>
+<pre class="highlight"><code class="shell">git checkout -b dev
+</code></pre>
+<p>和下面作用一样</p>
+<pre class="highlight"><code class="shell">git branch dev
+git checkout dev
+</code></pre>
+<h3 id="查看分支"><a class="markdownIt-Anchor" href="#查看分支"></a> 查看分支</h3>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182248093.png" alt="图 11" /></p>
+<p>*表示当前所在分支</p>
+<h3 id="分支操作"><a class="markdownIt-Anchor" href="#分支操作"></a> 分支操作</h3>
+<p>和上面的文件修改一个意思，只不过上面默认是在master分支操作</p>
+<h3 id="合并"><a class="markdownIt-Anchor" href="#合并"></a> 合并</h3>
+<p>在dev分支下执行文件修改，add、commit操作不会影响到master分支，dev开发完成之后可以切换到master分支，执行合并操作</p>
+<pre class="highlight"><code class="shell">git merge dev
+</code></pre>
+<h3 id="删除分支"><a class="markdownIt-Anchor" href="#删除分支"></a> 删除分支</h3>
+<pre class="highlight"><code class="shell">git branch -d dev
+</code></pre>
+<p><strong>注意</strong>：在任何一条分支上做的修改必须要commit到本地仓库在能算作在dev分支上的一个版本，否则切换到别的分支，别的分支仍然能看到修改没有被添加到暂存区或者没有提交到本地仓库，别的分支可以继续处理这个修改，有一个办法是git stash保留当前分支上的工作内容，这样切到别的分支上git status就没有要处理的修改了</p>
+<h3 id="解决冲突"><a class="markdownIt-Anchor" href="#解决冲突"></a> 解决冲突</h3>
+<p>Git用<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>，<code>=======</code>，<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>标记出不同分支的内容</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182317262.png" alt="图 12" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182329060.png" alt="图 13" /></p>
+<p>&lt;&lt;&lt;&lt;和=====之间是HEAD（当前分支）的内容，=====和&gt;&gt;&gt;&gt;&gt;之间是feature1分支的内容</p>
+<p>下图是手动修改后的冲突文件</p>
+<h3 id="查看分支合并情况"><a class="markdownIt-Anchor" href="#查看分支合并情况"></a> 查看分支合并情况</h3>
+<pre class="highlight"><code class="shell">git log --graph
+</code></pre>
+<h3 id="bug分支"><a class="markdownIt-Anchor" href="#bug分支"></a> bug分支</h3>
+<p>保留现场</p>
+<pre class="highlight"><code class="shell">git stash
+</code></pre>
+<p>然后切到有bug的分支上，新建一个分支，修复好后merge到出现bug的分支上，然后查看保存的工作现场</p>
+<pre class="highlight"><code class="shell">git stash list
+</code></pre>
+<p>恢复现场有两种办法：</p>
+<pre class="highlight"><code class="shell">git stash pop
+</code></pre>
+<p>pop会同时恢复现场和删除保存的工作现场</p>
+<p>也可以指定恢复现场</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/Git/IMG_20220507-182350124.png" alt="图 14" /></p>
+<pre class="highlight"><code class="shell">git stash apply stash@&#123;0&#125;
+</code></pre>
+<p>然后删除分支</p>
+<pre class="highlight"><code class="shell">git stash drop stash@&#123;0&#125;
+</code></pre>
+<h3 id="复制提交"><a class="markdownIt-Anchor" href="#复制提交"></a> 复制提交</h3>
+<p>比如上面bug分支提交了一个修改之后merge到了master分支，我们正在开发的dev分支也有这个bug，我们可以把bug分支提交的修改复制到dev分支</p>
+<pre class="highlight"><code class="shell">git cherry-pick commitID
+</code></pre>
+<p>commitID通过git log查看</p>
+<h3 id="推送分支"><a class="markdownIt-Anchor" href="#推送分支"></a> 推送分支</h3>
+<pre class="highlight"><code class="shell">git push origin branchName
+</code></pre>
+<h2 id="多人协作"><a class="markdownIt-Anchor" href="#多人协作"></a> 多人协作</h2>
+<ul>
+<li>查看远程库信息，使用<code>git remote -v</code>；</li>
+<li>本地新建的分支如果不推送到远程，对其他人就是不可见的；</li>
+<li>从本地推送分支，使用<code>git push origin branch-name</code>，如果推送失败，先用<code>git pull</code>抓取远程的新提交；</li>
+<li>在本地创建和远程分支对应的分支，使用<code>git checkout -b branch-name origin/branch-name</code>，本地和远程分支的名称最好一致；</li>
+<li>建立本地分支和远程分支的关联，使用<code>git branch --set-upstream branch-name origin/branch-name</code>；</li>
+<li>从远程抓取分支，使用<code>git pull</code>，如果有冲突，要先处理冲突。</li>
+</ul>
+<h2 id="代理"><a class="markdownIt-Anchor" href="#代理"></a> 代理</h2>
+<h3 id="设置代理"><a class="markdownIt-Anchor" href="#设置代理"></a> 设置代理</h3>
+<pre class="highlight"><code class="shell">git config --global http.proxy socks5://127.0.0.1:7890
+git config --global https.proxy socks5://127.0.0.1:7890
+</code></pre>
+<p>后面的端口是你的梯子监听的端口（clash默认7890）</p>
+<p>如果是在wsl2中使用，请看WSL2.md中的代理配置</p>
+<p>https代理存在一个局限，那就是没有办法做身份验证，每次拉取私库或者推送代码时，都需要输入github的账号和密码，非常痛苦。<br />
+设置ssh代理前，请确保你已经设置ssh key。可以参考在 github 上添加 SSH key 完成设置更进一步是设置ssh代理。只需要配置一个config就可以了。</p>
+<pre class="highlight"><code class="shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Linux、MacOS</span>
+vi ~/.ssh/config
+<span class="hljs-meta prompt_"># </span><span class="language-bash">Windows</span> 
+到C:\Users\your_user_name\.ssh目录下，新建一个config文件（无后缀名）
+</code></pre>
+<p>将下面内容加到config文件中即可</p>
+<p>对于windows用户，代理会用到connect.exe，你如果安装了Git都会自带connect.exe，如我的路径为C:\APP\Git\mingw64\bin\connect</p>
+<pre class="highlight"><code class="shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">Windows用户，注意替换你的端口号和connect.exe的路径</span>
+ProxyCommand &quot;C:\APP\Git\mingw64\bin\connect&quot; -S 127.0.0.1:51837 -a none %h %p
+<span class="hljs-meta prompt_">
+#</span><span class="language-bash">MacOS用户用下方这条命令，注意替换你的端口号</span>
+<span class="hljs-meta prompt_">#</span><span class="language-bash">ProxyCommand nc -v -x 127.0.0.1:51837 %h %p</span>
+
+Host github.com
+  User git
+  Port 22
+  Hostname github.com
+<span class="hljs-meta prompt_">  # </span><span class="language-bash">注意修改路径为你的路径</span>
+  IdentityFile &quot;C:\Users\Your_User_Name\.ssh\id_rsa&quot;
+  TCPKeepAlive yes
+
+Host ssh.github.com
+  User git
+  Port 443
+  Hostname ssh.github.com
+<span class="hljs-meta prompt_">  # </span><span class="language-bash">注意修改路径为你的路径</span>
+  IdentityFile &quot;C:\Users\Your_User_Name\.ssh\id_rsa&quot;
+  TCPKeepAlive yes
+</code></pre>
+<p>保存后文件后测试方法如下，返回successful之类的就成功了</p>
+<pre class="highlight"><code class="shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">测试是否设置成功</span>
+ssh -T git@github.com
+</code></pre>
+<h3 id="取消代理"><a class="markdownIt-Anchor" href="#取消代理"></a> 取消代理</h3>
+<pre class="highlight"><code class="git">git config --global --unset http.proxy
+git config --global --unset https.proxy
+</code></pre>
+<h2 id="github搜索命令"><a class="markdownIt-Anchor" href="#github搜索命令"></a> github搜索命令</h2>
+<h3 id="仓库搜索"><a class="markdownIt-Anchor" href="#仓库搜索"></a> 仓库搜索</h3>
+<p>in:name example   名字中有“example”</p>
+<p>in:readme example  readme中有“example”</p>
+<p>in:description example  描述中有“example”</p>
+<p>stars:&gt;1000  star&gt;1000</p>
+<p>forks:&gt;1000  fork&gt;1000</p>
+<p>pushed:&gt;2019-09-01  2019年9月1日后有更新的</p>
+<p>language:java  用Java编写的项目</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.github.com/en/search-github/searching-on-github/searching-for-repositories">https://docs.github.com/en/search-github/searching-on-github/searching-for-repositories</a></p>
+</blockquote>
+<h3 id="issue搜索"><a class="markdownIt-Anchor" href="#issue搜索"></a> issue搜索</h3>
+<p>java in:title,body,comments  搜索标题中内容中评论中包含java的issue</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests">https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests</a></p>
+</blockquote>
+<h2 id="零碎"><a class="markdownIt-Anchor" href="#零碎"></a> 零碎</h2>
+<h3 id="已经提交的文件取消追踪"><a class="markdownIt-Anchor" href="#已经提交的文件取消追踪"></a> 已经提交的文件取消追踪</h3>
+<p>先修改.gitignore</p>
+<pre class="highlight"><code class="git">git rm -r --cached .
+
+git add .
+
+git commit -m 'update .gitignore'
+</code></pre>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2022/05/06/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Git学习笔记" target="_blank" rel="external">https://zunpan.github.io/2022/05/06/Git学习笔记/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/05/07/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-cpp/" title="LeetCode刷题记录(cpp)"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2020/02/10/truffle%E9%83%A8%E7%BD%B2%E5%90%88%E7%BA%A6%E5%88%B0%E8%BF%9C%E7%A8%8B%E7%A7%81%E6%9C%89%E9%93%BE/" title="truffle部署合约到远程私有链"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

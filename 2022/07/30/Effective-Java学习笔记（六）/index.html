@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Effective-Java学习笔记（六） | panzun</title>
+  <meta name="description" content="第七章 λ 表达式和流  42. λ 表达式优于匿名类  函数对象 在历史上，带有单个抽象方法的接口（或者抽象类，但这种情况很少）被用作函数类型。它们的实例（称为函数对象）表示函数或操作。自从 JDK 1.1 在 1997 年发布以来，创建函数对象的主要方法就是匿名类（Item-24）。下面是一个按长度对字符串列表进行排序的代码片段，使用一个匿名类来创建排序的比较函数（它强制执行排序顺序）： &#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective-Java学习笔记（六）">
+<meta property="og:url" content="https://zunpan.github.io/2022/07/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="第七章 λ 表达式和流  42. λ 表达式优于匿名类  函数对象 在历史上，带有单个抽象方法的接口（或者抽象类，但这种情况很少）被用作函数类型。它们的实例（称为函数对象）表示函数或操作。自从 JDK 1.1 在 1997 年发布以来，创建函数对象的主要方法就是匿名类（Item-24）。下面是一个按长度对字符串列表进行排序的代码片段，使用一个匿名类来创建排序的比较函数（它强制执行排序顺序）： &#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-30T06:30:09.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.276Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="Effective-Java">
+<meta property="article:tag" content="lambda表达式">
+<meta property="article:tag" content="Stream">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2022/07/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E7%AB%A0-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E6%B5%81"><span class="toc-number">1.</span> <span class="toc-text"> 第七章 λ 表达式和流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#42-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%BC%98%E4%BA%8E%E5%8C%BF%E5%90%8D%E7%B1%BB"><span class="toc-number">1.1.</span> <span class="toc-text"> 42. λ 表达式优于匿名类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 函数对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 函数式接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#lambda-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.1.3.</span> <span class="toc-text"> lambda 表达式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#43-%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8%E4%BC%98%E4%BA%8E-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text"> 43. 方法引用优于 λ 表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#44-%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.</span> <span class="toc-text"> 44. 优先使用标准函数式接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#45-%E6%98%8E%E6%99%BA%E5%9C%B0%E4%BD%BF%E7%94%A8%E6%B5%81"><span class="toc-number">1.4.</span> <span class="toc-text"> 45. 明智地使用流</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81"><span class="toc-number">1.4.1.</span> <span class="toc-text"> 流</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E7%AE%A1%E9%81%93"><span class="toc-number">1.4.2.</span> <span class="toc-text"> 流管道</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81-vs-%E8%BF%AD%E4%BB%A3"><span class="toc-number">1.4.3.</span> <span class="toc-text"> 流 VS 迭代</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#46-%E5%9C%A8%E6%B5%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E6%97%A0%E5%89%AF%E4%BD%9C%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-number">1.5.</span> <span class="toc-text"> 46. 在流中使用无副作用的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#47-%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8-collection-%E8%80%8C%E4%B8%8D%E6%98%AF-stream-%E4%BD%9C%E4%B8%BA%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.6.</span> <span class="toc-text"> 47. 优先使用 Collection 而不是 Stream 作为返回类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#48-%E8%B0%A8%E6%85%8E%E4%BD%BF%E7%94%A8%E5%B9%B6%E8%A1%8C%E6%B5%81"><span class="toc-number">1.7.</span> <span class="toc-text"> 48. 谨慎使用并行流</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Effective-Java学习笔记（六）" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective-Java学习笔记（六）
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/07/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89/" class="article-date">
+	  <time datetime="2022-07-30T06:30:09.000Z" itemprop="datePublished">2022-07-30</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/Stream/" rel="tag">Stream</a>, <a class="article-tag-link-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/07/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 4k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 14(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="第七章-λ-表达式和流"><a class="markdownIt-Anchor" href="#第七章-λ-表达式和流"></a> 第七章 λ 表达式和流</h2>
+<h3 id="42-λ-表达式优于匿名类"><a class="markdownIt-Anchor" href="#42-λ-表达式优于匿名类"></a> 42. λ 表达式优于匿名类</h3>
+<h4 id="函数对象"><a class="markdownIt-Anchor" href="#函数对象"></a> 函数对象</h4>
+<p>在历史上，带有单个抽象方法的接口（或者抽象类，但这种情况很少）被用作函数类型。它们的实例（称为函数对象）表示函数或操作。自从 JDK 1.1 在 1997 年发布以来，创建函数对象的主要方法就是匿名类（Item-24）。下面是一个按长度对字符串列表进行排序的代码片段，使用一个匿名类来创建排序的比较函数（它强制执行排序顺序）：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Anonymous class instance as a function object - obsolete!</span>
+Collections.sort(words, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Comparator</span>&lt;String&gt;() &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compare</span><span class="hljs-params">(String s1, String s2)</span> &#123;
+        <span class="hljs-keyword">return</span> Integer.compare(s1.length(), s2.length());
+    &#125;
+&#125;);
+</code></pre>
+<h4 id="函数式接口"><a class="markdownIt-Anchor" href="#函数式接口"></a> 函数式接口</h4>
+<p>在 Java 8 中官方化了一个概念，即具有单个抽象方法的接口是特殊的，应该得到特殊处理。这些接口现在被称为函数式接口</p>
+<h4 id="lambda-表达式"><a class="markdownIt-Anchor" href="#lambda-表达式"></a> lambda 表达式</h4>
+<p>可以使用 lambda 表达式为函数式接口创建实例，lambda 表达式在功能上类似于匿名类，但更简洁</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Lambda expression as function object (replaces anonymous class)</span>
+Collections.sort(words,(s1, s2) -&gt; Integer.compare(s1.length(), s2.length()));
+</code></pre>
+<ol>
+<li>lambda 表达式的入参和返回值类型一般不写，由编译器做类型推断，类型能不写就不写。<br />
+Item26告诉你不要用原始类型，Item29，30告诉你要用泛型和泛型方法，编译器从泛型中获得了大部分类型推断所需的类型信息</li>
+<li>lambda 表达式缺少名称和文档；如果一个算法较复杂，或者有很多行代码，不要把它放在 lambda 表达式中。 一行是理想的，三行是合理的最大值</li>
+<li>lambda 表达式仅限于函数式接口。如果想创建抽象类实例或者多个抽象方法的接口，只能用匿名类</li>
+<li>lambda 表达式编译后会成为外部类的一个私有方法，而匿名类会生成单独的class文件，所以 lambda 表达式的this是外部类实例，匿名类的this是匿名类实例</li>
+<li>lambda表达式和匿名类都不能可靠的序列化，如果想序列化函数对象，可以用私有静态嵌套类</li>
+</ol>
+<h3 id="43-方法引用优于-λ-表达式"><a class="markdownIt-Anchor" href="#43-方法引用优于-λ-表达式"></a> 43. 方法引用优于 λ 表达式</h3>
+<p>Java 提供了一种比 lambda 表达式更简洁的方法来生成函数对象：方法引用。下面这段代码的功能是，如果数字 1 不在映射中，则将其与键关联，如果键已经存在，则将关联值递增：</p>
+<pre class="highlight"><code class="java">map.merge(key, <span class="hljs-number">1</span>, (count, incr) -&gt; count + incr);
+</code></pre>
+<p>上面代码的 lambda 表达式作用是返回两个入参的和，在 Java 8 中，Integer（和所有其它基本类型的包装类）提供了一个静态方法 sum，它的作用完全相同，我们可以传入一个方法引用，并得到相同结果，同时减少视觉混乱：</p>
+<pre class="highlight"><code class="java">map.merge(key, <span class="hljs-number">1</span>, Integer::sum);
+</code></pre>
+<p>函数对象的参数越多，方法引用就显得越简洁，但是 lambda 表达式指明了参数名，使得 lambda表达式比方法引用更容易阅读和维护，没有什么是方法引用能做而 lambda 表达式做不了的</p>
+<p>许多方法引用引用静态方法，但是有四种方法不引用静态方法。其中两个是绑定和非绑定实例方法引用。在绑定引用中，接收对象在方法引用中指定。绑定引用在本质上与静态引用相似：函数对象接受与引用方法相同的参数。在未绑定引用中，在应用函数对象时通过方法声明参数之前的附加参数指定接收对象。在流管道中，未绑定引用通常用作映射和筛选函数（Item-45）。最后，对于类和数组，有两种构造函数引用。构造函数引用用作工厂对象。五种方法参考文献汇总如下表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Method Ref Type</th>
+<th style="text-align:center">Example</th>
+<th style="text-align:center">Lambda Equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Static</td>
+<td style="text-align:center"><code>Integer::parseInt</code></td>
+<td style="text-align:center"><code>str -&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:center">Bound</td>
+<td style="text-align:center"><code>Instant.now()::isAfter</code></td>
+<td style="text-align:center"><code>Instant then =Instant.now(); t -&gt;then.isAfter(t)</code></td>
+</tr>
+<tr>
+<td style="text-align:center">Unbound</td>
+<td style="text-align:center"><code>String::toLowerCase</code></td>
+<td style="text-align:center"><code>str -&gt;str.toLowerCase()</code></td>
+</tr>
+<tr>
+<td style="text-align:center">Class Constructor</td>
+<td style="text-align:center"><code>TreeMap&lt;K,V&gt;::new</code></td>
+<td style="text-align:center"><code>() -&gt; new TreeMap&lt;K,V&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:center">Array Constructor</td>
+<td style="text-align:center"><code>int[]::new</code></td>
+<td style="text-align:center"><code>len -&gt; new int[len]</code></td>
+</tr>
+</tbody>
+</table>
+<p>总之，方法引用通常为 lambda 表达式提供了一种更简洁的选择。如果方法引用更短、更清晰，则使用它们；如果没有，仍然使用 lambda 表达式。</p>
+<h3 id="44-优先使用标准函数式接口"><a class="markdownIt-Anchor" href="#44-优先使用标准函数式接口"></a> 44. 优先使用标准函数式接口</h3>
+<p>java.util.function 包提供了大量的标准函数接口。优先使用标准函数式接口而不是自己写。 通过减少 API ，使得你的 API 更容易学习，并将提供显著的互操作性优势，因为许多标准函数式接口提供了有用的默认方法</p>
+<p>java.util.function 中有 43 个接口。不能期望你记住所有的接口，但是如果你记住了 6 个基本接口，那么你可以在需要时派生出其余的接口。基本接口操作对象引用类型。Operator 接口表示结果和参数类型相同的函数。Predicate 接口表示接受参数并返回布尔值的函数。Function 接口表示参数和返回类型不同的函数。Supplier 接口表示一个无参并返回（或「供应」）值的函数。最后，Consumer 表示一个函数，该函数接受一个参数，但不返回任何内容，本质上是使用它的参数。六个基本的函数式接口总结如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Interface</th>
+<th style="text-align:center">Function Signature</th>
+<th style="text-align:center">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>UnaryOperator&lt;T&gt;</code></td>
+<td style="text-align:center"><code>T apply(T t)</code></td>
+<td style="text-align:center"><code>String::toLowerCase</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>BinaryOperator&lt;T&gt;</code></td>
+<td style="text-align:center"><code>T apply(T t1, T t2)</code></td>
+<td style="text-align:center"><code>BigInteger::add</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>Predicate&lt;T&gt;</code></td>
+<td style="text-align:center"><code>boolean test(T t)</code></td>
+<td style="text-align:center"><code>Collection::isEmpty</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>Function&lt;T,R&gt;</code></td>
+<td style="text-align:center"><code>R apply(T t)</code></td>
+<td style="text-align:center"><code>Arrays::asList</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>Supplier&lt;T&gt;</code></td>
+<td style="text-align:center"><code>T get()</code></td>
+<td style="text-align:center"><code>Instant::now</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>Consumer&lt;T&gt;</code></td>
+<td style="text-align:center"><code>void accept(T t)</code></td>
+<td style="text-align:center"><code>System.out::println</code></td>
+</tr>
+</tbody>
+</table>
+<p>还有 6 个基本接口的 3 个变体，用于操作基本类型 int、long 和 double。它们的名称是通过在基本接口前面加上基本类型前缀而派生出来的。例如，一个接受 int 的 Predicate 就是一个 IntPredicate，一个接受两个 long 值并返回一个 long 的二元操作符就是一个 LongBinaryOperator。没有变体类型是参数化的除了由返回类型参数化的 Function 变体外。例如，<code>LongFunction&lt;int[]&gt;</code> 使用 long 并返回一个 int[]。</p>
+<p>Function 接口还有 9 个额外的变体，在结果类型为基本数据类型时使用。源类型和结果类型总是不同的，因为入参只有一个且与出参类型相同的函数本身都是 UnaryOperator。如果源类型和结果类型都是基本数据类型，则使用带有 SrcToResult 的前缀函数，例如 LongToIntFunction（六个变体）。如果源是一个基本数据类型，而结果是一个对象引用，则使用带前缀 SrcToObj 的 Function 接口，例如 DoubleToObjFunction（三个变体）。</p>
+<p>三个基本函数式接口有两个参数版本，使用它们是有意义的：<code>BiPredicate&lt;T,U&gt;</code>、<code>BiFunction&lt;T,U,R&gt;</code>、<code>BiConsumer&lt;T,U&gt;</code>。也有 BiFunction 变体返回三个相关的基本类型：<code>ToIntBiFunction&lt;T,U&gt;</code>、 <code>ToLongBiFunction&lt;T,U&gt;</code>、<code>ToDoubleBiFunction&lt;T,U&gt;</code>。Consumer 有两个参数变体，它们接受一个对象引用和一个基本类型：<code>ObjDoubleConsumer&lt;T&gt;</code>、<code>ObjIntConsumer&lt;T&gt;</code>、<code>ObjLongConsumer&lt;T&gt;</code>。总共有9个基本接口的双参数版本。</p>
+<p>最后是 BooleanSupplier 接口，它是 Supplier 的一个变体，返回布尔值。这是在任何标准函数接口名称中唯一显式提到布尔类型的地方，但是通过 Predicate 及其四种变体形式支持布尔返回值。前面描述的 BooleanSupplier 接口和 42 个接口占了全部 43 个标准函数式接口。</p>
+<p>总之，既然 Java 已经有了 lambda 表达式，你必须在设计 API 时考虑 lambda 表达式。在输入时接受函数式接口类型，在输出时返回它们。一般情况下，最好使用 java.util.function 中提供的标准函数式接口，但请注意比较少见的一些情况，在这种情况下，你最好编写自己的函数式接口。</p>
+<h3 id="45-明智地使用流"><a class="markdownIt-Anchor" href="#45-明智地使用流"></a> 45. 明智地使用流</h3>
+<p>Java8添加了流API，用来简化序列或并行执行批量操作，API有两个关键的抽象：流（表示有限或无限的数据元素序列）和流管道（表示对这些元素的多阶段计算）。</p>
+<h4 id="流"><a class="markdownIt-Anchor" href="#流"></a> 流</h4>
+<p>流中的元素可以来自任何地方。常见的源包括集合、数组、文件、正则表达式的 Pattern 匹配器、伪随机数生成器和其他流。流中的数据元素可以是对象的引用或基本数据类型。支持三种基本数据类型：int、long 和 double。</p>
+<h4 id="流管道"><a class="markdownIt-Anchor" href="#流管道"></a> 流管道</h4>
+<p>流管道由源流跟着零个或多个中间操作和一个终止操作组成。每个中间操作以某种方式转换流，例如将每个元素映射到该元素的一个函数，或者过滤掉不满足某些条件的所有元素。中间操作都将一个流转换为另一个流，其元素类型可能与输入流相同，也可能与输入流不同。终止操作对最后一次中间操作所产生的流进行最终计算，例如将其元素存储到集合中、返回特定元素、或打印其所有元素。</p>
+<ol>
+<li>流管道的计算是惰性的：直到调用终止操作时才开始计算，并且对完成终止操作不需要的数据元素永远不会计算。这种惰性的求值机制使得处理无限流成为可能。</li>
+<li>流 API 是流畅的：它被设计成允许使用链式调用将组成管道的所有调用写到单个表达式中。</li>
+<li>谨慎使用流，全部都是流操作的代码可读性不高</li>
+<li>谨慎命名 lambda 表达式的参数名以提高可读性，复杂表达式使用 helper 方法</li>
+</ol>
+<h4 id="流-vs-迭代"><a class="markdownIt-Anchor" href="#流-vs-迭代"></a> 流 VS 迭代</h4>
+<p>迭代代码使用代码块表示重复计算，流管道使用函数对象（通常是 lambda 表达式或方法引用）表示重复计算。</p>
+<p>迭代优势：</p>
+<ol>
+<li>代码块可以读取修改局部变量，lambda表达式只能读取final变量或实际上final变量（初始化后不再修改，编译器会帮我们声明为final）。</li>
+<li>代码块可以控制迭代，包括return，break，continue，throw，但是lambda不行</li>
+</ol>
+<p>流适合用在以下操作：</p>
+<ol>
+<li>元素序列的一致变换</li>
+<li>过滤元素序列</li>
+<li>组合元素序列（例如添加它们，连接它们或计算它们的最小值）</li>
+<li>聚合元素序列到一个集合中，例如按属性分组</li>
+<li>在元素序列中搜索满足某些条件的元素</li>
+</ol>
+<p>总之，有些任务最好使用流来完成，有些任务最好使用迭代来完成。许多任务最好通过结合这两种方法来完成。</p>
+<h3 id="46-在流中使用无副作用的函数"><a class="markdownIt-Anchor" href="#46-在流中使用无副作用的函数"></a> 46. 在流中使用无副作用的函数</h3>
+<p>考虑以下代码，它用于构建文本文件中单词的频率表</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Uses the streams API but not the paradigm--Don&#x27;t do this!</span>
+Map&lt;String, Long&gt; freq = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();
+<span class="hljs-keyword">try</span> (Stream&lt;String&gt; words = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Scanner</span>(file).tokens()) &#123;
+    words.forEach(word -&gt; &#123;
+        freq.merge(word.toLowerCase(), <span class="hljs-number">1L</span>, Long::sum);
+    &#125;);
+&#125;
+</code></pre>
+<p>这段代码可以得出正确答案，但它不是流代码，而是伪装成流代码的迭代代码。它比迭代代码更长，更难阅读，更难维护，问题出在：forEach修改了外部状态。正确使用的流代码如下：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Proper use of streams to initialize a frequency table</span>
+Map&lt;String, Long&gt; freq;
+<span class="hljs-keyword">try</span> (Stream&lt;String&gt; words = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Scanner</span>(file).tokens()) &#123;
+    freq = words.collect(groupingBy(String::toLowerCase, counting()));
+&#125;
+</code></pre>
+<p>forEach 操作应该只用于报告流计算的结果，而不是执行计算</p>
+<p>正确的流代码使用了 Collectors 的生成收集器的方法，将元素收集到集合中的方法有三种：<code>toList()</code>、<code>toSet()</code> 和 <code>toCollection(collectionFactory)</code>。它们分别返回 List、Set 和程序员指定的集合类型</p>
+<p>Collectors其它方法大部分是将流收集到Map中。最简单的Map收集器是<code>toMap(keyMapper, valueMapper)</code>，它接受两个函数，一个将流元素映射到键，另一个将流元素映射到值，Item34用到了这个收集器</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Using a toMap collector to make a map from string to enum</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Map&lt;String, Operation&gt; stringToEnum =Stream.of(values()).collect(toMap(Object::toString, e -&gt; e));
+</code></pre>
+<p>这个收集器不能处理重复键的问题，我们可以加入第三个参数，即merge函数，处理重复键，它的参数类型是Map的值类型。我们还可以加入第四个参数用来指定特定的Map实现（如EnumMap或TreeMap）</p>
+<p>除了toMap方法，groupingBy方法也将元素收集到Map中，键是类别，值是这个类别的所有元素的列表；groupingBy方法第二个参数是一个下游收集器，例如 counting() 作为下游收集器，最终的Map的键是类别，值是这个类别所有元素的数量；groupingBy也支持指定特定的Map实现</p>
+<p>minBy和maxBy，它们接受一个Comparator并返回最小或最大元素；join方法将字符序列（如字符串）连接起来</p>
+<p>总之，流管道编程的本质是无副作用的函数对象。这适用于传递给流和相关对象的所有函数对象。中间操作 forEach 只应用于报告由流执行的计算结果，而不应用于执行计算。为了正确使用流，你必须了解 collector。最重要的 collector 工厂是 toList、toSet、toMap、groupingBy 和 join。</p>
+<h3 id="47-优先使用-collection-而不是-stream-作为返回类型"><a class="markdownIt-Anchor" href="#47-优先使用-collection-而不是-stream-作为返回类型"></a> 47. 优先使用 Collection 而不是 Stream 作为返回类型</h3>
+<p>Stream 没有继承 Iterable，不能用 for-each 循环遍历。Collection 接口继承了 Iterable 而且提供了转换为流的方法，因此，Collection 或其适当的子类通常是公有返回序列的方法的最佳返回类型。</p>
+<h3 id="48-谨慎使用并行流"><a class="markdownIt-Anchor" href="#48-谨慎使用并行流"></a> 48. 谨慎使用并行流</h3>
+<p>如果流来自 Stream.iterate 或者中间操作 limit，并行化管道也不太可能提高其性能</p>
+<p>通常，并行性带来的性能提升在 ArrayList、HashMap、HashSet 和 ConcurrentHashMap 实例上的流效果最好；int 数组和 long 数组也在其中。 这些数据结构的共同之处在于，它们都可以被精确且廉价地分割成任意大小的子程序，这使得在并行线程之间划分工作变得很容易。另一个共同点是，当按顺序处理时，它们提供了极好的引用位置：顺序元素引用一起存储在内存中，这些引用的引用对象在内存中可能彼此不太接近，这减少了引用的位置。引用位置对于并行化批量操作非常重要，如果没有它，线程将花费大量时间空闲，等待数据从内存传输到处理器的缓存中。具有最佳引用位置的数据结构是基本数组，因为数据本身是连续存储在内存中的。</p>
+<p>如果在终止操作中完成大量工作，并且该操作本质上是顺序的，那么管道的并行化效果有限。并行化的最佳终止操作是 reduce 方法或者预先写好的reduce 方法，包括min、max、count、and。anyMatch、allMatch 和 noneMatch 的短路操作也适用于并行性。流的 collect 方法执行的操作称为可变缩减，它们不是并行化的好候选，因为组合集合的开销是昂贵的。</p>
+<p>并行化流不仅会导致糟糕的性能，包括活动失败；它会导致不正确的结果和不可预知的行为（安全故障）。</p>
+<p>总之，不要尝试并行化流管道，除非你有充分的理由相信它将保持计算的正确性以及提高速度。不适当地并行化流的代价可能是程序失败或性能灾难。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2022/07/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89/" title="Effective-Java学习笔记（六）" target="_blank" rel="external">https://zunpan.github.io/2022/07/30/Effective-Java学习笔记（六）/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/08/01/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%83%EF%BC%89/" title="Effective-Java学习笔记（七）"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2022/07/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89/" title="Effective-Java学习笔记（五）"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

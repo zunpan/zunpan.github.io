@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>LeetCode刷题记录(cpp) | panzun</title>
+  <meta name="description" content="stringstream用法 需要include&lt;sstream&gt;，任何输入输出都会被转换成字符串 istringstream类用于执行C风格的串流的输入操作 ostringstream类用于执行C风格的串流的输出操作 stringstream类同时支持C风格的串流的输入输出操作 #include &lt;iostream&gt; #include &lt;vector&gt; #i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode刷题记录(cpp)">
+<meta property="og:url" content="https://zunpan.github.io/2022/05/07/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-cpp/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="stringstream用法 需要include&lt;sstream&gt;，任何输入输出都会被转换成字符串 istringstream类用于执行C风格的串流的输入操作 ostringstream类用于执行C风格的串流的输出操作 stringstream类同时支持C风格的串流的输入输出操作 #include &lt;iostream&gt; #include &lt;vector&gt; #i">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-07T09:00:09.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.278Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="LeetCode">
+<meta property="article:tag" content="cpp">
+<meta property="article:tag" content="algorithm">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2022/05/07/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-cpp/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#stringstream%E7%94%A8%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text"> stringstream用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="toc-number">2.</span> <span class="toc-text"> 默认值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#substr%E5%87%BD%E6%95%B0%E7%94%A8%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text"> substr函数用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#stringlength%E6%88%96%E8%80%85size%E4%B8%8E%E5%8F%98%E9%87%8F%E4%BD%9C%E6%AF%94%E8%BE%83%E7%9A%84bug"><span class="toc-number">4.</span> <span class="toc-text"> string.length()或者size()与变量作比较的bug</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8%E9%A2%98%E6%8A%80%E5%B7%A7"><span class="toc-number">5.</span> <span class="toc-text"> 链表题技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E9%A2%98%E6%8A%80%E5%B7%A7"><span class="toc-number">6.</span> <span class="toc-text"> 二叉树题技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BA%92%E8%BD%AC"><span class="toc-number">7.</span> <span class="toc-text"> 数字和字符串互转</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">8.</span> <span class="toc-text"> 数组初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dfs%E5%92%8Cbfs%E9%80%82%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">9.</span> <span class="toc-text"> DFS和BFS适用条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E7%9A%84%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="toc-number">10.</span> <span class="toc-text"> 图的连通性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%92%E5%BA%8F"><span class="toc-number">11.</span> <span class="toc-text"> 自定义排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%88%86%E6%8A%80%E5%B7%A7"><span class="toc-number">12.</span> <span class="toc-text"> 二分技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="toc-number">12.1.</span> <span class="toc-text"> 标准二分查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%BB%A1%E8%B6%B3xxx%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-number">12.2.</span> <span class="toc-text"> 二分查找第一个满足XXX的位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E6%BB%A1%E8%B6%B3xxx%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-number">12.3.</span> <span class="toc-text"> 二分查找最后一个满足XXX的位置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#stl%E7%9A%84%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="toc-number">13.</span> <span class="toc-text"> STL的二分查找</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="toc-number">14.</span> <span class="toc-text"> 优先队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6%E6%8A%80%E5%B7%A7"><span class="toc-number">15.</span> <span class="toc-text"> 位运算符技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E4%BD%8D%E4%B8%8E%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.1.</span> <span class="toc-text"> 按位与运算符（&amp;）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8E%E8%BF%90%E7%AE%97%E7%9A%84%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94"><span class="toc-number">15.1.1.</span> <span class="toc-text"> ”与运算“的特殊用途</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E4%BD%8D%E6%88%96%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.2.</span> <span class="toc-text"> 按位或运算符（|）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%96%E8%BF%90%E7%AE%97%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94"><span class="toc-number">15.2.1.</span> <span class="toc-text"> “或运算”特殊用途</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.3.</span> <span class="toc-text"> 异或运算符（^）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94"><span class="toc-number">15.3.1.</span> <span class="toc-text"> “异或运算”特殊用途</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%8F%8D%E8%BF%90%E7%AE%97%E7%AC%A6~"><span class="toc-number">15.4.</span> <span class="toc-text"> 取反运算符（~）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%96%E5%8F%8D%E8%BF%90%E7%AE%97%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94"><span class="toc-number">15.4.1.</span> <span class="toc-text"> “取反运算”特殊用途</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A6%E7%A7%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.5.</span> <span class="toc-text"> 左移运算符（&lt;&lt;）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%B3%E7%A7%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.6.</span> <span class="toc-text"> 右移运算符（&gt;&gt;)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E5%8F%B3%E7%A7%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.7.</span> <span class="toc-text"> 无符号右移运算符（&gt;&gt;&gt;)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E9%95%BF%E5%BA%A6%E7%9A%84%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="toc-number">15.8.</span> <span class="toc-text"> 不同长度的数据进行位运算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E9%A2%98%E6%8A%80%E5%B7%A7"><span class="toc-number">16.</span> <span class="toc-text"> 数组题技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%AB%E6%8E%92"><span class="toc-number">17.</span> <span class="toc-text"> 快排</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98"><span class="toc-number">18.</span> <span class="toc-text"> 背包问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E6%AD%A5%E9%AA%A4"><span class="toc-number">18.1.</span> <span class="toc-text"> 背包问题分析步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E7%89%B9%E5%BE%81"><span class="toc-number">18.2.</span> <span class="toc-text"> 背包问题特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E9%81%8D%E5%8E%86"><span class="toc-number">18.3.</span> <span class="toc-text"> 背包问题遍历</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E8%B0%83%E6%A0%88"><span class="toc-number">19.</span> <span class="toc-text"> 单调栈</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-LeetCode刷题记录-cpp" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      LeetCode刷题记录(cpp)
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/05/07/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-cpp/" class="article-date">
+	  <time datetime="2022-05-07T09:00:09.000Z" itemprop="datePublished">2022-05-07</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/LeetCode/" rel="tag">LeetCode</a>, <a class="article-tag-link-link" href="/tags/algorithm/" rel="tag">algorithm</a>, <a class="article-tag-link-link" href="/tags/cpp/" rel="tag">cpp</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/05/07/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-cpp/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 3.4k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 14(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="stringstream用法"><a class="markdownIt-Anchor" href="#stringstream用法"></a> stringstream用法</h2>
+<p>需要<code>include&lt;sstream&gt;</code>，任何输入输出都会被转换成字符串</p>
+<p><code>istringstream</code>类用于执行C风格的串流的输入操作</p>
+<p><code>ostringstream</code>类用于执行C风格的串流的输出操作</p>
+<p><code>stringstream</code>类同时支持C风格的串流的输入输出操作</p>
+<pre class="highlight"><code class="c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sstream&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+<span class="hljs-comment">// 例子1: 基本用法</span>
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>&#123;
+    string s;
+    stringstream ss;
+    <span class="hljs-type">int</span> n = <span class="hljs-number">11</span>, m = <span class="hljs-number">88</span>;
+    <span class="hljs-comment">// 将11放入流中</span>
+    ss &lt;&lt; n;
+    <span class="hljs-comment">// 从流中提取数据到s中，自动类型转换，无需关心类型问题</span>
+    ss &gt;&gt; s;
+    <span class="hljs-comment">// 11</span>
+    cout &lt;&lt; s &lt;&lt; endl;
+    s += <span class="hljs-string">&quot;23&quot;</span>;
+    <span class="hljs-comment">// 1123</span>
+    cout &lt;&lt; s &lt;&lt; endl;
+    <span class="hljs-comment">// 清空，以便下一次使用</span>
+    ss.<span class="hljs-built_in">clear</span>();
+    ss.<span class="hljs-built_in">str</span>(<span class="hljs-string">&quot;&quot;</span>);
+    ss &lt;&lt; s;
+    ss &gt;&gt; n;
+    <span class="hljs-comment">// 1123</span>
+    cout &lt;&lt; n &lt;&lt; endl;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+</code></pre>
+<pre class="highlight"><code class="c++">
+<span class="hljs-comment">// 例2：按空格分隔字符串</span>
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> <span class="hljs-type">const</span> *argv[])</span>
+</span>&#123;
+    <span class="hljs-function">stringstream <span class="hljs-title">ss</span><span class="hljs-params">(<span class="hljs-string">&quot;1 2 3&quot;</span>)</span></span>;
+    string s;
+    <span class="hljs-keyword">while</span> (ss &gt;&gt; s)
+    &#123;
+        cout &lt;&lt; s &lt;&lt; endl;
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-comment">// 例3：按分隔符分隔字符串</span>
+<span class="hljs-function"><span class="hljs-type">const</span> vector&lt;string&gt; <span class="hljs-title">split</span><span class="hljs-params">(<span class="hljs-type">const</span> string &amp;str, <span class="hljs-type">const</span> <span class="hljs-type">char</span> &amp;delimiter)</span>
+</span>&#123;
+    vector&lt;string&gt; result;
+    <span class="hljs-function">stringstream <span class="hljs-title">ss</span><span class="hljs-params">(str)</span></span>; <span class="hljs-comment">// 等于ss.str(str);</span>
+    string tok;
+    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">getline</span>(ss, tok, delimiter)) <span class="hljs-comment">// 从ss流中按delimiter为分隔符读取数据存储到tok中，直到流结束</span>
+    &#123;
+        result.<span class="hljs-built_in">push_back</span>(tok);
+    &#125;
+    <span class="hljs-keyword">return</span> result;
+&#125;
+</code></pre>
+<h2 id="默认值"><a class="markdownIt-Anchor" href="#默认值"></a> 默认值</h2>
+<p><code>string</code>类型的默认值是<code>&quot;&quot;</code></p>
+<p><code>int</code>类型的默认值是<code>0</code></p>
+<h2 id="substr函数用法"><a class="markdownIt-Anchor" href="#substr函数用法"></a> substr函数用法</h2>
+<pre class="highlight"><code class="c++"><span class="hljs-function">string <span class="hljs-title">s</span><span class="hljs-params">(<span class="hljs-string">&quot;123&quot;</span>)</span></span>;
+string a = s.<span class="hljs-built_in">substr</span>(<span class="hljs-number">0</span>,<span class="hljs-number">5</span>);<span class="hljs-comment">// 获得字符串s中从第0位开始的长度为5的字符串，若 pos+n&gt;s.length()，只会截取到末尾</span>
+</code></pre>
+<h2 id="stringlength或者size与变量作比较的bug"><a class="markdownIt-Anchor" href="#stringlength或者size与变量作比较的bug"></a> string.length()或者size()与变量作比较的bug</h2>
+<p><code>string.length()</code>是unsigned型的不能与负数作比较，否则在机器数的表示上俩者都会以unsigned的编码形式比较，那就大概率结果就不对了,所以建议平时编程养成好习惯，类型不一样的数据比较或运算时一定要留一个心眼，不能直接拿来就比。用的时候可以在前面写上强转</p>
+<h2 id="链表题技巧"><a class="markdownIt-Anchor" href="#链表题技巧"></a> 链表题技巧</h2>
+<ul>
+<li>多用定义变量，不容易被逻辑绕晕，比如修改指针前先用first、second、third先保存下来</li>
+<li>head有可能发生改动时，先增加一个假head，返回的时候返回head-&gt;next，避免修改头结点导致多出一堆逻辑</li>
+</ul>
+<h2 id="二叉树题技巧"><a class="markdownIt-Anchor" href="#二叉树题技巧"></a> 二叉树题技巧</h2>
+<ul>
+<li>先考虑递归（前中后序遍历）还是迭代（层序遍历）</li>
+<li>递归要先考虑函数是否有返回值，比如说判断是否是平衡二叉树，当前递归函数中要根据左右子树的返回值做判断，所以递归函数要返回值</li>
+<li>然后考虑是前，还是中，还是后。如果要先处理左右子树那就是后，特别地，回溯也是后，参考<a target="_blank" rel="noopener" href="https://programmercarl.com/0236.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88.html">https://programmercarl.com/0236.二叉树的最近公共祖先.html</a></li>
+<li>最后再考虑递归终止条件，一般是root==nullptr就返回，也有特殊情况，比如叶子节点就返回</li>
+<li>层序遍历一般用队列。如果要一层一层的访问，在出队的时候要先记录当前层的节点数，根据节点数出队</li>
+</ul>
+<h2 id="数字和字符串互转"><a class="markdownIt-Anchor" href="#数字和字符串互转"></a> 数字和字符串互转</h2>
+<p>数字转字符串：<code>to_string(number)</code></p>
+<p>字符串转数字：<code>stoi(intStr) , stol(longStr), stof(floatStr), stod(doubleStr)</code></p>
+<h2 id="数组初始化"><a class="markdownIt-Anchor" href="#数组初始化"></a> 数组初始化</h2>
+<p>初始化一个n*n的二维数组，用0填充</p>
+<p><code>vector&lt;vector&lt;int&gt;&gt;v(n,vector&lt;int&gt;(n,0));</code></p>
+<p>或者</p>
+<pre class="highlight"><code class="c++">v.<span class="hljs-built_in">resize</span>(n);
+<span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> k=<span class="hljs-number">0</span>;k&lt;n;k++)&#123;
+  v[k].<span class="hljs-built_in">resize</span>(n);
+&#125;
+</code></pre>
+<p>或者用memset</p>
+<pre class="highlight"><code class="c++"><span class="hljs-type">int</span> v[n][n];
+<span class="hljs-built_in">memset</span>(v,<span class="hljs-number">0</span>,<span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>)*n*n); 
+</code></pre>
+<h2 id="dfs和bfs适用条件"><a class="markdownIt-Anchor" href="#dfs和bfs适用条件"></a> DFS和BFS适用条件</h2>
+<p>dfs适合找解的存在和所有解，bfs适合找最优解。例如dfs可以解决可达性，bfs可以解决无权图最短路径（有权使用dijkstra）。dfs需要回溯时要注意，以N皇后和解数独为例，如果当前位置的合法性依赖之前放置的位置，那么回溯时要将位置清除（N皇后），如果当前位置的合法性不依赖之前的位置，而是依赖别的辅助空间，那么回溯时只需要清除辅助空间，放置的位置可以不清除（解数独）</p>
+<h2 id="图的连通性"><a class="markdownIt-Anchor" href="#图的连通性"></a> 图的连通性</h2>
+<p>考虑dfs和并查集</p>
+<h2 id="自定义排序"><a class="markdownIt-Anchor" href="#自定义排序"></a> 自定义排序</h2>
+<pre class="highlight"><code class="c++"><span class="hljs-comment">// sort函数第三个参数是lambda表达式，[x] 表示捕获外部的变量x</span>
+<span class="hljs-built_in">sort</span>(arr.<span class="hljs-built_in">begin</span>(),arr.<span class="hljs-built_in">end</span>(),[x](<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a,<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b)&#123;
+       <span class="hljs-keyword">return</span> <span class="hljs-built_in">abs</span>(a-x)==<span class="hljs-built_in">abs</span>(b-x)?a&lt;b:<span class="hljs-built_in">abs</span>(a-x)&lt;<span class="hljs-built_in">abs</span>(b-x);
+&#125;);
+</code></pre>
+<h2 id="二分技巧"><a class="markdownIt-Anchor" href="#二分技巧"></a> 二分技巧</h2>
+<h3 id="标准二分查找"><a class="markdownIt-Anchor" href="#标准二分查找"></a> 标准二分查找</h3>
+<pre class="highlight"><code class="c++"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">search</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> target)</span>
+</span>&#123;
+    <span class="hljs-type">int</span> left = <span class="hljs-number">0</span>;
+    <span class="hljs-type">int</span> right = nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">while</span> (left &lt;= right)
+    &#123;
+        <span class="hljs-type">int</span> mid = left + ((right - left) &gt;&gt; <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">if</span> (nums[mid] == target)
+            <span class="hljs-keyword">return</span> mid;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (nums[mid] &gt; target)
+        &#123;
+            right = mid - <span class="hljs-number">1</span>;
+        &#125;
+        <span class="hljs-keyword">else</span>
+        &#123;
+            left = mid + <span class="hljs-number">1</span>;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+&#125;
+</code></pre>
+<h3 id="二分查找第一个满足xxx的位置"><a class="markdownIt-Anchor" href="#二分查找第一个满足xxx的位置"></a> 二分查找第一个满足XXX的位置</h3>
+<pre class="highlight"><code class="c++"><span class="hljs-type">int</span> left = <span class="hljs-number">0</span>, right = nums.<span class="hljs-built_in">size</span>()- <span class="hljs-number">1</span>, ans = <span class="hljs-number">-1</span>;
+<span class="hljs-comment">// &lt;= 可以判断区间长度为1时，即left==right时是否有解；若二分条件必须在区间大于等于2的情况下判断，则去掉=，参考leetcode162</span>
+<span class="hljs-keyword">while</span> (left &lt;= right)
+&#123;
+    <span class="hljs-type">int</span> middle = left + (right - left) / <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">if</span> (满足XXX)
+    &#123;
+        ans = middle;
+        right = middle - <span class="hljs-number">1</span>;
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+        left = middle + <span class="hljs-number">1</span>;
+    &#125;
+&#125;
+<span class="hljs-keyword">return</span> ans;
+</code></pre>
+<h3 id="二分查找最后一个满足xxx的位置"><a class="markdownIt-Anchor" href="#二分查找最后一个满足xxx的位置"></a> 二分查找最后一个满足XXX的位置</h3>
+<pre class="highlight"><code class="c++"><span class="hljs-type">int</span> left = <span class="hljs-number">0</span>, right = nums.<span class="hljs-built_in">size</span>()- <span class="hljs-number">1</span>, ans = <span class="hljs-number">-1</span>;
+<span class="hljs-comment">// &lt;= 可以判断区间长度为1时，即left==right时是否有解；若二分条件必须在区间大于等于2的情况下判断，则去掉=，参考leetcode162</span>
+<span class="hljs-keyword">while</span> (left &lt;= right)
+&#123;
+    <span class="hljs-type">int</span> middle = left + (right - left) / <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">if</span> (满足XXX)
+    &#123;
+        ans = middle;
+        left = middle + <span class="hljs-number">1</span>;
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+        right = middle - <span class="hljs-number">1</span>;
+    &#125;
+&#125;
+<span class="hljs-keyword">return</span> ans;
+</code></pre>
+<h2 id="stl的二分查找"><a class="markdownIt-Anchor" href="#stl的二分查找"></a> STL的二分查找</h2>
+<p><code>lower_bound(begin,end,num)</code>: 从数组的begin位置到end-1位置二分查找第一个大于或等于num的数字，找到返回该数字的迭代器，不存在则返回end。通过返回的迭代器减去begin可以得到数字的下标。</p>
+<p><code>upper_bound(begin,end,num)</code>: 从数组的begin位置到end-1位置二分查找第一个大于num 数字，找到返回该数字的迭代器，不存在则返回end。通过返回的迭代器减去begin可以得到数字的下标。</p>
+<pre class="highlight"><code class="c++"><span class="hljs-comment">// 用在vector上</span>
+vector&lt;<span class="hljs-type">int</span>&gt; nums1&#123;<span class="hljs-number">1</span>,<span class="hljs-number">10</span>,<span class="hljs-number">4</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">7</span>&#125;;
+<span class="hljs-built_in">sort</span>(nums1.<span class="hljs-built_in">begin</span>(),nums1.<span class="hljs-built_in">end</span>());
+<span class="hljs-type">int</span> pos1 = <span class="hljs-built_in">lower_bound</span>(nums1.<span class="hljs-built_in">begin</span>(),nums1.<span class="hljs-built_in">end</span>(),<span class="hljs-number">9</span>)-nums1.<span class="hljs-built_in">begin</span>();
+
+<span class="hljs-comment">// 用在数组上</span>
+<span class="hljs-type">int</span> nums2[<span class="hljs-number">6</span>] = &#123;<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">7</span>&#125;;
+<span class="hljs-built_in">sort</span>(nums2,nums2+<span class="hljs-number">6</span>);
+<span class="hljs-type">int</span> pos2 = <span class="hljs-built_in">lower_bound</span>(nums2,nums2+<span class="hljs-number">6</span>,<span class="hljs-number">9</span>)-nums2;
+
+<span class="hljs-comment">// 返回vector中最靠近5的第一个小于或等于5的数</span>
+vector&lt;<span class="hljs-type">int</span>&gt; nums1&#123;<span class="hljs-number">1</span>,<span class="hljs-number">10</span>,<span class="hljs-number">4</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">7</span>&#125;;
+<span class="hljs-built_in">sort</span>(nums1.<span class="hljs-built_in">rbegin</span>(),nums1.<span class="hljs-built_in">rend</span>());
+<span class="hljs-type">int</span> pos3 = <span class="hljs-built_in">lower_bound</span>(nums1.<span class="hljs-built_in">begin</span>(), nums1.<span class="hljs-built_in">end</span>(), <span class="hljs-number">5</span>,<span class="hljs-built_in">greater</span>&lt;<span class="hljs-type">int</span>&gt;())-nums1.<span class="hljs-built_in">begin</span>();
+</code></pre>
+<h2 id="优先队列"><a class="markdownIt-Anchor" href="#优先队列"></a> 优先队列</h2>
+<pre class="highlight"><code class="c++"><span class="hljs-comment">// 升序序列</span>
+priority_queue&lt;<span class="hljs-type">int</span>, vector&lt;<span class="hljs-type">int</span>&gt;, greater&lt;<span class="hljs-type">int</span>&gt;&gt;q;
+<span class="hljs-comment">// 降序序列(默认，等同于priority_queue&lt;int&gt;)</span>
+priority_queue&lt;<span class="hljs-type">int</span>, vector&lt;<span class="hljs-type">int</span>&gt;, less&lt;<span class="hljs-type">int</span>&gt;&gt;q;
+ 
+<span class="hljs-comment">// 自定义类型排序</span>
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">student</span>
+&#123;
+    <span class="hljs-built_in">student</span>(<span class="hljs-type">int</span> age)&#123;
+        <span class="hljs-keyword">this</span>-&gt;age = age;
+    &#125;
+    <span class="hljs-type">int</span> age;
+&#125;;
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">cmp</span>&#123;
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">operator</span><span class="hljs-params">()</span> <span class="hljs-params">(student&amp; s1,student&amp; s2)</span></span>&#123;
+        <span class="hljs-keyword">return</span> s1.age&lt;s2.age;
+    &#125;
+&#125;;
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> <span class="hljs-type">const</span> *argv[])</span>
+</span>&#123;
+  vector&lt;<span class="hljs-type">int</span>&gt; ages&#123;<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>&#125;;
+  priority_queue&lt;student,vector&lt;student&gt;,cmp&gt;a;
+  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> age:ages)&#123;
+    <span class="hljs-function">student <span class="hljs-title">s</span><span class="hljs-params">(age)</span></span>;
+    q.<span class="hljs-built_in">push</span>(s);
+  &#125;
+  <span class="hljs-keyword">while</span>(q.<span class="hljs-built_in">size</span>()&gt;<span class="hljs-number">0</span>)&#123;
+      student head = q.<span class="hljs-built_in">top</span>();q.<span class="hljs-built_in">pop</span>();
+      cout&lt;&lt;head.age&lt;&lt;endl;
+  &#125;
+&#125;
+</code></pre>
+<h2 id="位运算符技巧"><a class="markdownIt-Anchor" href="#位运算符技巧"></a> 位运算符技巧</h2>
+<h3 id="按位与运算符"><a class="markdownIt-Anchor" href="#按位与运算符"></a> 按位与运算符（&amp;）</h3>
+<p>参加运算的两个数据，按二进制位进行“与”运算</p>
+<p>运算规则：0&amp;0=0；0&amp;1=0；1&amp;0=0；1&amp;1=1；</p>
+<p>即：两位同时为1，结果才为1，否则为0</p>
+<p>例如：3&amp;5 即 0000 0011 &amp; 0000 0101 = 0000 0001  因此，3&amp;5=1</p>
+<h4 id="与运算的特殊用途"><a class="markdownIt-Anchor" href="#与运算的特殊用途"></a> ”与运算“的特殊用途</h4>
+<ul>
+<li>清零。如果想将一个单元清零，即全部二进制位归0，只要与一个各位都为0的数值相与，结果为0</li>
+<li>取一个数的指定二进制位。如果想取某个数的后四位，那么可以计算 该数&amp;0000 1111</li>
+</ul>
+<h3 id="按位或运算符"><a class="markdownIt-Anchor" href="#按位或运算符"></a> 按位或运算符（|）</h3>
+<p>参加运算的两个数据，按二进制位进行“或”运算</p>
+<p>运算规则：0|0=0；0|1=1；1|0=1；1|1=1；</p>
+<p>即：参加运算的两个数据只要有一个位1，其值为1</p>
+<p>例如：3|5  即 0000 0011 | 0000 0101 = 0000 0111， 因此，3|5的值为7</p>
+<h4 id="或运算特殊用途"><a class="markdownIt-Anchor" href="#或运算特殊用途"></a> “或运算”特殊用途</h4>
+<ul>
+<li>常用来对一个数的某些位置置为1。如果想对某个数的后四位置为1，那么可以计算 该数 | 0000 1111</li>
+</ul>
+<h3 id="异或运算符"><a class="markdownIt-Anchor" href="#异或运算符"></a> 异或运算符（^）</h3>
+<p>参加运算的两个数据，按二进制位进行“异或”运算</p>
+<p>运算规则：0 ^ 0=0；0 ^ 1=1；   1 ^ 0=1；   1 ^ 1=0；</p>
+<p>即：参加运算的两个数据，如果两个相应位值不同，则该位位1，否则为0（模2和）</p>
+<h4 id="异或运算特殊用途"><a class="markdownIt-Anchor" href="#异或运算特殊用途"></a> “异或运算”特殊用途</h4>
+<ul>
+<li>翻转一个数的指定位。如果将对某个数的后四位翻转， 那么可以计算 该数 ^ 0000 1111</li>
+<li>与0异或，保留原值</li>
+</ul>
+<h3 id="取反运算符~"><a class="markdownIt-Anchor" href="#取反运算符~"></a> 取反运算符（~）</h3>
+<p>参加运算的一个数据，按二进制位进行“取反”运算</p>
+<p>运算规则：~1 = 0；~0 = 1；</p>
+<p>即：对一个二进制数按位取反。</p>
+<h4 id="取反运算特殊用途"><a class="markdownIt-Anchor" href="#取反运算特殊用途"></a> “取反运算”特殊用途</h4>
+<ul>
+<li>使一个数的最低位为0，可以计算 该数 &amp; ~1</li>
+</ul>
+<h3 id="左移运算符"><a class="markdownIt-Anchor" href="#左移运算符"></a> 左移运算符（&lt;&lt;）</h3>
+<p>将一个数据的各二进制位全部左移若干位（左边的二进制位丢弃，右边补0）</p>
+<p>例如：a = a &lt;&lt; 2 将a的二进制位左移2位，右补0。若左移时舍弃的高位不包含1，则每左移一位，相当于该数乘以2</p>
+<h3 id="右移运算符"><a class="markdownIt-Anchor" href="#右移运算符"></a> 右移运算符（&gt;&gt;)</h3>
+<p>将一个数的各二进制位全部右移若干位，正数左补0，负数左补1，右边丢弃。</p>
+<p>例如： a = a &gt;&gt; 2 将a 二进制位右移2位，操作数每右移一位，相当于该数除以2</p>
+<p>&gt;&gt; 运算符把 expression1 的所有位向右移 expression2 指定的位数。expression1 的符号位被用来填充右移后左边空出来的位。向右移出的位被丢弃。</p>
+<p>例如-14（1111 0010）右移两位等于-4（11111100）</p>
+<h3 id="无符号右移运算符"><a class="markdownIt-Anchor" href="#无符号右移运算符"></a> 无符号右移运算符（&gt;&gt;&gt;)</h3>
+<p>&gt;&gt;&gt; 运算符把 expression1 的各个位向右移 expression2 指定的位数。右移后左边空出的位用零来填充。移出右边的位被丢弃。</p>
+<p>例如 -14 （11111111 11111111 11111111 11110010），向右移两位后等于1073741820（00111111 11111111 11111111 11111100）</p>
+<h3 id="不同长度的数据进行位运算"><a class="markdownIt-Anchor" href="#不同长度的数据进行位运算"></a> 不同长度的数据进行位运算</h3>
+<p>如果两个不同长度的数据进行位运算时，系统会将二者按右端对齐，然后进行位运算</p>
+<p>以“与”运算为例说明如下：我们知道在C语言中long型占4个字节，int型占2个字节，如果一个long型数据与一个int型数据进行“与”运算，右端对齐后，左边不足的位依下面三种情况补足</p>
+<ul>
+<li>如果整形数据为正数，左边补16个0</li>
+<li>如果整形数据为负数，左边补16个1</li>
+<li>如果整形数据为无符号数，左边也补16个0</li>
+</ul>
+<h2 id="数组题技巧"><a class="markdownIt-Anchor" href="#数组题技巧"></a> 数组题技巧</h2>
+<p>考虑双指针，双向前缀和，单调队列</p>
+<h2 id="快排"><a class="markdownIt-Anchor" href="#快排"></a> 快排</h2>
+<pre class="highlight"><code class="c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">myquickSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums,<span class="hljs-type">int</span> low,<span class="hljs-type">int</span> high)</span></span>&#123;
+    <span class="hljs-comment">// mid不能是下标</span>
+    <span class="hljs-type">int</span> mid = nums[(low+high)/<span class="hljs-number">2</span>];
+    <span class="hljs-type">int</span> i = low,j = high;
+    <span class="hljs-keyword">do</span>&#123;
+        <span class="hljs-keyword">while</span>(nums[i]&lt;mid) i++;
+        <span class="hljs-keyword">while</span>(nums[j]&gt;mid) j--;
+        <span class="hljs-keyword">if</span>(i&lt;=j) <span class="hljs-built_in">swap</span>(nums[i++],nums[j--]);
+    &#125;<span class="hljs-keyword">while</span>(i&lt;=j);
+    <span class="hljs-keyword">if</span>(low&lt;j) <span class="hljs-built_in">myquickSort</span>(nums,low,j);
+    <span class="hljs-keyword">if</span>(i&lt;high) <span class="hljs-built_in">myquickSort</span>(nums,i,high);
+&#125;
+</code></pre>
+<h2 id="背包问题"><a class="markdownIt-Anchor" href="#背包问题"></a> 背包问题</h2>
+<p>常见的背包问题有三种</p>
+<p>组合排列问题</p>
+<ul>
+<li>
+<ol start="377">
+<li>组合总和 Ⅳ</li>
+</ol>
+</li>
+<li>
+<ol start="494">
+<li>目标和</li>
+</ol>
+</li>
+<li>
+<ol start="518">
+<li>零钱兑换 II</li>
+</ol>
+</li>
+</ul>
+<p>True、False问题</p>
+<ul>
+<li>
+<ol start="139">
+<li>单词拆分</li>
+</ol>
+</li>
+<li>
+<ol start="416">
+<li>分割等和子集</li>
+</ol>
+</li>
+</ul>
+<p>最大最小问题</p>
+<ul>
+<li>
+<ol start="474">
+<li>一盒零</li>
+</ol>
+</li>
+<li>
+<ol start="322">
+<li>零钱兑换</li>
+</ol>
+</li>
+</ul>
+<p>组合排列问题公式</p>
+<pre class="highlight"><code class="c++">dp[i] += dp[i-num]
+</code></pre>
+<p>True、False问题公式</p>
+<pre class="highlight"><code class="c++">dp[i] = dp[i] <span class="hljs-keyword">or</span> dp[i-num]
+</code></pre>
+<p>最大最小问题公式</p>
+<pre class="highlight"><code class="c++">dp[i] = <span class="hljs-built_in">min</span>(dp[i],dp[i-num]+<span class="hljs-number">1</span>)或者dp[i] = <span class="hljs-built_in">max</span>(dp[i],dp[i-num]+<span class="hljs-number">1</span>)
+</code></pre>
+<p>以上三组公式是解决对应问题的核心公式</p>
+<h3 id="背包问题分析步骤"><a class="markdownIt-Anchor" href="#背包问题分析步骤"></a> 背包问题分析步骤</h3>
+<ol>
+<li>分析是否为背包问题</li>
+<li>是以上三种背包问题中的哪一种</li>
+<li>是0-1背包问题还是完全背包问题。也就是题目给的nums数组中的元素是否可以重复使用</li>
+<li>如果是组合排列问题，组合问题外循环物品，内循环背包；排列相反</li>
+</ol>
+<h3 id="背包问题特征"><a class="markdownIt-Anchor" href="#背包问题特征"></a> 背包问题特征</h3>
+<p>背包问题具有的特征：给定一个target，target可以是数字也可以是字符串，再给定一个数组nums，nums中装的可能是数组，也可能是字符串，问：能否使用nums中的元素做各种排列组合得到target</p>
+<h3 id="背包问题遍历"><a class="markdownIt-Anchor" href="#背包问题遍历"></a> 背包问题遍历</h3>
+<ul>
+<li>
+<p>如果是0-1背包，即数组中的元素不可重复使用，nums放在外循环，target在内循环，且内循环倒序</p>
+<pre class="highlight"><code class="c++"><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;i&lt;nums.<span class="hljs-built_in">size</span>();i++)&#123;
+  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j=target;j&gt;=nums[i];j--)&#123;
+    <span class="hljs-comment">// dp公式</span>
+  &#125;
+&#125;
+</code></pre>
+</li>
+<li>
+<p>如果是完全背包，即数组中的元素可重复使用，nums放在外循环，target在内循环，且内循环正序</p>
+<pre class="highlight"><code class="c++"><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;i&lt;nums.<span class="hljs-built_in">size</span>();i++)&#123;
+  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j=nums[i];j&lt;=target;j++)&#123;
+    <span class="hljs-comment">// dp公式</span>
+  &#125;
+&#125;
+</code></pre>
+</li>
+<li>
+<p>如果是排列问题，即需要考虑元素之间的顺序，target放在外循环，nums放在内循环</p>
+<pre class="highlight"><code class="c++"><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;i&lt;=target;i++)&#123;
+  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j=<span class="hljs-number">0</span>;j&lt;nums.<span class="hljs-built_in">size</span>();j++)&#123;
+    <span class="hljs-keyword">if</span>(i&gt;nums[j])&#123;
+      <span class="hljs-comment">// dp公式</span>
+    &#125;
+  &#125;
+&#125;
+</code></pre>
+</li>
+</ul>
+<h2 id="单调栈"><a class="markdownIt-Anchor" href="#单调栈"></a> 单调栈</h2>
+<p>通常是一维数组，要寻找任一元素的右边或者左边第一个比自己大或者小的元素的位置，此时我们就要想到可以用单调栈了</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2022/05/07/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-cpp/" title="LeetCode刷题记录(cpp)" target="_blank" rel="external">https://zunpan.github.io/2022/05/07/LeetCode刷题记录-cpp/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/05/07/Maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Maven学习笔记"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2022/05/06/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Git学习笔记"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>大话设计模式学习笔记 | panzun</title>
+  <meta name="description" content="设计模式  简单工厂模式 用单独的一个类完成创建所有实例，这就是工厂。 public class OperationFactory&amp;#123;     public static Operation createOperate(String op)&amp;#123;         Operation operation &#x3D; null;         switch(op)&amp;#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大话设计模式学习笔记">
+<meta property="og:url" content="https://zunpan.github.io/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="设计模式  简单工厂模式 用单独的一个类完成创建所有实例，这就是工厂。 public class OperationFactory&amp;#123;     public static Operation createOperate(String op)&amp;#123;         Operation operation &#x3D; null;         switch(op)&amp;#123;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231215-153639291.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231215-155304930.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231219-152604094.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231219-152725523.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-091825631.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-093010713.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-101147090.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-105223749.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-111734445.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-112904485.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-193834095.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-200045582.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-204440872.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240804-073711819.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-082715600.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-084757390.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-091431901.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-094937128.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-120851150.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240810-093211853.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240810-095301089.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240810-195623991.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240810-200407455.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240812-084507634.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240812-091222555.png">
+<meta property="article:published_time" content="2024-08-12T02:37:14.000Z">
+<meta property="article:modified_time" content="2024-08-12T02:39:24.899Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231215-153639291.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text"> 设计模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text"> 简单工厂模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text"> 策略模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99"><span class="toc-number">1.3.</span> <span class="toc-text"> 单一职责原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99"><span class="toc-number">1.4.</span> <span class="toc-text"> 开闭原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E8%BD%AC%E5%8E%9F%E5%88%99"><span class="toc-number">1.5.</span> <span class="toc-text"> 依赖倒转原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.6.</span> <span class="toc-text"> 装饰模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.7.</span> <span class="toc-text"> 代理模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.8.</span> <span class="toc-text"> 工厂方法模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.9.</span> <span class="toc-text"> 原型模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.10.</span> <span class="toc-text"> 模板方法模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99"><span class="toc-number">1.11.</span> <span class="toc-text"> 迪米特法则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.12.</span> <span class="toc-text"> 外观模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.13.</span> <span class="toc-text"> 建造者模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.14.</span> <span class="toc-text"> 观察者模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.15.</span> <span class="toc-text"> 抽象工厂模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.16.</span> <span class="toc-text"> 状态模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.17.</span> <span class="toc-text"> 适配器模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.18.</span> <span class="toc-text"> 备忘录模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.19.</span> <span class="toc-text"> 组合模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.20.</span> <span class="toc-text"> 迭代器模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.21.</span> <span class="toc-text"> 单例模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.22.</span> <span class="toc-text"> 桥接模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.23.</span> <span class="toc-text"> 命令模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.24.</span> <span class="toc-text"> 职责链模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.25.</span> <span class="toc-text"> 中介者模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.26.</span> <span class="toc-text"> 享元模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.27.</span> <span class="toc-text"> 解释器模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.28.</span> <span class="toc-text"> 访问者模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93"><span class="toc-number">1.29.</span> <span class="toc-text"> 模式总结</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-大话设计模式学习笔记" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      大话设计模式学习笔记
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-date">
+	  <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.8k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 9(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="设计模式"><a class="markdownIt-Anchor" href="#设计模式"></a> 设计模式</h1>
+<h2 id="简单工厂模式"><a class="markdownIt-Anchor" href="#简单工厂模式"></a> 简单工厂模式</h2>
+<p>用单独的一个类完成创建所有实例，这就是工厂。</p>
+<pre class="highlight"><code class="java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OperationFactory</span>&#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Operation <span class="hljs-title function_">createOperate</span><span class="hljs-params">(String op)</span>&#123;
+        <span class="hljs-type">Operation</span> <span class="hljs-variable">operation</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">switch</span>(op)&#123;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;+&quot;</span>:&#123;
+                operation = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OperationAdd</span>();
+            &#125;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;-&quot;</span>:&#123;
+                operation = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OperationSub</span>();
+            &#125;
+            <span class="hljs-comment">// ...</span>
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>优点：工厂对象类之间解耦<br />
+缺点：工厂类和工厂对象类之间存在耦合，新增工厂对象类需要修改工厂类</p>
+<h2 id="策略模式"><a class="markdownIt-Anchor" href="#策略模式"></a> 策略模式</h2>
+<p>策略模式定义了算法家族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化，不会影响到使用算法的客户</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231215-153639291.png" alt="图 0" /></p>
+<p>单独使用策略模式，实例化对象的过程会落在客户端（switch-case-new过程）。因此可以将策略模式和简单工厂模式结合，将实例化对象的过程放在Context类中</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231215-155304930.png" alt="图 1" /></p>
+<p>策略模式和简单工厂模式结合使用的好处是，客户端只需要知道Context类</p>
+<p>该模式不足的地方在于新增策略仍然要修改Context类中的switch代码块</p>
+<h2 id="单一职责原则"><a class="markdownIt-Anchor" href="#单一职责原则"></a> 单一职责原则</h2>
+<p>单一职责原则：就一个类而言，应该仅有一个引起它变化的原因</p>
+<p>例如，游戏逻辑和界面应该分离</p>
+<h2 id="开闭原则"><a class="markdownIt-Anchor" href="#开闭原则"></a> 开闭原则</h2>
+<p>开闭原则：软件实体（类、模块、函数等等）应该可以扩展，但是不可以修改</p>
+<p>开发人员应该对程序中频繁变化的那些部分做抽象</p>
+<h2 id="依赖倒转原则"><a class="markdownIt-Anchor" href="#依赖倒转原则"></a> 依赖倒转原则</h2>
+<p>依赖倒转原则：</p>
+<ol>
+<li>高层模块不应该依赖低层模块。两个都应该依赖抽象</li>
+<li>抽象不应该依赖细节，细节应该依赖抽象。换句话说，要针对接口编程，不要对实现编程</li>
+</ol>
+<p>针对原则一，子类型必须能够替换掉它们的父类型而不影响软件工程，这样才能真正复用父类，因此高层和低层模块都应该依赖抽象。</p>
+<p>针对原则二，例如，电脑主板、CPU、内存、硬盘都是针对接口设计的，如果针对实现来设计，内存就要对应具体的某个品牌的主板，那就会出现换内存要把主板一起换了的尴尬</p>
+<h2 id="装饰模式"><a class="markdownIt-Anchor" href="#装饰模式"></a> 装饰模式</h2>
+<p>装饰模式：动态地给一个对象添加一些额外的职责，就增加功能来说，装饰模式比生成子类更加灵活</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231219-152604094.png" alt="图 2" /></p>
+<h2 id="代理模式"><a class="markdownIt-Anchor" href="#代理模式"></a> 代理模式</h2>
+<p>代理模式：为其它对象提供一种代理以控制对这个对象的访问</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20231219-152725523.png" alt="图 3" /></p>
+<p>使用场景：</p>
+<ol>
+<li>远程代理。为一个对象在不同的地址空间提供局部代表，这样可以隐藏一个对象存在于不同地址空间的事实。例子：客户端调用代理实现远程访问</li>
+<li>虚拟代理。使用代理来存放创建开销很大的对象。例子：HTML中的未下载完成的图片框就是虚拟代理，它替代了真实图片</li>
+<li>安全代理。用来控制真实对象的访问权限</li>
+<li>智能指引。指调用真实对象时，代理处理另外一些事</li>
+</ol>
+<h2 id="工厂方法模式"><a class="markdownIt-Anchor" href="#工厂方法模式"></a> 工厂方法模式</h2>
+<p>简单工厂模式违背了开闭原则，于是有了工厂方法模式</p>
+<p>工厂方法模式：定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-091825631.png" alt="图 4" /></p>
+<h2 id="原型模式"><a class="markdownIt-Anchor" href="#原型模式"></a> 原型模式</h2>
+<p>原型模式：用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-093010713.png" alt="图 6" /></p>
+<h2 id="模板方法模式"><a class="markdownIt-Anchor" href="#模板方法模式"></a> 模板方法模式</h2>
+<p>魔棒方法模式：定义一个操作中的算法的骨架，而将一些步骤延迟到子类中。模板方法使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-101147090.png" alt="图 7" /></p>
+<h2 id="迪米特法则"><a class="markdownIt-Anchor" href="#迪米特法则"></a> 迪米特法则</h2>
+<p>迪米特法则（最少知识原则）：如果两个类不必彼此直接通信，那么这两个类就不应当发生直接的相互作用。如果其中一个类需要调用另一个类的某一个方法的话，可以通过第三者转发这个调用。</p>
+<p>迪米特法则的根本思想是类之间的松耦合。</p>
+<h2 id="外观模式"><a class="markdownIt-Anchor" href="#外观模式"></a> 外观模式</h2>
+<p>外观模式：为子系统中的一组接口提供一个一致的界面，此模式定义了一个高层接口，这个接口使得这一子系统更加容易使用。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-105223749.png" alt="图 8" /></p>
+<p>使用场景：</p>
+<ol>
+<li>在设计阶段，分层架构之间增加Facade，例如表示层和业务逻辑层之间、业务逻辑层和数据访问层之间</li>
+<li>在开发阶段，随着类越来越多，可以增加Facade降低类调用复杂性</li>
+<li>在系统重构阶段，可以在系统中增加Facade，Facade调用旧系统代码保证平滑过渡</li>
+</ol>
+<h2 id="建造者模式"><a class="markdownIt-Anchor" href="#建造者模式"></a> 建造者模式</h2>
+<p>建造者模式：将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-111734445.png" alt="图 9" /></p>
+<h2 id="观察者模式"><a class="markdownIt-Anchor" href="#观察者模式"></a> 观察者模式</h2>
+<p>观察者模式（发布-订阅模式）：定义了一种一对多的依赖关系，让多个观察者对象同时监听某一个主题对象。这个主题对象在状态发生变化时，会通知所有观察者对象，使它们能够自动更新自己</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-112904485.png" alt="图 10" /></p>
+<p>使用场景：当一个对象的改变需要同时改变其它对象，且不知道有多少对象需要改变时使用观察者模式</p>
+<h2 id="抽象工厂模式"><a class="markdownIt-Anchor" href="#抽象工厂模式"></a> 抽象工厂模式</h2>
+<p>抽象工厂模式：提供一个创建一系列相关或相互依赖对象的接口，而无需指定它们具体的类</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-193834095.png" alt="图 11" /></p>
+<p>抽象工厂的优点是只需要更换工厂实例对象，就可以更换一系列产品。缺点是增加产品时需要需改大量类</p>
+<p>反射+配置文件+简单工厂可以避免大量修改</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-200045582.png" alt="图 12" /></p>
+<h2 id="状态模式"><a class="markdownIt-Anchor" href="#状态模式"></a> 状态模式</h2>
+<p>状态模式：当一个对象的内在状态改变时允许改变其行为，这个对象看起来像是改变了其类</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240803-204440872.png" alt="图 13" /></p>
+<p>使用场景：当一个对象的行为取决于它的状态，并且它必须在运行时刻根据状态改变它的行为时，可以解决if-else过长的问题</p>
+<h2 id="适配器模式"><a class="markdownIt-Anchor" href="#适配器模式"></a> 适配器模式</h2>
+<p>适配器模式：将一个类的接口转换成客户希望的另外一个接口，使得原本由于接口不兼容而不能一起工作的那些类可以一起工作</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240804-073711819.png" alt="图 14" /></p>
+<h2 id="备忘录模式"><a class="markdownIt-Anchor" href="#备忘录模式"></a> 备忘录模式</h2>
+<p>备忘录模式：在不破坏封装性的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态。这样以后就可以将该对象恢复到原先保存的状态</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-082715600.png" alt="图 15" /></p>
+<p>使用场景：适用于功能复杂、需要维护或记录属性历史的类，或者需要保存的属性只是众多属性中的一小部分</p>
+<h2 id="组合模式"><a class="markdownIt-Anchor" href="#组合模式"></a> 组合模式</h2>
+<p>组合模式：将对象组合成树形结构以表示‘部分-整体’的层次结构。组合模式使得用户对单个对象和组合对象的使用具有一致性</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-084757390.png" alt="图 16" /></p>
+<p>使用场景：需求中体现部分与整体层次的结构时，以及希望用户可以忽略组合对象与单个对象的不同，统一地使用组合结构中的所有对象时</p>
+<h2 id="迭代器模式"><a class="markdownIt-Anchor" href="#迭代器模式"></a> 迭代器模式</h2>
+<p>迭代器模式：提供一种方法顺序访问一个聚合对象中各个元素，而又不暴露该对象的内部表示（foreach语法糖）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-091431901.png" alt="图 17" /></p>
+<h2 id="单例模式"><a class="markdownIt-Anchor" href="#单例模式"></a> 单例模式</h2>
+<p>单例模式：保证一个类仅有一个实例，并提供一个访问它的全局访问点</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-094937128.png" alt="图 18" /></p>
+<h2 id="桥接模式"><a class="markdownIt-Anchor" href="#桥接模式"></a> 桥接模式</h2>
+<p>桥接模式：将抽象部分与它的实现部分分离，使它们都可以独立的变化</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240808-120851150.png" alt="图 19" /></p>
+<p>使用场景：实现系统可能有多角度分类，每一种分类都有可能变化，那么就把这种多角度分离出来让它们独立变化，减少它们之间的耦合</p>
+<h2 id="命令模式"><a class="markdownIt-Anchor" href="#命令模式"></a> 命令模式</h2>
+<p>命令模式：将一个请求封装为一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可撤销的操作。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240810-093211853.png" alt="图 20" /></p>
+<h2 id="职责链模式"><a class="markdownIt-Anchor" href="#职责链模式"></a> 职责链模式</h2>
+<p>职责链模式：使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这个对象连成一条链，并沿着这条链传递该请求，直到有一个对象处理它为止</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240810-095301089.png" alt="图 21" /></p>
+<h2 id="中介者模式"><a class="markdownIt-Anchor" href="#中介者模式"></a> 中介者模式</h2>
+<p>中介者模式：用一个中介对象来封装一系列的对象交互。中介者使各对象不需要显式地相互引用，从而使其耦合松散，而且可以独立地改变它们之间地交互。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240810-195623991.png" alt="图 22" /></p>
+<p>使用场景：一组对象以定义良好但是复杂地方式进行通信的场合；想定制一个分布在多个类中的行为，而又不想生成太多子类的场合</p>
+<h2 id="享元模式"><a class="markdownIt-Anchor" href="#享元模式"></a> 享元模式</h2>
+<p>享元模式：运用共享技术有效地支持大量细粒度的对象</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240810-200407455.png" alt="图 23" /></p>
+<p>使用场景：如果一个应用程序使用了大量的对象，而大量的这些对象造成了很大的存储开销时就应该考虑使用</p>
+<h2 id="解释器模式"><a class="markdownIt-Anchor" href="#解释器模式"></a> 解释器模式</h2>
+<p>解释器模式：给定一个语言，定义它的文法的一种表示，并定义一个解释器，这个解释器使用该表示来解释语言中的句子</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240812-084507634.png" alt="图 24" /></p>
+<p>使用场景：当有一个语言需要解释执行，并且可以将该语言中的句子表示为一个抽象语法树时，可使用解释器模式（例如正则表达式，浏览器）</p>
+<p>优势：容易地改变和扩展文法<br />
+劣势：解释器模式为文法中的每一条规则至少定义了一个类，因此包含许多规则的文法可能难以管理和维护。建议当文法非常复杂时，使用其它技术如语法分析程序或编译器生成器来处理</p>
+<h2 id="访问者模式"><a class="markdownIt-Anchor" href="#访问者模式"></a> 访问者模式</h2>
+<p>访问者模式：表示一个作用于某对象结构中的各元素的操作。它使你可以在不改变各元素的类的前提下定义作用于这些元素的新操作</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/IMG_20240812-091222555.png" alt="图 25" /></p>
+<p>使用场景：适用于数据结构稳定，算法易于变化</p>
+<h2 id="模式总结"><a class="markdownIt-Anchor" href="#模式总结"></a> 模式总结</h2>
+<ol>
+<li>创建型模式：单例、工厂方法、抽象工厂、建造者、原型</li>
+<li>结构型模式：适配器、装饰、桥接、组合、享元、代理、外观</li>
+<li>行为型模式：观察者、模板方法、命令、状态、职责链、解释器、终结者、访问者、策略、备忘录、迭代器</li>
+</ol>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="大话设计模式学习笔记" target="_blank" rel="external">https://zunpan.github.io/2024/08/12/大话设计模式学习笔记/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" title="ArkTS建造者模式"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="深入理解Java虚拟机学习笔记"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

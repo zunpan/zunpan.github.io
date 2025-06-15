@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Effective-Java学习笔记（八） | panzun</title>
+  <meta name="description" content="第九章 通用程序设计  57. 将局部变量的作用域最小化 本条目在性质上类似于Item-15，即「最小化类和成员的可访问性」。通过最小化局部变量的范围，可以提高代码的可读性和可维护性，并降低出错的可能性。  将局部变量的作用域最小化，最具说服力的方式就是在第一次使用它的地方声明 每个局部变量声明都应该包含一个初始化表达式。 如果你还没有足够的信息来合理地初始化一个变量，你应该推迟声明，直到条件满">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective-Java学习笔记（八）">
+<meta property="og:url" content="https://zunpan.github.io/2022/08/06/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="第九章 通用程序设计  57. 将局部变量的作用域最小化 本条目在性质上类似于Item-15，即「最小化类和成员的可访问性」。通过最小化局部变量的范围，可以提高代码的可读性和可维护性，并降低出错的可能性。  将局部变量的作用域最小化，最具说服力的方式就是在第一次使用它的地方声明 每个局部变量声明都应该包含一个初始化表达式。 如果你还没有足够的信息来合理地初始化一个变量，你应该推迟声明，直到条件满">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-06T07:30:09.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.275Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="Effective-Java">
+<meta property="article:tag" content="通用程序设计">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2022/08/06/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text"> 第九章 通用程序设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#57-%E5%B0%86%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%9C%80%E5%B0%8F%E5%8C%96"><span class="toc-number">1.1.</span> <span class="toc-text"> 57. 将局部变量的作用域最小化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#58-for-each%E5%BE%AA%E7%8E%AF%E4%BC%98%E4%BA%8Efor%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.2.</span> <span class="toc-text"> 58. for-each循环优于for循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#59-%E4%BA%86%E8%A7%A3%E5%B9%B6%E4%BD%BF%E7%94%A8%E5%BA%93"><span class="toc-number">1.3.</span> <span class="toc-text"> 59. 了解并使用库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#60-%E8%8B%A5%E9%9C%80%E8%A6%81%E7%B2%BE%E7%A1%AE%E7%AD%94%E6%A1%88%E5%B0%B1%E5%BA%94%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8-float-%E5%92%8C-double-%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.4.</span> <span class="toc-text"> 60. 若需要精确答案就应避免使用 float 和 double 类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#61-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%BC%98%E4%BA%8E%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="toc-number">1.5.</span> <span class="toc-text"> 61. 基本数据类型优于包装类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#62-%E5%85%B6%E5%AE%83%E7%B1%BB%E5%9E%8B%E6%9B%B4%E5%90%88%E9%80%82%E6%97%B6%E5%BA%94%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.6.</span> <span class="toc-text"> 62. 其它类型更合适时应避免使用字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#63-%E5%BD%93%E5%BF%83%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%9E%E6%8E%A5%E5%BC%95%E8%B5%B7%E7%9A%84%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="toc-number">1.7.</span> <span class="toc-text"> 63. 当心字符串连接引起的性能问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#64-%E9%80%9A%E8%BF%87%E6%8E%A5%E5%8F%A3%E5%BC%95%E7%94%A8%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.8.</span> <span class="toc-text"> 64. 通过接口引用对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#65-%E6%8E%A5%E5%8F%A3%E4%BC%98%E4%BA%8E%E5%8F%8D%E5%B0%84"><span class="toc-number">1.9.</span> <span class="toc-text"> 65. 接口优于反射</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#66-%E6%98%8E%E6%99%BA%E5%9C%B0%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95"><span class="toc-number">1.10.</span> <span class="toc-text"> 66. 明智地使用本地方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#67-%E6%98%8E%E6%99%BA%E5%9C%B0%E8%BF%9B%E8%A1%8C%E4%BC%98%E5%8C%96"><span class="toc-number">1.11.</span> <span class="toc-text"> 67. 明智地进行优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#68-%E9%81%B5%E5%AE%88%E8%A2%AB%E5%B9%BF%E6%B3%9B%E8%AE%A4%E5%8F%AF%E7%9A%84%E5%91%BD%E5%90%8D%E7%BA%A6%E5%AE%9A"><span class="toc-number">1.12.</span> <span class="toc-text"> 68. 遵守被广泛认可的命名约定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E7%89%88"><span class="toc-number">1.12.1.</span> <span class="toc-text"> 排版</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-number">1.12.2.</span> <span class="toc-text"> 语法</span></a></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Effective-Java学习笔记（八）" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective-Java学习笔记（八）
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/08/06/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89/" class="article-date">
+	  <time datetime="2022-08-06T07:30:09.000Z" itemprop="datePublished">2022-08-06</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" rel="tag">通用程序设计</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/08/06/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 5.3k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 19(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="第九章-通用程序设计"><a class="markdownIt-Anchor" href="#第九章-通用程序设计"></a> 第九章 通用程序设计</h2>
+<h3 id="57-将局部变量的作用域最小化"><a class="markdownIt-Anchor" href="#57-将局部变量的作用域最小化"></a> 57. 将局部变量的作用域最小化</h3>
+<p>本条目在性质上类似于Item-15，即「最小化类和成员的可访问性」。通过最小化局部变量的范围，可以提高代码的可读性和可维护性，并降低出错的可能性。</p>
+<ol>
+<li>将局部变量的作用域最小化，最具说服力的方式就是在第一次使用它的地方声明</li>
+<li>每个局部变量声明都应该包含一个初始化表达式。 如果你还没有足够的信息来合理地初始化一个变量，你应该推迟声明，直到条件满足</li>
+</ol>
+<h3 id="58-for-each循环优于for循环"><a class="markdownIt-Anchor" href="#58-for-each循环优于for循环"></a> 58. for-each循环优于for循环</h3>
+<p>for-each 更简洁更不容易出错，且没有性能损失，只有三种情况不能用for-each</p>
+<ol>
+<li>破坏性过滤。如果需要遍历一个集合并删除选定元素，则需要使用显式的迭代器，以便调用其 remove 方法。通过使用 Collection 在 Java 8 中添加的 removeIf 方法，通常可以避免显式遍历。</li>
+<li>转换。如果需要遍历一个 List 或数组并替换其中部分或全部元素的值，那么需要 List 迭代器或数组索引来替换元素的值。</li>
+<li>并行迭代。如果需要并行遍历多个集合，那么需要显式地控制迭代器或索引变量，以便所有迭代器或索引变量都可以同步执行</li>
+</ol>
+<h3 id="59-了解并使用库"><a class="markdownIt-Anchor" href="#59-了解并使用库"></a> 59. 了解并使用库</h3>
+<p>假设你想要生成 0 到某个上界之间的随机整数，有些程序员会写出如下代码：</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Common but deeply flawed!</span>
+<span class="hljs-keyword">static</span> <span class="hljs-type">Random</span> <span class="hljs-variable">rnd</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>();
+<span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">random</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> &#123;
+    <span class="hljs-keyword">return</span> Math.abs(rnd.nextInt()) % n;
+&#125;
+</code></pre>
+<p>这个方法有三个缺点：</p>
+<ol>
+<li>如果 n 是比较小的 2 的幂，随机数序列会在相当短的时间内重复</li>
+<li>如果 n 不是 2 的幂，一些数字出现的频率会更高，当 n 很大时效果明显</li>
+<li>会返回超出指定范围的数字，当nextInt返回Integer.MIN_VALUE时，abs方法也会返回Integer.MIN_VALUE，假设 n 不是 2 幂，那么Integer.MIN_VALUE % n 将返回负数</li>
+</ol>
+<p>我们不需要为这个需求自己编写方法，已经存在经过专家设计测试的标准库Random 的 nextInt(int)</p>
+<p>从 Java 7 开始，就不应该再使用 Random。在大多数情况下，选择的随机数生成器现在是 ThreadLocalRandom。 它能产生更高质量的随机数，而且速度非常快。</p>
+<p>总而言之，不要白费力气重新发明轮子。如果你需要做一些看起来相当常见的事情，那么库中可能已经有一个工具可以做你想做的事情。如果有，使用它；如果你不知道，查一下。一般来说，库代码可能比你自己编写的代码更好，并且随着时间的推移可能会得到改进。</p>
+<h3 id="60-若需要精确答案就应避免使用-float-和-double-类型"><a class="markdownIt-Anchor" href="#60-若需要精确答案就应避免使用-float-和-double-类型"></a> 60. 若需要精确答案就应避免使用 float 和 double 类型</h3>
+<p>float 和 double 类型主要用于科学计算和工程计算。它们执行二进制浮点运算，该算法经过精心设计，能够在很大范围内快速提供精确的近似值。但是，它们不能提供准确的结果。float 和 double 类型特别不适合进行货币计算，因为不可能将 0.1（或 10 的任意负次幂）精确地表示为 float 或 double</p>
+<p>正确做法是使用 BigDecimal、int 或 long 进行货币计算。还要注意 BigDecimal 的构造函数要使用String参数而不是double，避免初始化时就用了不精确的值。int和long可以存储较小单位的值，将小数转换成整数存储</p>
+<p>总之，对于任何需要精确答案的计算，不要使用 float 或 double 类型。如果希望系统来处理十进制小数点，并且不介意不使用基本类型带来的不便和成本，请使用 BigDecimal。使用 BigDecimal 的另一个好处是，它可以完全控制舍入，当执行需要舍入的操作时，可以从八种舍入模式中进行选择。如果你使用合法的舍入行为执行业务计算，这将非常方便。如果性能是最重要的，那么你不介意自己处理十进制小数点，而且数值不是太大，可以使用 int 或 long。如果数值不超过 9 位小数，可以使用 int；如果不超过 18 位，可以使用 long。如果数量可能超过 18 位，则使用 BigDecimal。</p>
+<h3 id="61-基本数据类型优于包装类"><a class="markdownIt-Anchor" href="#61-基本数据类型优于包装类"></a> 61. 基本数据类型优于包装类</h3>
+<p>Java 的类型系统有两部分，基本类型（如 int、double 和 boolean）和引用类型（如String和List）。每个基本类型都有一个对应的引用类型，称为包装类。如Integer、Double 和 Boolean</p>
+<p>基本类型和包装类型之间的区别如下</p>
+<ol>
+<li>基本类型只有它们的值，而包装类型具有与其值不同的标识。换句话说，两个包装类型实例可以具有相同的值和不同的标识。</li>
+<li>基本类型只有全部功能值，而每个包装类型除了对应的基本类型的所有功能值外，还有一个非功能值，即 null</li>
+<li>基本类型比包装类型更节省时间和空间</li>
+<li>用 == 来比较包装类型几乎都是错的</li>
+<li>在操作中混用基本类型和包装类型时，包装类型会自动拆箱，可能导致 NPE，如果操作结果保存到包装类型的变量中，还会发生自动装箱，导致性能问题</li>
+</ol>
+<p>包装类型的用途如下：</p>
+<ol>
+<li>作为集合的元素、键和值</li>
+<li>泛型和泛型方法中的类型参数</li>
+<li>反射调用</li>
+</ol>
+<p>总之，只要有选择，就应该优先使用基本类型，而不是包装类型。基本类型更简单、更快。如果必须使用包装类型，请小心！自动装箱减少了使用包装类型的冗长，但没有减少危险。 当你的程序使用 == 操作符比较两个包装类型时，它会执行标识比较，这几乎肯定不是你想要的。当你的程序执行包含包装类型和基本类型的混合类型计算时，它将进行拆箱，当你的程序执行拆箱时，将抛出 NullPointerException。 最后，当你的程序将基本类型装箱时，可能会导致代价高昂且不必要的对象创建。</p>
+<h3 id="62-其它类型更合适时应避免使用字符串"><a class="markdownIt-Anchor" href="#62-其它类型更合适时应避免使用字符串"></a> 62. 其它类型更合适时应避免使用字符串</h3>
+<p>本条目讨论一些不应该使用字符串的场景</p>
+<ol>
+<li>字符串是枚举类型的糟糕替代品</li>
+<li>字符串是聚合类型的糟糕替代品。如果一个对象有多个字段，将其连接成一个字符串会出现许多问题，更好的方法是用私有静态成员类表示聚合</li>
+<li>字符串是功能的糟糕替代品。例如全局缓存池要求 key 不能重复，如果用字符串做 key 可能在不同线程中出现问题</li>
+</ol>
+<p>总之，当存在或可以编写更好的数据类型时，应避免将字符串用来表示对象。如果使用不当，字符串比其他类型更麻烦、灵活性更差、速度更慢、更容易出错。字符串经常被误用的类型包括基本类型、枚举和聚合类型。</p>
+<h3 id="63-当心字符串连接引起的性能问题"><a class="markdownIt-Anchor" href="#63-当心字符串连接引起的性能问题"></a> 63. 当心字符串连接引起的性能问题</h3>
+<p>字符串连接符（+）连接 n 个字符串的时间复杂度是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>n</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">n^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>。这是字符串不可变导致的</p>
+<p>如果要连接的字符串数量较多，可以使用 StringBuilder 代替 String</p>
+<h3 id="64-通过接口引用对象"><a class="markdownIt-Anchor" href="#64-通过接口引用对象"></a> 64. 通过接口引用对象</h3>
+<ol>
+<li>
+<p>如果存在合适的接口类型，那么应该使用接口类型声明参数、返回值、变量和字段。好处是代码可以非常方便切换性能更好或功能更丰富的实现，例如 HashMap 替换成 LinkedHashMap 可以保证迭代顺序和插入一致</p>
+</li>
+<li>
+<p>如果没有合适的接口存在，那么用类引用对象是完全合适的。</p>
+<ul>
+<li>值类，如 String 和 BigInteger。值类很少在编写时考虑到多个实现。它们通常是 final 的，很少有相应的接口。使用这样的值类作为参数、变量、字段或返回类型非常合适。</li>
+<li>如果一个对象属于一个基于类的框架，那么就用基类引用它</li>
+<li>接口的实现类有接口没有的方法，例如 PriorityQueue 类有 Queue 接口没有的比较器方法</li>
+</ul>
+</li>
+</ol>
+<h3 id="65-接口优于反射"><a class="markdownIt-Anchor" href="#65-接口优于反射"></a> 65. 接口优于反射</h3>
+<p>反射有几个缺点：</p>
+<ol>
+<li>失去了编译时类型检查的所有好处，包括异常检查。如果一个程序试图反射性地调用一个不存在的或不可访问的方法，它将在运行时失败，除非你采取了特殊的预防措施(大量 try-catch)</li>
+<li>反射代码既笨拙又冗长。写起来很乏味，读起来也很困难</li>
+<li>反射调用方法比普通调用方法更慢</li>
+</ol>
+<p>反射优点：</p>
+<p>对于许多程序，它们必须用到在编译时无法获取的类，在编译时存在一个适当的接口或父类来引用该类（Item-64）。如果是这种情况，可以用反射方式创建实例，并通过它们的接口或父类正常地访问它们。</p>
+<p>例如，这是一个创建 <code>Set&lt;String&gt;</code> 实例的程序，类由第一个命令行参数指定。程序将剩余的命令行参数插入到集合中并打印出来。不管第一个参数是什么，程序都会打印剩余的参数，并去掉重复项。然而，打印这些参数的顺序取决于第一个参数中指定的类。如果你指定 java.util.HashSet，它们显然是随机排列的；如果你指定 java.util.TreeSet，它们是按字母顺序打印的，因为 TreeSet 中的元素是有序的</p>
+<pre class="highlight"><code class="java"><span class="hljs-comment">// Reflective instantiation with interface access</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+
+    <span class="hljs-comment">// Translate the class name into a Class object</span>
+    Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Set</span>&lt;String&gt;&gt; cl = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">try</span> &#123;
+        cl = (Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Set</span>&lt;String&gt;&gt;) <span class="hljs-comment">// Unchecked cast!</span>
+        Class.forName(args[<span class="hljs-number">0</span>]);
+    &#125; <span class="hljs-keyword">catch</span> (ClassNotFoundException e) &#123;
+        fatalError(<span class="hljs-string">&quot;Class not found.&quot;</span>);
+    &#125;
+
+    <span class="hljs-comment">// Get the constructor</span>
+    Constructor&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Set</span>&lt;String&gt;&gt; cons = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">try</span> &#123;
+        cons = cl.getDeclaredConstructor();
+    &#125; <span class="hljs-keyword">catch</span> (NoSuchMethodException e) &#123;
+        fatalError(<span class="hljs-string">&quot;No parameterless constructor&quot;</span>);
+    &#125;
+
+    <span class="hljs-comment">// Instantiate the set</span>
+    Set&lt;String&gt; s = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">try</span> &#123;
+        s = cons.newInstance();
+    &#125; <span class="hljs-keyword">catch</span> (IllegalAccessException e) &#123;
+        fatalError(<span class="hljs-string">&quot;Constructor not accessible&quot;</span>);
+    &#125; <span class="hljs-keyword">catch</span> (InstantiationException e) &#123;
+        fatalError(<span class="hljs-string">&quot;Class not instantiable.&quot;</span>);
+    &#125; <span class="hljs-keyword">catch</span> (InvocationTargetException e) &#123;
+        fatalError(<span class="hljs-string">&quot;Constructor threw &quot;</span> + e.getCause());
+    &#125; <span class="hljs-keyword">catch</span> (ClassCastException e) &#123;
+        fatalError(<span class="hljs-string">&quot;Class doesn&#x27;t implement Set&quot;</span>);
+    &#125;
+
+    <span class="hljs-comment">// Exercise the set</span>
+    s.addAll(Arrays.asList(args).subList(<span class="hljs-number">1</span>, args.length));
+    System.out.println(s);
+&#125;
+
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">fatalError</span><span class="hljs-params">(String msg)</span> &#123;
+    System.err.println(msg);
+    System.exit(<span class="hljs-number">1</span>);
+&#125;
+</code></pre>
+<p>反射的合法用途（很少）是管理类对运行时可能不存在的其他类、方法或字段的依赖关系。如果你正在编写一个包，并且必须针对其他包的多个版本运行，此时反射将非常有用。该技术是根据支持包所需的最小环境（通常是最老的版本）编译包，并反射性地访问任何较新的类或方法。如果你试图访问的新类或方法在运行时不存在，要使此工作正常进行，则必须采取适当的操作。适当的操作可能包括使用一些替代方法来完成相同的目标，或者使用简化的功能进行操作</p>
+<p>总之，反射是一种功能强大的工具，对于某些复杂的系统编程任务是必需的，但是它有很多缺点。如果编写的程序必须在编译时处理未知的类，则应该尽可能只使用反射实例化对象，并使用在编译时已知的接口或父类访问对象。</p>
+<h3 id="66-明智地使用本地方法"><a class="markdownIt-Anchor" href="#66-明智地使用本地方法"></a> 66. 明智地使用本地方法</h3>
+<p>JNI 允许 Java 调用本地方法，这些方法是用 C 或 C++ 等本地编程语言编写的。</p>
+<p>历史上，本地方法主要有三个用途：</p>
+<ol>
+<li>提供对特定于平台的设施（如注册中心）的访问</li>
+<li>提供对现有本地代码库的访问，包括提供对遗留数据访问</li>
+<li>通过本地语言编写应用程序中注重性能的部分，以提高性能</li>
+</ol>
+<p>关于用途一：随着 Java 平台的成熟，它提供了对许多以前只能在宿主平台中上找到的特性。例如，Java 9 中添加的流 API 提供了对 OS 进程的访问。在 Java 中没有等效库时，使用本地方法来使用本地库也是合法的。</p>
+<p>关于用途3：在早期版本（Java 3 之前），这通常是必要的，但是从那时起 JVM 变得更快了。对于大多数任务，现在可以在 Java 中获得类似的性能</p>
+<p>本地方法的缺点：</p>
+<ol>
+<li>会受到内存损坏错误的影响</li>
+<li>垃圾收集器无法自动追踪本地方法的内存使用情况，导致性能下降</li>
+</ol>
+<p>总之，在使用本地方法之前要三思。一般很少需要使用它们来提高性能。如果必须使用本地方法来访问底层资源或本地库，请尽可能少地使用本地代码，并对其进行彻底的测试。本地代码中的一个错误就可以破坏整个应用程序。</p>
+<h3 id="67-明智地进行优化"><a class="markdownIt-Anchor" href="#67-明智地进行优化"></a> 67. 明智地进行优化</h3>
+<p>关于优化的三条名言</p>
+<ol>
+<li>以效率的名义(不一定能达到效率)犯下的计算错误比任何其他原因都要多——包括盲目的愚蠢</li>
+<li>不要去计较效率上的一些小小的得失，在 97% 的情况下，不成熟的优化才是一切问题的根源。</li>
+<li>在优化方面，我们应该遵守两条规则：规则 1：不要进行优化。规则 2 （仅针对专家）：还是不要进行优化，也就是说，在你还没有绝对清晰的未优化方案之前，请不要进行优化。</li>
+</ol>
+<p>在设计系统时，我们要仔细考虑架构，好的架构允许它在后面优化，不良的架构导致很难优化。设计中最难更改的是组件之间以及组件与外部世界交互的组件，主要是 API、线路层协议和数据持久化格式，尽量避免做限制性能的设计</p>
+<p>JMH 是一个微基准测试框架，主要是基于方法层面的基准测试，精度可以达到纳秒级</p>
+<p>总而言之，不要努力写快的程序，要努力写好程序；速度自然会提高。但是在设计系统时一定要考虑性能，特别是在设计API、线路层协议和持久数据格式时。当你完成了系统的构建之后，请度量它的性能。如果足够快，就完成了。如果没有，利用分析器找到问题的根源，并对系统的相关部分进行优化。第一步是检查算法的选择：再多的底层优化也不能弥补算法选择的不足。根据需要重复这个过程，在每次更改之后测量性能，直到你满意为止。</p>
+<h3 id="68-遵守被广泛认可的命名约定"><a class="markdownIt-Anchor" href="#68-遵守被广泛认可的命名约定"></a> 68. 遵守被广泛认可的命名约定</h3>
+<p>Java 平台有一组完善的命名约定，其中许多约定包含在《The Java Language Specification》。不严格地讲，命名约定分为两类：排版和语法。</p>
+<h4 id="排版"><a class="markdownIt-Anchor" href="#排版"></a> 排版</h4>
+<p>和排版有关的命名约定，包括包、类、接口、方法、字段和类型变量</p>
+<ol>
+<li>包名和模块名应该是分层的，组件之间用句点分隔。组件应该由小写字母组成，很少使用数字。任何在你的组织外部使用的包，名称都应该以你的组织的 Internet 域名开头，并将组件颠倒过来，例如，edu.cmu、com.google、org.eff。以 java 和 javax 开头的标准库和可选包是这个规则的例外。用户不能创建名称以 java 或 javax 开头的包或模块。<br />
+包名的其余部分应该由描述包的一个或多个组件组成。组件应该很短，通常为 8 个或更少的字符。鼓励使用有意义的缩写，例如 util 而不是 utilities。缩写词是可以接受的，例如 awt。组件通常应该由一个单词或缩写组成。</li>
+<li>类和接口名称，包括枚举和注释类型名称，应该由一个或多个单词组成，每个单词的首字母大写，例如 List 或 FutureTask</li>
+<li>方法和字段名遵循与类和接口名相同的排版约定，除了方法或字段名的第一个字母应该是小写，例如 remove 或 ensureCapacity</li>
+<li>前面规则的唯一例外是「常量字段」，它的名称应该由一个或多个大写单词组成，由下划线分隔，例如 VALUES 或 NEGATIVE_INFINITY</li>
+<li>局部变量名与成员名具有类似的排版命名约定，但允许使用缩写，也允许使用单个字符和短字符序列，它们的含义取决于它们出现的上下文，例如 i、denom、houseNum。输入参数是一种特殊的局部变量。它们的命名应该比普通的局部变量谨慎得多，因为它们的名称是方法文档的组成部分。</li>
+<li>类型参数名通常由单个字母组成。最常见的是以下五种类型之一：T 表示任意类型，E 表示集合的元素类型，K 和 V 表示 Map 的键和值类型，X 表示异常。函数的返回类型通常为 R。任意类型的序列可以是 T、U、V 或 T1、T2、T3。</li>
+</ol>
+<p>为了快速参考，下表显示了排版约定的示例。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Identifier Type</th>
+<th style="text-align:center">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Package or module</td>
+<td style="text-align:center"><code>org.junit.jupiter.api</code>, <code>com.google.common.collect</code></td>
+</tr>
+<tr>
+<td style="text-align:center">Class or Interface</td>
+<td style="text-align:center">Stream, FutureTask, LinkedHashMap,HttpClient</td>
+</tr>
+<tr>
+<td style="text-align:center">Method or Field</td>
+<td style="text-align:center">remove, groupingBy, getCrc</td>
+</tr>
+<tr>
+<td style="text-align:center">Constant Field</td>
+<td style="text-align:center">MIN_VALUE, NEGATIVE_INFINITY</td>
+</tr>
+<tr>
+<td style="text-align:center">Local Variable</td>
+<td style="text-align:center">i, denom, houseNum</td>
+</tr>
+<tr>
+<td style="text-align:center">Type Parameter</td>
+<td style="text-align:center">T, E, K, V, X, R, U, V, T1, T2</td>
+</tr>
+</tbody>
+</table>
+<h4 id="语法"><a class="markdownIt-Anchor" href="#语法"></a> 语法</h4>
+<p>语法命名约定比排版约定更灵活，也更有争议</p>
+<ol>
+<li>可实例化的类，包括枚举类型，通常使用一个或多个名词来命名，例如 Thread、PriorityQueue 或 ChessPiece</li>
+<li>不可实例化的工具类通常用复数名词来命名，例如 Collectors 和 Collections</li>
+<li>接口的名称类似于类，例如 Collection 或 Comparator，或者以 able 或 ible 结尾的形容词，例如 Runnable、Iterable 或 Accessible</li>
+<li>因为注解类型有很多的用途，所以没有哪部分占主导地位。名词、动词、介词和形容词都很常见，例如，BindingAnnotation、Inject、ImplementedBy 或 Singleton。</li>
+<li>执行某些操作的方法通常用动词或动词短语（包括对象）命名，例如，append 或 drawImage。</li>
+<li>返回布尔值的方法的名称通常以单词 is 或 has（通常很少用）开头，后面跟一个名词、一个名词短语，或者任何用作形容词的单词或短语，例如 isDigit、isProbablePrime、isEmpty、isEnabled 或 hasSiblings。</li>
+<li>返回被调用对象的非布尔函数或属性的方法通常使用以 get 开头的名词、名词短语或动词短语来命名，例如 size、hashCode 或 getTime。有一种说法是，只有第三种形式（以 get 开头）才是可接受的，但这种说法几乎没有根据。前两种形式的代码通常可读性更强 。以 get 开头的形式起源于基本过时的 Java bean 规范，该规范构成了早期可复用组件体系结构的基础。有一些现代工具仍然依赖于 bean 命名约定，你应该可以在任何与这些工具一起使用的代码中随意使用它。如果类同时包含相同属性的 setter 和 getter，则遵循这种命名约定也有很好的先例。在本例中，这两个方法通常被命名为 getAttribute 和 setAttribute。</li>
+<li>转换对象类型（返回不同类型的独立对象）的实例方法通常称为 toType，例如 toString 或 toArray。</li>
+<li>返回与接收对象类型不同的视图（Item-6）的方法通常称为 asType，例如 asList</li>
+<li>返回与调用它们的对象具有相同值的基本类型的方法通常称为类型值，例如 intValue</li>
+<li>静态工厂的常见名称包括 from、of、valueOf、instance、getInstance、newInstance、getType 和 newType</li>
+<li>字段名的语法约定没有类、接口和方法名的语法约定建立得好，也不那么重要，因为设计良好的 API 包含很少的公开字段。类型为 boolean 的字段的名称通常类似于 boolean 访问器方法，省略了开头「is」，例如 initialized、composite。其他类型的字段通常用名词或名词短语来命名，如 height、digits 和 bodyStyle。局部变量的语法约定类似于字段的语法约定，但要求更少。</li>
+</ol>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2022/08/06/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89/" title="Effective-Java学习笔记（八）" target="_blank" rel="external">https://zunpan.github.io/2022/08/06/Effective-Java学习笔记（八）/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/08/13/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B9%9D%EF%BC%89/" title="Effective-Java学习笔记（九）"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2022/08/01/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%83%EF%BC%89/" title="Effective-Java学习笔记（七）"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>

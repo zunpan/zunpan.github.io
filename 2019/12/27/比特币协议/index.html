@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>比特币协议 | panzun</title>
+  <meta name="description" content="不用区块链的数字货币的问题 假设央行不用区块链发行数字货币，央行可以对每个货币用私钥签名，然后交易的时候，交易双方可以用公钥去验证这个签名的正确性，正确即是央行发行的货币，可以交易，否则就是假货币。 此方案存在的问题是：货币的真伪性可以得到保证，但是这个数量无法控制。假如你现在有一个央行发行的货币，你虽然不能伪造但是可以复制，从而发生一钱多用的情况（花两次攻击，英文名：double spendi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="比特币协议">
+<meta property="og:url" content="https://zunpan.github.io/2019/12/27/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="panzun blog">
+<meta property="og:description" content="不用区块链的数字货币的问题 假设央行不用区块链发行数字货币，央行可以对每个货币用私钥签名，然后交易的时候，交易双方可以用公钥去验证这个签名的正确性，正确即是央行发行的货币，可以交易，否则就是假货币。 此方案存在的问题是：货币的真伪性可以得到保证，但是这个数量无法控制。假如你现在有一个央行发行的货币，你虽然不能伪造但是可以复制，从而发生一钱多用的情况（花两次攻击，英文名：double spendi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165151608.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165210646.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165243932.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165354855.png">
+<meta property="article:published_time" content="2019-12-27T07:16:33.000Z">
+<meta property="article:modified_time" content="2023-09-24T04:27:40.282Z">
+<meta property="article:author" content="panzun">
+<meta property="article:tag" content="区块链技术与应用">
+<meta property="article:tag" content="比特币">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165151608.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://zunpan.github.io/2019/12/27/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="panzun blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/vs2015.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/vs2015.min.css">
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/zunpan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">panzun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <a>欢迎交流与分享经验!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ArkTS/">ArkTS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Maven/">Maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ArkTS/" style="font-size: 13px;">ArkTS</a> <a href="/tags/CORS/" style="font-size: 13px;">CORS</a> <a href="/tags/Cryptography/" style="font-size: 13px;">Cryptography</a> <a href="/tags/Dan-Boneh/" style="font-size: 13px;">Dan Boneh</a> <a href="/tags/Effective-Java/" style="font-size: 13.75px;">Effective-Java</a> <a href="/tags/Git/" style="font-size: 13px;">Git</a> <a href="/tags/Java/" style="font-size: 13px;">Java</a> <a href="/tags/Java-Concurrency-In-Practice/" style="font-size: 13px;">Java Concurrency In Practice</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" style="font-size: 13px;">Java并发编程实战</a> <a href="/tags/LCS/" style="font-size: 13px;">LCS</a> <a href="/tags/LeetCode/" style="font-size: 13px;">LeetCode</a> <a href="/tags/Levenshtein/" style="font-size: 13px;">Levenshtein</a> <a href="/tags/Linux/" style="font-size: 13px;">Linux</a> <a href="/tags/Maven/" style="font-size: 13.25px;">Maven</a> <a href="/tags/MetaMask/" style="font-size: 13.25px;">MetaMask</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Shell/" style="font-size: 13px;">Shell</a> <a href="/tags/Stream/" style="font-size: 13px;">Stream</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/cpp/" style="font-size: 13px;">cpp</a> <a href="/tags/diff/" style="font-size: 13px;">diff</a> <a href="/tags/ganache/" style="font-size: 13px;">ganache</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/merge/" style="font-size: 13px;">merge</a> <a href="/tags/truffle/" style="font-size: 13px;">truffle</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/" style="font-size: 13px;">以太坊</a> <a href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" style="font-size: 13px;">创建和销毁对象</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13px;">区块链</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" style="font-size: 14px;">区块链技术与应用</a> <a href="/tags/%E5%AE%9E%E4%B9%A0/" style="font-size: 13px;">实习</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 13.25px;">密码学</a> <a href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" style="font-size: 13px;">对象的通用方法</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 13px;">异常</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/tags/%E6%96%B9%E6%B3%95/" style="font-size: 13px;">方法</a> <a href="/tags/%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">枚举</a> <a href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" style="font-size: 13.75px;">比特币</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 13px;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 13px;">注解</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13px;">深入理解Java虚拟机</a> <a href="/tags/%E7%94%B5%E5%AD%90%E9%80%89%E4%B8%BE/" style="font-size: 13px;">电子选举</a> <a href="/tags/%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3/" style="font-size: 13px;">类和接口</a> <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" style="font-size: 13px;">编辑距离</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13.5px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%B4%A6/" style="font-size: 13px;">转账</a> <a href="/tags/%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13px;">通用程序设计</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 13px;">重构</a> <a href="/tags/%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97/" style="font-size: 13px;">隐私计算</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 13px;">面试</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">六月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">六月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/03/">三月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/15/%E6%9F%A5%E8%A1%A8%E6%B3%95/" class="title">查表法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-15T02:37:14.000Z" itemprop="datePublished">2025-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/ArkTS/">ArkTS</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/06/14/ArkTS%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">ArkTS建造者模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-06-14T02:37:14.000Z" itemprop="datePublished">2025-06-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2024/08/12/%E5%A4%A7%E8%AF%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">大话设计模式学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2024-08-12T02:37:14.000Z" itemprop="datePublished">2024-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/06/10/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="title">深入理解Java虚拟机学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-06-10T15:30:14.000Z" itemprop="datePublished">2023-06-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/03/03/Excel%E6%AF%94%E5%AF%B9%E4%B8%8E%E5%90%88%E5%B9%B6%E7%B3%BB%E7%BB%9F/" class="title">Excel比对与合并系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-03-03T07:00:03.000Z" itemprop="datePublished">2023-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E7%94%A8%E5%8C%BA%E5%9D%97%E9%93%BE%E7%9A%84%E6%95%B0%E5%AD%97%E8%B4%A7%E5%B8%81%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text"> 不用区块链的数字货币的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E8%B4%A7%E5%B8%81%E7%B3%BB%E7%BB%9F%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E4%B8%A4%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.</span> <span class="toc-text"> 去中心化货币系统要解决的两个问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E7%9A%84%E6%96%B9%E6%A1%88"><span class="toc-number">1.2.</span> <span class="toc-text"> 比特币的方案</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.2.1.</span> <span class="toc-text"> 问题1的解决方案</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.2.2.</span> <span class="toc-text"> 问题2的解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#a%E5%92%8Cb%E4%BA%A4%E6%98%93%E9%9C%80%E8%A6%81%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.2.1.</span> <span class="toc-text"> A和B交易需要的信息</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E4%B8%AD%E7%9A%84%E5%85%B1%E8%AF%86%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.3.</span> <span class="toc-text"> 比特币中的共识协议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%E4%B8%80%E7%A5%A8"><span class="toc-number">1.3.1.</span> <span class="toc-text"> 一个节点一票</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.3.1.1.</span> <span class="toc-text"> 存在的问题</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E7%AE%97%E5%8A%9B%E6%8A%95%E7%A5%A8"><span class="toc-number">1.3.2.</span> <span class="toc-text"> 根据算力投票</span></a></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-比特币协议" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      比特币协议
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/12/27/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/" class="article-date">
+	  <time datetime="2019-12-27T07:16:33.000Z" itemprop="datePublished">2019-12-27</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8/" rel="tag">区块链技术与应用</a>, <a class="article-tag-link-link" href="/tags/%E6%AF%94%E7%89%B9%E5%B8%81/" rel="tag">比特币</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/12/27/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 3.3k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 11(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="不用区块链的数字货币的问题"><a class="markdownIt-Anchor" href="#不用区块链的数字货币的问题"></a> 不用区块链的数字货币的问题</h2>
+<p>假设央行不用区块链发行数字货币，央行可以对每个货币用私钥签名，然后交易的时候，交易双方可以用公钥去验证这个签名的正确性，正确即是央行发行的货币，可以交易，否则就是假货币。</p>
+<p>此方案存在的问题是：货币的真伪性可以得到保证，但是这个数量无法控制。假如你现在有一个央行发行的货币，你虽然不能伪造但是可以复制，从而发生一钱多用的情况（花两次攻击，英文名：double spending attack）</p>
+<p>改进方案：央行除了要对货币签名，还要给每个货币打上一个编号，然后维护一个数据库，这个编号的货币现在在谁手上。交易的时候，双方先用公钥验证真伪，然后准备收钱的一方访问一下央行数据库，这个货币现在是不是在你手上，在的话就可以继续交易，否则这个货币你是已经用过了，不能再用了。这样就解决了double spending attack问题。</p>
+<p>改进方案存在的问题：这是中心化的方案，央行数据库压力很大。比特币系统解决的就是这种问题。</p>
+<h3 id="去中心化货币系统要解决的两个问题"><a class="markdownIt-Anchor" href="#去中心化货币系统要解决的两个问题"></a> 去中心化货币系统要解决的两个问题</h3>
+<ol>
+<li>
+<p>数字货币的发行，谁有权发？什么时候发？发多少？</p>
+</li>
+<li>
+<p>怎么验证交易的有效性？怎么防止double spending attack问题？</p>
+</li>
+</ol>
+<h3 id="比特币的方案"><a class="markdownIt-Anchor" href="#比特币的方案"></a> 比特币的方案</h3>
+<h4 id="问题1的解决方案"><a class="markdownIt-Anchor" href="#问题1的解决方案"></a> 问题1的解决方案</h4>
+<p>共识算法</p>
+<h4 id="问题2的解决方案"><a class="markdownIt-Anchor" href="#问题2的解决方案"></a> 问题2的解决方案</h4>
+<p>有一个用户通过共识算法获得了发行货币的权力，我们管他叫铸币权，他发行了10个比特币给了A，把这交易信息写入区块链中。然后A把比特币给了B和C，一人5个，这个交易需要A的签名，证明是A同意的，同时这个交易还要说明花掉的比特币是从哪来的，也就是下图的第二个交易要说明比特币从哪来的，这里是从铸币交易输出来的。比特币交易系统中都包含了输入和输出两部分，输入部分要说明币的来源，输出部分要给出收款人的公钥的hash，比如A给B转钱，要说明B的公钥的hash是什么。然后B再把钱转给C，2个和D，3个，同样要签名，以及说明币的来源。这时候C想转给E7个币，币的来源就有两个了。见下图<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165151608.png" alt="图 1" /><br />
+注意：上图有两种hash指针，一种就是前面一篇文章提到的连接区块的hash指针，把区块串起来构成一个链表，还有第二种指针，是为了说明币的来源，这样可以防范double spending attack：假如上图B还想给F转比特币，单纯验证签名，貌似合法，但是币从哪来呢？还是要从上图的第二个区块来，别的节点收到这个交易后，会进行查询，从这个交易一直回溯到币的来源，回溯过程中，发现B已经把币全给C和D了，所以交易不合法，这个交易不会写入区块链中。</p>
+<h5 id="a和b交易需要的信息"><a class="markdownIt-Anchor" href="#a和b交易需要的信息"></a> A和B交易需要的信息</h5>
+<p>需要有A的签名和B的地址，比特币系统中收款方的地址是通过公钥推算出来的，比如B的地址是B的公钥取hash再进行一些转过生成的，这个地址相当于银行账号，A要给B转钱，需要知道B的银行账号。那么A怎么才能知道B的地址呢？比特币系统没有提供查询某个人的地址的方法，这得需要第三方的形式，比如说电商平台支持比特币支付，那么商家要把账户地址告诉电商平台，然后消费者就知道要给谁转账了。<br />
+另外需要知道A的地址，A要B的地址是为了知道给谁转账，B（其实是所有节点）要A的地址是为了①谁给B转的账②验证是否是A的签名（A的私钥签名，其他节点知道A的地址后就可以公钥验证）。<br />
+<em>问题来了？怎么才能知道A的公钥呢？</em><br />
+A的公钥是交易自己给出的，交易有输入和输出，输入不仅要说明币的来源还要说明A的公钥。<br />
+<em>那么问题又来了，交易自己决定输入公钥，那不是有冒名顶替的风险吗？</em><br />
+前面提到输入要给出币的来源和付款人的hash，而输出要给出收款人的公钥的hash，那么上面A到B的交易的币是哪里来的呢？是前面铸币交易来的，来的同时要带上付款人的公钥的hash也就是前面铸币交易的收款人的公钥的hash。也就是说第二个交易的输入的公钥要和第一个交易的输出的公钥要一致。<br />
+在比特币系统当中，验证过程是通过脚本实现的，每个交易的输入是一段脚本，包括公钥，也是在脚本指定的，每个输出也是一段脚本，验证是否合法，就是把当前输入的脚本和币的来源的那个交易的输出的脚本拼在一起，如果能正常执行，那么就是合法的。</p>
+<p>注意：上图对区块进行了简化，每个区块只包含了一个交易，实际上，一个区块可以有很多交易，所有交易构成了一个merkle tree。每个区块分为块头和块身两部分。<br />
+块头包含这个区块宏观的一些信息，比如说用的是比特币版本的哪个协议（version），还有区块链当中指向前一个区块的hash指针（hash of previous block header），还有整个merkle tree 的根hash值（Merkle root hash），还有两个域和挖矿相关的，一个是挖矿的难度目标阈值（target），一个是随机数nonce</p>
+<h3 id="比特币中的共识协议"><a class="markdownIt-Anchor" href="#比特币中的共识协议"></a> 比特币中的共识协议</h3>
+<h4 id="一个节点一票"><a class="markdownIt-Anchor" href="#一个节点一票"></a> 一个节点一票</h4>
+<p>假设系统中大部分节点是诚实的，那么就投票，比如说某一个节点提出一个候选区块，根据收到的交易信息，判断哪些交易是合法的，然后把这些交易按顺序打包到候选区块里。候选区块发布给所有节点，每个节点收到区块后，检查一下，这里面的交易是不是合法的，如果都是合法的，投赞成票，否则投反对票。最后得票超过半数，候选区块写写入区块链中。</p>
+<h5 id="存在的问题"><a class="markdownIt-Anchor" href="#存在的问题"></a> 存在的问题</h5>
+<ol>
+<li>恶意节点不断提出有问题的区块，时间都浪费在了投票上面，区块链无法发展</li>
+<li>没法强迫节点投票。如果都不投票，那么区块链就陷入了瘫痪。</li>
+<li>效率上的问题。投票等多久决定于网络延迟</li>
+<li>任何基于投票的方案都要先决定谁有投票权（membership），这是区块链最大的问题。如果区块链的成员有严格定义，比如说有一种区块链叫联盟链（hyperledger fabric），只有符合条件的大公司才能加入，这种方案就可行。但是加入比特币系统是很容易的。</li>
+</ol>
+<h4 id="根据算力投票"><a class="markdownIt-Anchor" href="#根据算力投票"></a> 根据算力投票</h4>
+<p>比特币系统是根据计算力投票的。每个节点都可以在本地组装出一个候选区块，把它认为是合法的交易放在这个区块里，然后尝试各种nonce值，即计算H（block header）&lt;=target，nonce是个4 bytes的数。如果某个节点找到了nonce，就获得了记账权，就是往比特币去中心化的账本中写入下一个区块的权力，只有获得了记账权的节点才有权力发布下一个区块。其他节点收到区块后验证区块的合法性，比如block header里面的各个域是否正确，它里面的nBits域（时间上是target的一个编码），检查一下nBits设置的是不是符合比特币系统规定的难度要求；然后检查一下nonce是不是使得整个H（block header）小于等于target。然后验证一下block body里面的交易是不是合法的，第一要有合法签名，第二没有用过。</p>
+<p><em>假设一个区块经过检查是合法的，那么有没有可能节点不接受它呢？</em></p>
+<ol>
+<li>恶意节点不接受合法区块</li>
+<li>假设一个获得记账权的节点发布一个合法的区块,如下图,插在了区块链的中间。这个区块是完全合法的,那么我们应不应该接受它?</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165210646.png" alt="图 2" /><br />
+首先说明这个合法区块为什么插在了中间？因为每一个区块都带了一个指向前面一个区块的hash指针（hash of prev block header）。那么插在这里有什么问题？见下图<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165243932.png" alt="图 3" /><br />
+假如上方这个区块有一个交易是A把钱给了B，而我们新插入的这个区块里有个交易是A把钱给了自己。这里要说明这种情况不会发生double spending。我们判断是不是发生了double spending 是判断该区块所在分支有没有发生，上方的区块和新插入的区块已经是不同分支了，所以不是double spending。这种情况相当于把A→B这个交易给回滚了。<br />
+<strong>那么我们到底要不要接受这个新区块呢?不接受，因为它不在最长合法链上（longest valid chain）</strong></p>
+<p>比特币协议中规定接受的区块应该是在扩展最长合法链。上图这个例子是分叉攻击的例子（forking attack），通过往区块链中插入一个区块，来回滚已经发生的交易。</p>
+<p>但是比特币系统在正常情况下也可能出现分叉。比如有两个节点同时获得了记账权，发布区块，这个时候会出现下图这种情况<br />
+<img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/IMG_20230316-165354855.png" alt="图 4" /></p>
+<p>有两条最长合法链。那该接受哪一个？比特币协议中，缺省情况下，每个节点接受最早收到的那一个，由于网络延迟，有些节点可能接受1，有些节点可能接受2。什么叫接受？如果节点在1后面继续扩展，说明节点接受了1。所以如果出现系统中两个节点差不多同时发布区块的情况，这种等长的临时性的分叉会维持一段时间，直到一个分叉胜出。上图例子中，假设1区块抢先找到了下一个区块，那么上面的分叉就成了最长合法链，下面的分叉就成了orphan block，orphan block 铸币交易产生的比特币都会失效。为什么要争夺记账权？获得记账权的节点有一定权力，它可以决定哪些交易可以写到区块里，但是设计协议的时候不应该让它成为争夺记账权的主要动力，因为我们希望凡是合法的交易都应该被写到区块链里，而不是取得记账权的节点决定是否写入。比特币系统提供的出块奖励（block reward）成为争夺记账权的动力，比特币协议规定获得记账权的节点在发布的区块里可以有一个特殊的交易，就是前面提到的铸币交易（coinbase transaction），可以发布一定数量的比特币（初始50个，每21万个区块之后减半）。这样就解决了前文提到的去中心化货币系统要解决的第一个问题。铸币交易是比特币系统中发行比特币的唯一方法，其他所有交易都是比特币的转移。</p>
+<p>所以比特币系统要取得的共识到底是什么？分布式hash表要取得的共识是hash表的内容，比特币系统中要取得的共识是去中心化账本里的内容。谁来决定写这个账本？取得记账权的节点写账本，所以比特币系统中的共识机制是根据算力（每秒钟能试多少个nonce，也成为hash rate）来投票的，hash rate越高，得到记账权和得到比特币的概率就越高。那么这种共识机制是如何避免女巫攻击的，因为不管创建多少账户，节点的hash rate 都不会改变，所以获得记账权和比特币的概率不会提高。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://zunpan.github.io/2019/12/27/%E6%AF%94%E7%89%B9%E5%B8%81%E5%8D%8F%E8%AE%AE/" title="比特币协议" target="_blank" rel="external">https://zunpan.github.io/2019/12/27/比特币协议/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/zunpan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/zunpan" target="_blank"><span class="text-dark">panzun</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/01/06/%E6%AF%94%E7%89%B9%E5%B8%81%E5%AE%9E%E7%8E%B0/" title="比特币实现"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/12/26/%E6%AF%94%E7%89%B9%E5%B8%81%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="比特币的数据结构"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,twitter" data-mobile-sites="weibo,qq,wechat"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/zunpan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/zunpan" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/happywlb" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>
