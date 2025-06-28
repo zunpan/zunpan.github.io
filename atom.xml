@@ -6,7 +6,7 @@
   <link href="https://zunpan.github.io/atom.xml" rel="self"/>
   
   <link href="https://zunpan.github.io/"/>
-  <updated>2025-06-15T07:57:14.476Z</updated>
+  <updated>2025-06-28T12:39:08.392Z</updated>
   <id>https://zunpan.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ArkUI安全区域</title>
+    <link href="https://zunpan.github.io/2025/06/28/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA%E5%9F%9F/"/>
+    <id>https://zunpan.github.io/2025/06/28/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA%E5%9F%9F/</id>
+    <published>2025-06-28T02:37:14.000Z</published>
+    <updated>2025-06-28T12:39:08.392Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="子组件不会继承父组件的安全区域扩展"><a class="markdownIt-Anchor" href="#子组件不会继承父组件的安全区域扩展"></a> 子组件不会继承父组件的安全区域扩展</h2><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA/IMG_20250625-235734169.png" alt="图 0" /></p><p>外层Column组件扩展了状态栏和导航栏，但是里面的Text组件仍然从初始安全区域开始布局</p><h2 id="软键盘默认效果"><a class="markdownIt-Anchor" href="#软键盘默认效果"></a> 软键盘默认效果</h2><h3 id="如果键盘弹出会挡住输入框那么安全区域上移至键盘挡不住输入框"><a class="markdownIt-Anchor" href="#如果键盘弹出会挡住输入框那么安全区域上移至键盘挡不住输入框"></a> 如果键盘弹出会挡住输入框，那么安全区域上移至键盘挡不住输入框</h3><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA/IMG_20250626-000248710.png" alt="图 1" /></p><h3 id="如果键盘弹出不会挡住输入框那么键盘会遮住部分安全区域"><a class="markdownIt-Anchor" href="#如果键盘弹出不会挡住输入框那么键盘会遮住部分安全区域"></a> 如果键盘弹出不会挡住输入框，那么键盘会遮住部分安全区域</h3><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA/IMG_20250626-000454029.png" alt="图 2" /></p><h2 id="将组件的安全区域扩展到软键盘"><a class="markdownIt-Anchor" href="#将组件的安全区域扩展到软键盘"></a> 将组件的安全区域扩展到软键盘</h2><p><code>expandSafeArea([SafeAreaType.KEYBOARD])</code>意思是组件就算被键盘挡住了也别动</p><p>案例1：</p><p>最外层组件设置扩展，键盘弹出会直接覆盖组件</p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA%E5%9F%9F/IMG_20250626-001513449.png" alt="图 0" /></p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA%E5%9F%9F/IMG_20250626-001537193.png" alt="图 1" /></p><p>案例2：</p><p>父组件不扩展，子组件输入框不扩展，子组件输入框下面的Row扩展，键盘覆盖了Row组件，同时把输入框和父组件往上抬了</p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA%E5%9F%9F/IMG_20250626-002118432.png" alt="图 2" /></p><h2 id="软键盘避让"><a class="markdownIt-Anchor" href="#软键盘避让"></a> 软键盘避让</h2><p>案例1：</p><p>给组件的UIContext设置KeyboardAvoidMode.RESIZE，键盘抬起时安全区域会压缩</p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/ArkUI%E5%AE%89%E5%85%A8%E5%8C%BA%E5%9F%9F/IMG_20250628-195919743.png" alt="图 3" /></p><p>案例2：</p><p>给组件的UIContext设置KeyboardAvoidMode.RESIZE，同时设置<code>expandSafeArea([SafeAreaType.KEYBOARD])</code>，安全区域仍然会被压缩，效果同上</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;子组件不会继承父组件的安全区域扩展&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#子组件不会继承父组件的安全区域扩展&quot;&gt;&lt;/a&gt; 子组件不会继承父组件的安全区域扩展&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://cdn.jsdel</summary>
+      
+    
+    
+    
+    <category term="移动端" scheme="https://zunpan.github.io/categories/%E7%A7%BB%E5%8A%A8%E7%AB%AF/"/>
+    
+    
+    <category term="鸿蒙" scheme="https://zunpan.github.io/tags/%E9%B8%BF%E8%92%99/"/>
+    
+    <category term="移动端" scheme="https://zunpan.github.io/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF/"/>
+    
+  </entry>
   
   <entry>
     <title>查表法</title>
@@ -537,34 +564,6 @@
     <category term="Cryptography" scheme="https://zunpan.github.io/tags/Cryptography/"/>
     
     <category term="Dan Boneh" scheme="https://zunpan.github.io/tags/Dan-Boneh/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>2022.05.23 某区块链公司面试记录</title>
-    <link href="https://zunpan.github.io/2022/05/23/2022-5-23-%E6%9F%90%E5%8C%BA%E5%9D%97%E9%93%BE%E5%85%AC%E5%8F%B8%E9%9D%A2%E8%AF%95%E8%AE%B0%E5%BD%95/"/>
-    <id>https://zunpan.github.io/2022/05/23/2022-5-23-%E6%9F%90%E5%8C%BA%E5%9D%97%E9%93%BE%E5%85%AC%E5%8F%B8%E9%9D%A2%E8%AF%95%E8%AE%B0%E5%BD%95/</id>
-    <published>2022-05-23T11:47:58.000Z</published>
-    <updated>2023-09-24T04:27:40.271Z</updated>
-    
-    <content type="html"><![CDATA[<p>投的后端开发实习生岗，一天面了两次技术面</p><h2 id="一面"><a class="markdownIt-Anchor" href="#一面"></a> 一面</h2><ol><li>针对简历项目提问，为什么要paillier？为什么要秘密分享？</li><li>mysql的主从备份，主从节点的事务需不需要分开执行？从节点事务执行失败，主节点如何回滚？binlog的同步和事务在主从节点的执行，两者按时间顺序如何排列？</li><li>手写代码：求字典序第k大的数</li></ol><h2 id="二面"><a class="markdownIt-Anchor" href="#二面"></a> 二面</h2><ol><li>区块链共识算法有哪些？每个算法容错数量是多少？双花问题？默克尔树？默克尔证明？</li><li>Java基本数据类型和引用类型的区别</li><li>为什么每个基本数据类型都有包装类，包装类有什么用？</li><li>针对简历提问，秘密分享时间复杂度多少？paillier用在哪里？</li><li>手写代码：多线程卖票，要求每个线程同时工作，不能超卖</li><li>两个大文件，文件内容是字符串集合，内存略大于一个文件，如何对两个文件进行字符串去重？如何优化时间复杂度？</li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;投的后端开发实习生岗，一天面了两次技术面&lt;/p&gt;
-&lt;h2 id=&quot;一面&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#一面&quot;&gt;&lt;/a&gt; 一面&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;针对简历项目提问，为什么要paillier？为什么要秘密分享？&lt;/li&gt;
-&lt;</summary>
-      
-    
-    
-    
-    <category term="杂项" scheme="https://zunpan.github.io/categories/%E6%9D%82%E9%A1%B9/"/>
-    
-    
-    <category term="面试" scheme="https://zunpan.github.io/tags/%E9%9D%A2%E8%AF%95/"/>
     
   </entry>
   
