@@ -324,14 +324,17 @@
 
   
   
+  
   <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
   <div class="slimContent">
-    <nav id="toc" class="article-toc">
+    <nav id="toc" class="article-toc toc-no-number">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text"> 第三章 对象的通用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E8%A6%86%E7%9B%96-equals-%E6%96%B9%E6%B3%95%E6%97%B6%E5%BA%94%E9%81%B5%E5%AE%88%E7%9A%84%E7%BA%A6%E5%AE%9A"><span class="toc-number">1.1.</span> <span class="toc-text"> 10. 覆盖 equals 方法时应遵守的约定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 不覆盖equals方法的情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E6%97%B6%E6%9C%BA"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 覆盖equals方法的时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E8%A7%84%E8%8C%83"><span class="toc-number">1.1.3.</span> <span class="toc-text"> 覆盖equals方法的规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AB%98%E8%B4%A8%E9%87%8F%E6%9E%84%E5%BB%BAequals%E6%96%B9%E6%B3%95%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.1.4.</span> <span class="toc-text"> 高质量构建equals方法的步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E8%AD%A6%E5%91%8A"><span class="toc-number">1.1.5.</span> <span class="toc-text"> 一些警告</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E5%BD%93%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E6%97%B6%E6%80%BB%E6%98%AF%E8%A6%86%E7%9B%96hashcode%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text"> 11. 当覆盖equals方法时，总是覆盖hashCode方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#object%E7%B1%BB%E4%B8%ADhashcode%E6%96%B9%E6%B3%95%E7%9A%84%E8%A7%84%E8%8C%83"><span class="toc-number">1.2.1.</span> <span class="toc-text"> Object类中hashCode方法的规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%A3%E5%88%97%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.2.</span> <span class="toc-text"> 散列算法设计步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E6%95%A3%E5%88%97%E5%80%BC"><span class="toc-number">1.2.3.</span> <span class="toc-text"> 缓存散列值</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E5%A7%8B%E7%BB%88%E8%A6%86%E7%9B%96tostring%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.</span> <span class="toc-text"> 12. 始终覆盖toString方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E6%98%8E%E6%99%BA%E5%9C%B0%E8%A6%86%E7%9B%96clone%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text"> 13. 明智地覆盖clone方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cloneable%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.4.1.</span> <span class="toc-text"> Cloneable接口的作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#clone-%E6%96%B9%E6%B3%95%E8%A7%84%E8%8C%83"><span class="toc-number">1.4.2.</span> <span class="toc-text"> clone 方法规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96clone%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.3.</span> <span class="toc-text"> 覆盖clone方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82"><span class="toc-number">1.4.4.</span> <span class="toc-text"> 一些细节</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.5.</span> <span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E8%80%83%E8%99%91%E5%AE%9E%E7%8E%B0-comparable-%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.5.</span> <span class="toc-text"> 14. 考虑实现 Comparable 接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#compareto%E6%96%B9%E6%B3%95%E7%BA%A6%E5%AE%9A"><span class="toc-number">1.5.1.</span> <span class="toc-text"> compareTo方法约定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E5%86%99-compareto-%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.2.</span> <span class="toc-text"> 编写 compareTo 方法</span></a></li></ol></li></ol></li></ol>
+      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-text"> 第三章 对象的通用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E8%A6%86%E7%9B%96-equals-%E6%96%B9%E6%B3%95%E6%97%B6%E5%BA%94%E9%81%B5%E5%AE%88%E7%9A%84%E7%BA%A6%E5%AE%9A"><span class="toc-text"> 10. 覆盖 equals 方法时应遵守的约定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-text"> 不覆盖equals方法的情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E6%97%B6%E6%9C%BA"><span class="toc-text"> 覆盖equals方法的时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E7%9A%84%E8%A7%84%E8%8C%83"><span class="toc-text"> 覆盖equals方法的规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AB%98%E8%B4%A8%E9%87%8F%E6%9E%84%E5%BB%BAequals%E6%96%B9%E6%B3%95%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="toc-text"> 高质量构建equals方法的步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E8%AD%A6%E5%91%8A"><span class="toc-text"> 一些警告</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E5%BD%93%E8%A6%86%E7%9B%96equals%E6%96%B9%E6%B3%95%E6%97%B6%E6%80%BB%E6%98%AF%E8%A6%86%E7%9B%96hashcode%E6%96%B9%E6%B3%95"><span class="toc-text"> 11. 当覆盖equals方法时，总是覆盖hashCode方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#object%E7%B1%BB%E4%B8%ADhashcode%E6%96%B9%E6%B3%95%E7%9A%84%E8%A7%84%E8%8C%83"><span class="toc-text"> Object类中hashCode方法的规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%A3%E5%88%97%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%AD%A5%E9%AA%A4"><span class="toc-text"> 散列算法设计步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E6%95%A3%E5%88%97%E5%80%BC"><span class="toc-text"> 缓存散列值</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E5%A7%8B%E7%BB%88%E8%A6%86%E7%9B%96tostring%E6%96%B9%E6%B3%95"><span class="toc-text"> 12. 始终覆盖toString方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E6%98%8E%E6%99%BA%E5%9C%B0%E8%A6%86%E7%9B%96clone%E6%96%B9%E6%B3%95"><span class="toc-text"> 13. 明智地覆盖clone方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cloneable%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-text"> Cloneable接口的作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#clone-%E6%96%B9%E6%B3%95%E8%A7%84%E8%8C%83"><span class="toc-text"> clone 方法规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96clone%E6%96%B9%E6%B3%95"><span class="toc-text"> 覆盖clone方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82"><span class="toc-text"> 一些细节</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E8%80%83%E8%99%91%E5%AE%9E%E7%8E%B0-comparable-%E6%8E%A5%E5%8F%A3"><span class="toc-text"> 14. 考虑实现 Comparable 接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#compareto%E6%96%B9%E6%B3%95%E7%BA%A6%E5%AE%9A"><span class="toc-text"> compareTo方法约定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E5%86%99-compareto-%E6%96%B9%E6%B3%95"><span class="toc-text"> 编写 compareTo 方法</span></a></li></ol></li></ol></li></ol>
     </nav>
   </div>
 </aside>
+
 
 <main class="main" role="main">
   <div class="content">
@@ -355,22 +358,23 @@
 	</a>
 </span>
         
+          
   <span class="article-category">
     <i class="icon icon-folder"></i>
     <a class="article-category-link" href="/categories/Java/">Java</a>
   </span>
 
-        
+          
   <span class="article-tag">
     <i class="icon icon-tags"></i>
 	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95/" rel="tag">对象的通用方法</a>
   </span>
 
 
-        
+          
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/06/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
-        
+          <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/06/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+          
 	
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 6k(字)</span>
 	
@@ -378,6 +382,7 @@
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 21(分)</span>
 	
 
+        
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
@@ -742,6 +747,7 @@ will be true, this is not an absolute requirement.
 
 
 
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -775,6 +781,9 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 <script src="/js/application.js"></script>
+
+
+<script src="/js/codecopy.js"></script>
 
 
     <script>
@@ -862,6 +871,7 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
     });
   });
   </script>
+
 
 
 

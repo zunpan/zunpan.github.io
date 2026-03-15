@@ -325,14 +325,17 @@
 
   
   
+  
   <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
   <div class="slimContent">
     <nav id="toc" class="article-toc">
       <h3 class="toc-title">文章目录</h3>
+      
       <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#stringstream%E7%94%A8%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text"> stringstream用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="toc-number">2.</span> <span class="toc-text"> 默认值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#substr%E5%87%BD%E6%95%B0%E7%94%A8%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text"> substr函数用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#stringlength%E6%88%96%E8%80%85size%E4%B8%8E%E5%8F%98%E9%87%8F%E4%BD%9C%E6%AF%94%E8%BE%83%E7%9A%84bug"><span class="toc-number">4.</span> <span class="toc-text"> string.length()或者size()与变量作比较的bug</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8%E9%A2%98%E6%8A%80%E5%B7%A7"><span class="toc-number">5.</span> <span class="toc-text"> 链表题技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E9%A2%98%E6%8A%80%E5%B7%A7"><span class="toc-number">6.</span> <span class="toc-text"> 二叉树题技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BA%92%E8%BD%AC"><span class="toc-number">7.</span> <span class="toc-text"> 数字和字符串互转</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">8.</span> <span class="toc-text"> 数组初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dfs%E5%92%8Cbfs%E9%80%82%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">9.</span> <span class="toc-text"> DFS和BFS适用条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E7%9A%84%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="toc-number">10.</span> <span class="toc-text"> 图的连通性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%92%E5%BA%8F"><span class="toc-number">11.</span> <span class="toc-text"> 自定义排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%88%86%E6%8A%80%E5%B7%A7"><span class="toc-number">12.</span> <span class="toc-text"> 二分技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="toc-number">12.1.</span> <span class="toc-text"> 标准二分查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%BB%A1%E8%B6%B3xxx%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-number">12.2.</span> <span class="toc-text"> 二分查找第一个满足XXX的位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E6%BB%A1%E8%B6%B3xxx%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-number">12.3.</span> <span class="toc-text"> 二分查找最后一个满足XXX的位置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#stl%E7%9A%84%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="toc-number">13.</span> <span class="toc-text"> STL的二分查找</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="toc-number">14.</span> <span class="toc-text"> 优先队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6%E6%8A%80%E5%B7%A7"><span class="toc-number">15.</span> <span class="toc-text"> 位运算符技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E4%BD%8D%E4%B8%8E%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.1.</span> <span class="toc-text"> 按位与运算符（&amp;）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8E%E8%BF%90%E7%AE%97%E7%9A%84%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94"><span class="toc-number">15.1.1.</span> <span class="toc-text"> ”与运算“的特殊用途</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E4%BD%8D%E6%88%96%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.2.</span> <span class="toc-text"> 按位或运算符（|）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%96%E8%BF%90%E7%AE%97%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94"><span class="toc-number">15.2.1.</span> <span class="toc-text"> “或运算”特殊用途</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.3.</span> <span class="toc-text"> 异或运算符（^）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94"><span class="toc-number">15.3.1.</span> <span class="toc-text"> “异或运算”特殊用途</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%8F%8D%E8%BF%90%E7%AE%97%E7%AC%A6~"><span class="toc-number">15.4.</span> <span class="toc-text"> 取反运算符（~）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%96%E5%8F%8D%E8%BF%90%E7%AE%97%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94"><span class="toc-number">15.4.1.</span> <span class="toc-text"> “取反运算”特殊用途</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A6%E7%A7%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.5.</span> <span class="toc-text"> 左移运算符（&lt;&lt;）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%B3%E7%A7%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.6.</span> <span class="toc-text"> 右移运算符（&gt;&gt;)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E5%8F%B3%E7%A7%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">15.7.</span> <span class="toc-text"> 无符号右移运算符（&gt;&gt;&gt;)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E9%95%BF%E5%BA%A6%E7%9A%84%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="toc-number">15.8.</span> <span class="toc-text"> 不同长度的数据进行位运算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E9%A2%98%E6%8A%80%E5%B7%A7"><span class="toc-number">16.</span> <span class="toc-text"> 数组题技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%AB%E6%8E%92"><span class="toc-number">17.</span> <span class="toc-text"> 快排</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98"><span class="toc-number">18.</span> <span class="toc-text"> 背包问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E6%AD%A5%E9%AA%A4"><span class="toc-number">18.1.</span> <span class="toc-text"> 背包问题分析步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E7%89%B9%E5%BE%81"><span class="toc-number">18.2.</span> <span class="toc-text"> 背包问题特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E9%81%8D%E5%8E%86"><span class="toc-number">18.3.</span> <span class="toc-text"> 背包问题遍历</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E8%B0%83%E6%A0%88"><span class="toc-number">19.</span> <span class="toc-text"> 单调栈</span></a></li></ol>
     </nav>
   </div>
 </aside>
+
 
 <main class="main" role="main">
   <div class="content">
@@ -356,22 +359,23 @@
 	</a>
 </span>
         
+          
   <span class="article-category">
     <i class="icon icon-folder"></i>
     <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
   </span>
 
-        
+          
   <span class="article-tag">
     <i class="icon icon-tags"></i>
 	<a class="article-tag-link-link" href="/tags/LeetCode/" rel="tag">LeetCode</a>, <a class="article-tag-link-link" href="/tags/algorithm/" rel="tag">algorithm</a>, <a class="article-tag-link-link" href="/tags/cpp/" rel="tag">cpp</a>
   </span>
 
 
-        
+          
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/05/07/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-cpp/#comments" class="article-comment-link">评论</a></span>
-        
+          <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/05/07/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-cpp/#comments" class="article-comment-link">评论</a></span>
+          
 	
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 3.4k(字)</span>
 	
@@ -379,6 +383,7 @@
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 14(分)</span>
 	
 
+        
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
@@ -908,6 +913,7 @@ priority_queue&lt;<span class="hljs-type">int</span>, vector&lt;<span class="hlj
 
 
 
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -941,6 +947,9 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 <script src="/js/application.js"></script>
+
+
+<script src="/js/codecopy.js"></script>
 
 
     <script>
@@ -1028,6 +1037,7 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
     });
   });
   </script>
+
 
 
 

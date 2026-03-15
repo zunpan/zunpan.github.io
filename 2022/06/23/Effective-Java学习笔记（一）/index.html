@@ -324,14 +324,17 @@
 
   
   
+  
   <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
   <div class="slimContent">
-    <nav id="toc" class="article-toc">
+    <nav id="toc" class="article-toc toc-no-number">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.</span> <span class="toc-text"> 第二章 创建和销毁对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%80%83%E8%99%91%E7%94%A8%E9%9D%99%E6%80%81%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%BB%A3%E6%9B%BF%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text"> 1. 考虑用静态工厂方法代替构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BD%93%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%9C%89%E5%A4%9A%E4%B8%AA%E5%8F%82%E6%95%B0%E6%97%B6%E8%80%83%E8%99%91%E6%94%B9%E7%94%A8builder"><span class="toc-number">1.2.</span> <span class="toc-text"> 2. 当构造函数有多个参数时，考虑改用Builder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%89%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%88%96%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%88%9B%E5%BB%BA%E5%8D%95%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text"> 3. 使用私有构造函数或枚举类型创建单例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%94%A8%E7%A7%81%E6%9C%89%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%AE%9E%E6%96%BD%E4%B8%8D%E5%8F%AF%E5%AE%9E%E4%BE%8B%E5%8C%96"><span class="toc-number">1.4.</span> <span class="toc-text"> 4. 用私有构造函数实施不可实例化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E4%BC%98%E4%BA%8E%E7%A1%AC%E8%BF%9E%E6%8E%A5%E8%B5%84%E6%BA%90"><span class="toc-number">1.5.</span> <span class="toc-text"> 5. 依赖注入优于硬连接资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%81%BF%E5%85%8D%E5%88%9B%E5%BB%BA%E4%B8%8D%E5%BF%85%E8%A6%81%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.6.</span> <span class="toc-text"> 6. 避免创建不必要的对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%8E%92%E9%99%A4%E8%BF%87%E6%97%B6%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%BC%95%E7%94%A8"><span class="toc-number">1.7.</span> <span class="toc-text"> 7. 排除过时的对象引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%E7%BB%88%E7%BB%93%E5%99%A8%E5%92%8C%E6%B8%85%E9%99%A4%E5%99%A8"><span class="toc-number">1.8.</span> <span class="toc-text"> 8. 避免使用终结器和清除器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E4%BD%BF%E7%94%A8-try-with-resources-%E4%BC%98%E4%BA%8E-try-finally"><span class="toc-number">1.9.</span> <span class="toc-text"> 9. 使用 try-with-resources 优于 try-finally</span></a></li></ol></li></ol>
+      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1"><span class="toc-text"> 第二章 创建和销毁对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%80%83%E8%99%91%E7%94%A8%E9%9D%99%E6%80%81%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%BB%A3%E6%9B%BF%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-text"> 1. 考虑用静态工厂方法代替构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BD%93%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%9C%89%E5%A4%9A%E4%B8%AA%E5%8F%82%E6%95%B0%E6%97%B6%E8%80%83%E8%99%91%E6%94%B9%E7%94%A8builder"><span class="toc-text"> 2. 当构造函数有多个参数时，考虑改用Builder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%89%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%88%96%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%88%9B%E5%BB%BA%E5%8D%95%E4%BE%8B"><span class="toc-text"> 3. 使用私有构造函数或枚举类型创建单例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%94%A8%E7%A7%81%E6%9C%89%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%AE%9E%E6%96%BD%E4%B8%8D%E5%8F%AF%E5%AE%9E%E4%BE%8B%E5%8C%96"><span class="toc-text"> 4. 用私有构造函数实施不可实例化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E4%BC%98%E4%BA%8E%E7%A1%AC%E8%BF%9E%E6%8E%A5%E8%B5%84%E6%BA%90"><span class="toc-text"> 5. 依赖注入优于硬连接资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%81%BF%E5%85%8D%E5%88%9B%E5%BB%BA%E4%B8%8D%E5%BF%85%E8%A6%81%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="toc-text"> 6. 避免创建不必要的对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%8E%92%E9%99%A4%E8%BF%87%E6%97%B6%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%BC%95%E7%94%A8"><span class="toc-text"> 7. 排除过时的对象引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%E7%BB%88%E7%BB%93%E5%99%A8%E5%92%8C%E6%B8%85%E9%99%A4%E5%99%A8"><span class="toc-text"> 8. 避免使用终结器和清除器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E4%BD%BF%E7%94%A8-try-with-resources-%E4%BC%98%E4%BA%8E-try-finally"><span class="toc-text"> 9. 使用 try-with-resources 优于 try-finally</span></a></li></ol></li></ol>
     </nav>
   </div>
 </aside>
+
 
 <main class="main" role="main">
   <div class="content">
@@ -355,22 +358,23 @@
 	</a>
 </span>
         
+          
   <span class="article-category">
     <i class="icon icon-folder"></i>
     <a class="article-category-link" href="/categories/Java/">Java</a>
   </span>
 
-        
+          
   <span class="article-tag">
     <i class="icon icon-tags"></i>
 	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/" rel="tag">创建和销毁对象</a>
   </span>
 
 
-        
+          
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/06/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
-        
+          <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/06/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+          
 	
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 5.4k(字)</span>
 	
@@ -378,6 +382,7 @@
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 23(分)</span>
 	
 
+        
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
@@ -1024,6 +1029,7 @@ Arrays.stream(constructors).forEach(name -&gt; &#123;
 
 
 
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -1057,6 +1063,9 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 <script src="/js/application.js"></script>
+
+
+<script src="/js/codecopy.js"></script>
 
 
     <script>
@@ -1144,6 +1153,7 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
     });
   });
   </script>
+
 
 
 

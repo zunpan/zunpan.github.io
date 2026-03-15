@@ -325,14 +325,17 @@
 
   
   
+  
   <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
   <div class="slimContent">
-    <nav id="toc" class="article-toc">
+    <nav id="toc" class="article-toc toc-no-number">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E7%AB%A0-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E6%B5%81"><span class="toc-number">1.</span> <span class="toc-text"> 第七章 λ 表达式和流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#42-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%BC%98%E4%BA%8E%E5%8C%BF%E5%90%8D%E7%B1%BB"><span class="toc-number">1.1.</span> <span class="toc-text"> 42. λ 表达式优于匿名类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 函数对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 函数式接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#lambda-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.1.3.</span> <span class="toc-text"> lambda 表达式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#43-%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8%E4%BC%98%E4%BA%8E-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text"> 43. 方法引用优于 λ 表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#44-%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.</span> <span class="toc-text"> 44. 优先使用标准函数式接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#45-%E6%98%8E%E6%99%BA%E5%9C%B0%E4%BD%BF%E7%94%A8%E6%B5%81"><span class="toc-number">1.4.</span> <span class="toc-text"> 45. 明智地使用流</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81"><span class="toc-number">1.4.1.</span> <span class="toc-text"> 流</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E7%AE%A1%E9%81%93"><span class="toc-number">1.4.2.</span> <span class="toc-text"> 流管道</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81-vs-%E8%BF%AD%E4%BB%A3"><span class="toc-number">1.4.3.</span> <span class="toc-text"> 流 VS 迭代</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#46-%E5%9C%A8%E6%B5%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E6%97%A0%E5%89%AF%E4%BD%9C%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-number">1.5.</span> <span class="toc-text"> 46. 在流中使用无副作用的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#47-%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8-collection-%E8%80%8C%E4%B8%8D%E6%98%AF-stream-%E4%BD%9C%E4%B8%BA%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.6.</span> <span class="toc-text"> 47. 优先使用 Collection 而不是 Stream 作为返回类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#48-%E8%B0%A8%E6%85%8E%E4%BD%BF%E7%94%A8%E5%B9%B6%E8%A1%8C%E6%B5%81"><span class="toc-number">1.7.</span> <span class="toc-text"> 48. 谨慎使用并行流</span></a></li></ol></li></ol>
+      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E7%AB%A0-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E6%B5%81"><span class="toc-text"> 第七章 λ 表达式和流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#42-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%BC%98%E4%BA%8E%E5%8C%BF%E5%90%8D%E7%B1%BB"><span class="toc-text"> 42. λ 表达式优于匿名类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1"><span class="toc-text"> 函数对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="toc-text"> 函数式接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#lambda-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text"> lambda 表达式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#43-%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8%E4%BC%98%E4%BA%8E-%CE%BB-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text"> 43. 方法引用优于 λ 表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#44-%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="toc-text"> 44. 优先使用标准函数式接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#45-%E6%98%8E%E6%99%BA%E5%9C%B0%E4%BD%BF%E7%94%A8%E6%B5%81"><span class="toc-text"> 45. 明智地使用流</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81"><span class="toc-text"> 流</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E7%AE%A1%E9%81%93"><span class="toc-text"> 流管道</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81-vs-%E8%BF%AD%E4%BB%A3"><span class="toc-text"> 流 VS 迭代</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#46-%E5%9C%A8%E6%B5%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E6%97%A0%E5%89%AF%E4%BD%9C%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-text"> 46. 在流中使用无副作用的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#47-%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8-collection-%E8%80%8C%E4%B8%8D%E6%98%AF-stream-%E4%BD%9C%E4%B8%BA%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 47. 优先使用 Collection 而不是 Stream 作为返回类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#48-%E8%B0%A8%E6%85%8E%E4%BD%BF%E7%94%A8%E5%B9%B6%E8%A1%8C%E6%B5%81"><span class="toc-text"> 48. 谨慎使用并行流</span></a></li></ol></li></ol>
     </nav>
   </div>
 </aside>
+
 
 <main class="main" role="main">
   <div class="content">
@@ -356,22 +359,23 @@
 	</a>
 </span>
         
+          
   <span class="article-category">
     <i class="icon icon-folder"></i>
     <a class="article-category-link" href="/categories/Java/">Java</a>
   </span>
 
-        
+          
   <span class="article-tag">
     <i class="icon icon-tags"></i>
 	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/Stream/" rel="tag">Stream</a>, <a class="article-tag-link-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a>
   </span>
 
 
-        
+          
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/07/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
-        
+          <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/07/30/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+          
 	
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 4k(字)</span>
 	
@@ -379,6 +383,7 @@
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 14(分)</span>
 	
 
+        
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
@@ -702,6 +707,7 @@ Map&lt;String, Long&gt; freq;
 
 
 
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -735,6 +741,9 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 <script src="/js/application.js"></script>
+
+
+<script src="/js/codecopy.js"></script>
 
 
     <script>
@@ -822,6 +831,7 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
     });
   });
   </script>
+
 
 
 

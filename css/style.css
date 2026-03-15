@@ -5642,6 +5642,90 @@ pre code {
   color: #ccc;
 }
 
+/* Code block enhancements */
+.highlight,
+pre {
+  position: relative;
+}
+
+.highlight {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+}
+
+.highlight:before {
+  background: linear-gradient(90deg, #111827 0%, #1f2937 100%);
+}
+
+.highlight pre,
+.highlight code,
+.highlight .hljs {
+  color: #e2e8f0;
+  background: transparent;
+}
+
+.highlight .gutter pre {
+  color: #64748b;
+}
+
+pre,
+code {
+  font-family: "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+code {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+
+pre code {
+  border: none;
+}
+
+.code-copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.85);
+  color: #e2e8f0;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.code-copy-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(148, 163, 184, 0.75);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25);
+}
+
+.code-copy-btn:active {
+  transform: translateY(0);
+}
+
+.code-copy-btn[data-copied="true"] {
+  border-color: rgba(34, 197, 94, 0.6);
+  color: #86efac;
+}
+
+@media (max-width: 767px) {
+  .code-copy-btn {
+    top: 8px;
+    right: 6px;
+  }
+}
+
 /*
  * Sidebar
  */
@@ -6470,6 +6554,24 @@ body.no-sidebar .sidebar {
   padding: 14px 0;
 }
 
+.article-toc.toc-no-number .toc-number {
+  display: none;
+}
+
+.article-toc.toc-no-number .toc-text {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.article-toc .toc-item.no-auto-number .toc-number {
+  display: none;
+}
+
+.article-toc .toc-item.no-auto-number .toc-text {
+  padding-left: 0;
+  margin-left: 0;
+}
+
 .marked-body h1,
 .marked-body h2,
 .marked-body h3,
@@ -6967,13 +7069,16 @@ body.okayNav-loaded {
   border: 6px solid #ea5f00;
   margin: 0 auto;
   border-radius: 3px;
+  width: 240px;
+  max-width: 80vw;
 }
 
 .donate-box .donate-payimg img {
   display: block;
   text-align: center;
-  width: 140px;
-  height: 140px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .book .media-middle {

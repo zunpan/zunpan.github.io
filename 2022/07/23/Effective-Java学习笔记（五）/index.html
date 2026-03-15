@@ -325,14 +325,17 @@
 
   
   
+  
   <aside class="sidebar sidebar-toc   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
   <div class="slimContent">
-    <nav id="toc" class="article-toc">
+    <nav id="toc" class="article-toc toc-no-number">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0-%E6%9E%9A%E4%B8%BE%E5%92%8C%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text"> 第六章 枚举和注解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#34-%E7%94%A8%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E4%BB%A3%E6%9B%BF-int-%E5%B8%B8%E9%87%8F"><span class="toc-number">1.1.</span> <span class="toc-text"> 34. 用枚举类型代替 int 常量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#int%E6%9E%9A%E4%B8%BE"><span class="toc-number">1.1.1.</span> <span class="toc-text"> int枚举</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 枚举类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#35-%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B%E5%AD%97%E6%AE%B5%E6%9B%BF%E4%BB%A3%E5%BA%8F%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text"> 35. 使用实例字段替代序数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#36-%E7%94%A8-enumset-%E6%9B%BF%E4%BB%A3%E4%BD%8D%E5%AD%97%E6%AE%B5"><span class="toc-number">1.3.</span> <span class="toc-text"> 36. 用 EnumSet 替代位字段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%8D%E5%AD%97%E6%AE%B5"><span class="toc-number">1.3.1.</span> <span class="toc-text"> 位字段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#enumset"><span class="toc-number">1.3.1.1.</span> <span class="toc-text"> EnumSet</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#37-%E4%BD%BF%E7%94%A8-enummap-%E6%9B%BF%E6%8D%A2%E5%BA%8F%E6%95%B0%E7%B4%A2%E5%BC%95"><span class="toc-number">1.4.</span> <span class="toc-text"> 37. 使用 EnumMap 替换序数索引</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%8F%E6%95%B0%E7%B4%A2%E5%BC%95"><span class="toc-number">1.4.1.</span> <span class="toc-text"> 序数索引</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#enummap"><span class="toc-number">1.4.2.</span> <span class="toc-text"> EnumMap</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#38-%E4%BD%BF%E7%94%A8%E6%8E%A5%E5%8F%A3%E6%A8%A1%E6%8B%9F%E5%8F%AF%E6%89%A9%E5%B1%95%E6%9E%9A%E4%B8%BE"><span class="toc-number">1.5.</span> <span class="toc-text"> 38. 使用接口模拟可扩展枚举</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#39-%E6%B3%A8%E8%A7%A3%E4%BC%98%E4%BA%8E%E5%91%BD%E5%90%8D%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.6.</span> <span class="toc-text"> 39. 注解优于命名模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E5%90%8D%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.6.1.</span> <span class="toc-text"> 命名模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.6.2.</span> <span class="toc-text"> 注解</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#40-%E5%9D%9A%E6%8C%81%E4%BD%BF%E7%94%A8-override-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.7.</span> <span class="toc-text"> 40. 坚持使用 @Override 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#41-%E4%BD%BF%E7%94%A8%E6%A0%87%E8%AE%B0%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.8.</span> <span class="toc-text"> 41. 使用标记接口定义类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.8.1.</span> <span class="toc-text"> 标记接口</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E6%8E%A5%E5%8F%A3vs%E6%A0%87%E8%AE%B0%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.8.1.1.</span> <span class="toc-text"> 标记接口VS标记注解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%A7%84%E5%88%99"><span class="toc-number">1.8.1.2.</span> <span class="toc-text"> 使用规则</span></a></li></ol></li></ol></li></ol></li></ol>
+      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0-%E6%9E%9A%E4%B8%BE%E5%92%8C%E6%B3%A8%E8%A7%A3"><span class="toc-text"> 第六章 枚举和注解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#34-%E7%94%A8%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E4%BB%A3%E6%9B%BF-int-%E5%B8%B8%E9%87%8F"><span class="toc-text"> 34. 用枚举类型代替 int 常量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#int%E6%9E%9A%E4%B8%BE"><span class="toc-text"> int枚举</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 枚举类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#35-%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B%E5%AD%97%E6%AE%B5%E6%9B%BF%E4%BB%A3%E5%BA%8F%E6%95%B0"><span class="toc-text"> 35. 使用实例字段替代序数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#36-%E7%94%A8-enumset-%E6%9B%BF%E4%BB%A3%E4%BD%8D%E5%AD%97%E6%AE%B5"><span class="toc-text"> 36. 用 EnumSet 替代位字段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%8D%E5%AD%97%E6%AE%B5"><span class="toc-text"> 位字段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#enumset"><span class="toc-text"> EnumSet</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#37-%E4%BD%BF%E7%94%A8-enummap-%E6%9B%BF%E6%8D%A2%E5%BA%8F%E6%95%B0%E7%B4%A2%E5%BC%95"><span class="toc-text"> 37. 使用 EnumMap 替换序数索引</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%8F%E6%95%B0%E7%B4%A2%E5%BC%95"><span class="toc-text"> 序数索引</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#enummap"><span class="toc-text"> EnumMap</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#38-%E4%BD%BF%E7%94%A8%E6%8E%A5%E5%8F%A3%E6%A8%A1%E6%8B%9F%E5%8F%AF%E6%89%A9%E5%B1%95%E6%9E%9A%E4%B8%BE"><span class="toc-text"> 38. 使用接口模拟可扩展枚举</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#39-%E6%B3%A8%E8%A7%A3%E4%BC%98%E4%BA%8E%E5%91%BD%E5%90%8D%E6%A8%A1%E5%BC%8F"><span class="toc-text"> 39. 注解优于命名模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E5%90%8D%E6%A8%A1%E5%BC%8F"><span class="toc-text"> 命名模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3"><span class="toc-text"> 注解</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#40-%E5%9D%9A%E6%8C%81%E4%BD%BF%E7%94%A8-override-%E6%B3%A8%E8%A7%A3"><span class="toc-text"> 40. 坚持使用 @Override 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#41-%E4%BD%BF%E7%94%A8%E6%A0%87%E8%AE%B0%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 41. 使用标记接口定义类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E6%8E%A5%E5%8F%A3"><span class="toc-text"> 标记接口</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E6%8E%A5%E5%8F%A3vs%E6%A0%87%E8%AE%B0%E6%B3%A8%E8%A7%A3"><span class="toc-text"> 标记接口VS标记注解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%A7%84%E5%88%99"><span class="toc-text"> 使用规则</span></a></li></ol></li></ol></li></ol></li></ol>
     </nav>
   </div>
 </aside>
+
 
 <main class="main" role="main">
   <div class="content">
@@ -356,22 +359,23 @@
 	</a>
 </span>
         
+          
   <span class="article-category">
     <i class="icon icon-folder"></i>
     <a class="article-category-link" href="/categories/Java/">Java</a>
   </span>
 
-        
+          
   <span class="article-tag">
     <i class="icon icon-tags"></i>
 	<a class="article-tag-link-link" href="/tags/Effective-Java/" rel="tag">Effective-Java</a>, <a class="article-tag-link-link" href="/tags/%E6%9E%9A%E4%B8%BE/" rel="tag">枚举</a>, <a class="article-tag-link-link" href="/tags/%E6%B3%A8%E8%A7%A3/" rel="tag">注解</a>
   </span>
 
 
-        
+          
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/07/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
-        
+          <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/07/23/Effective-Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89/#comments" class="article-comment-link">评论</a></span>
+          
 	
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 3.3k(字)</span>
 	
@@ -379,6 +383,7 @@
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 12(分)</span>
 	
 
+        
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
@@ -712,6 +717,7 @@ Java 枚举类型通过 public static final 修饰的字段为每个枚举常量
 
 
 
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -745,6 +751,9 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 <script src="/js/application.js"></script>
+
+
+<script src="/js/codecopy.js"></script>
 
 
     <script>
@@ -832,6 +841,7 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
     });
   });
   </script>
+
 
 
 

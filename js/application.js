@@ -21,6 +21,16 @@ $(function() {
     }
   });
 
+  // Hide TOC by default on small screens even if autoUnfold is enabled
+  var $toc = $('#collapseToc');
+  if ($toc.length && window.matchMedia && window.matchMedia("(max-width: 767px)").matches) {
+    $toc.removeClass('in');
+    var $toggle = $('.toggle-toc .toggle-btn');
+    if ($toggle.length) {
+      $toggle.addClass('collapsed').attr('aria-expanded', 'false');
+    }
+  }
+
   // geopattern 背景生成
   $(".geopattern").each(function() {
     $(this).geopattern($(this).data('pattern-id'));
@@ -73,5 +83,18 @@ $(function() {
       $($menuList[i]).removeClass('active');
     }
     $menuList[activeIndex] && $($menuList[activeIndex]).addClass('active');
+  }
+
+  // If heading text already starts with numbers like "1. xxx", hide auto toc numbers
+  var $tocItems = $('.article-toc .toc-item');
+  if ($tocItems.length) {
+    $tocItems.each(function () {
+      var $item = $(this);
+      var $text = $item.find('.toc-text').first();
+      var label = ($text.text() || '').trim();
+      if (/^(\d+(\.\d+)*|[一二三四五六七八九十]+)[.)、]?\s*/.test(label)) {
+        $item.addClass('no-auto-number');
+      }
+    });
   }
 });
