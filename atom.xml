@@ -6,7 +6,7 @@
   <link href="https://zunpan.github.io/atom.xml" rel="self"/>
   
   <link href="https://zunpan.github.io/"/>
-  <updated>2026-01-17T17:53:19.646Z</updated>
+  <updated>2026-03-22T08:05:41.088Z</updated>
   <id>https://zunpan.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>我的VibeCoding工作流</title>
+    <link href="https://zunpan.github.io/2026/03/22/%E6%88%91%E7%9A%84VibeCoding%E5%B7%A5%E4%BD%9C%E6%B5%81/"/>
+    <id>https://zunpan.github.io/2026/03/22/%E6%88%91%E7%9A%84VibeCoding%E5%B7%A5%E4%BD%9C%E6%B5%81/</id>
+    <published>2026-03-22T07:00:00.000Z</published>
+    <updated>2026-03-22T08:05:41.088Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="准备工作"><a class="markdownIt-Anchor" href="#准备工作"></a> 准备工作</h2><h3 id="开发环境"><a class="markdownIt-Anchor" href="#开发环境"></a> 开发环境</h3><p>目前开发环境全部安装在WSL2中，用windows开vscode连接使用。</p><p>好处非常多，比如开发环境就和生产环境类似、和宿主机隔离不会搞的电脑都开不了机。我本来想说也不会碰到稀奇古怪的环境问题，但是对于ai来说环境问题都是小事。<br />坏处也是有的，我没装图形化界面，开发个APP不知道怎么验证，只能打包出来放到windows看</p><h3 id="agent"><a class="markdownIt-Anchor" href="#agent"></a> Agent</h3><p>我选择了Claude Code和Codex</p><p>具体来说，Claude Code 和 MiniMax 组合使用，Claude模型听说很厉害但是太贵买不起，所以找了国产的MiniMax替换，这家便宜量大，最便宜的coding plan套餐只要29/月，MiniMax-2.5写代码我觉得确实不错，就是设计能力太差了。Codex 当然是和自家模型配合使用，我在小黄鱼上找的Codex Team拼车，几块钱一个月，奥特曼真是大善人，现在GPT-5.4模型我觉得非常厉害了，不管是代码还是设计。</p><h3 id="安装"><a class="markdownIt-Anchor" href="#安装"></a> 安装</h3><p>现在安装真是太方便了，只要先安装一个Claude Code才配好模型密钥，用它来<strong>安装一切</strong>，和它说我要装xx，给个网址，它哐哐一顿下载安装</p><h2 id="开始vibe"><a class="markdownIt-Anchor" href="#开始vibe"></a> 开始Vibe</h2><h3 id="vibe-design"><a class="markdownIt-Anchor" href="#vibe-design"></a> Vibe Design</h3><p>截至2026/3/22，我在小红书上看到过许多vibe coding的作品，绝大部分是些 TodoList、闹钟、记账本之类的APP。我个人觉得这些APP简单到不需要Design。如果想搞一个小众一点的/复杂一点的应用那就得先做好Design了，不然需求都拆不明白。Design我推荐vscode Pencil插件，它是真牛批，&quot;给我生成一个xx风格的xxAPP，包含XX功能、XX功能&quot;就能给你生成出大概页面了，然后继续Vibe，用自然语言让他改设计图</p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%88%91%E7%9A%84VibeCoding%E5%B7%A5%E4%BD%9C%E6%B5%81/IMG_20260322-145001483.png" alt="图 0" /></p><h3 id="初始化工程"><a class="markdownIt-Anchor" href="#初始化工程"></a> 初始化工程</h3><p>Design完了就要考虑怎么实现。可以继续问ai，我这项目前端要用xx技术栈、后端要用xx技术栈、数据库要xx，你帮我初始化工程。现在ai会在当前目录下给前端生成个目录，给后端生成个目录，然后就在这个目录下完成前后端开发，我觉得没有必要分目录，因为反正是要ai实现所有，前后端在一起，都放进ai的上下文，生成质量更高。下图是我最后生成的目录</p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur@main/%E6%88%91%E7%9A%84VibeCoding%E5%B7%A5%E4%BD%9C%E6%B5%81/IMG_20260322-145633511.png" alt="图 1" /></p><p>因为同时使用Claude Code 和 Codex，所以有.agents和.claude目录。  .specify目录是spec-kit这个工作流初始化产物，里面包含宪法、执行脚本、各种文档的模板。app就是app代码目录。backend就是后端目录。design放Pencil设计图。specs放spec-kit分析需求后产生的各种产物</p><h3 id="vibe-coding"><a class="markdownIt-Anchor" href="#vibe-coding"></a> Vibe Coding</h3><p>虽然叫Vibe Coding，但是我建议还是用spec-kit这种SDD（Specification-Driven Development）工作流生成详细的文档，然后再写代码。整体流程是：分析设计图做功能拆解=》使用SDD创建文档=》定好前后端契约=》实现前端页面并且mock测试通过=》实现后端并单元测试通过=》端到端集成测试和验收</p><p>上述流程写进ai要读取的宪法文件中，<a href="http://xn--codexAGENTS-ee1rn59b2kaw93e850efi8f.md">比如codex会去读取AGENTS.md</a>，claude <a href="http://xn--codeCLAUDE-gy4pm85bbkat250e.md">code会去读取CLAUDE.md</a>，为了能兼容各种agent，建议只在.specify/memory/constitution.md中写宪法内容，AGENTS.md和CLAUDE.md引用它</p><p>下面是我的部分宪法文件</p><pre class="highlight"><code class="md"><span class="hljs-section">## Delivery Workflow</span>All implementation work MUST follow this order for each feature module:<span class="hljs-bullet">1.</span> Design analysis and feature split<span class="hljs-bullet">2.</span> SDD creation or update<span class="hljs-bullet">3.</span> Contract and data-model definition in the current feature&#x27;s <span class="hljs-code">`specs/&lt;feature&gt;/`</span>   directory<span class="hljs-bullet">4.</span> Flutter mock-based implementation and interaction validation<span class="hljs-bullet">5.</span> Spring Boot implementation against the approved contract<span class="hljs-bullet">6.</span> End-to-end integration and acceptance verificationFor stages 4 through 6, the agent MUST actively look for safe parallelizationopportunities. Independent frontend, backend, contract-test, data-model, and validationtasks SHOULD be split across multiple sub-agents with explicit ownership boundaries.If the work is kept serial, the agent MUST have a concrete reason, such as a tightdependency chain, a shared-file conflict risk, or insufficient task granularity.The workflow MUST create two mandatory git checkpoints for each feature and onemandatory branch merge:<span class="hljs-bullet">1.</span> A documentation checkpoint immediately after the <span class="hljs-code">`spec-kit`</span> artifact set passes the   consistency, completeness, and closed-loop review gates<span class="hljs-bullet">2.</span> An implementation checkpoint immediately after end-to-end integration and acceptance   verification pass for the implemented feature slice<span class="hljs-bullet">3.</span> A merge of the validated feature branch into <span class="hljs-code">`master`</span> immediately after the   implementation checkpoint is createdWhen the user says &quot;now start the next requirement&quot; or otherwise asks to begin the nextfeature, the agent MUST autonomously carry the feature through all six workflow stages,the documentation checkpoint, the implementation checkpoint, and the merge intomaster without requiring additional step-by-step prompts from the user.When the user says &quot;自动完成设计图中还没实现的所有功能&quot; or otherwise requestsautomatic completion of every still-unimplemented design-backed feature, the agentMUST treat that as authorization to loop Delivery Workflow rounds continuously. Afterone feature round reaches its documentation checkpoint, implementation checkpoint, andmerge obligations, the agent MUST immediately return to design inspection, confirmwhether any implementable unfinished functionality remains, and if so launch the nextDelivery Workflow round without waiting for another prompt. The loop only ends whenthe design can no longer yield an implementable unfinished feature slice or the userexplicitly stops, pauses, reprioritizes, or changes scope.If work starts out of order, the agent MUST remind the user that the agreed workflow hasbeen bypassed and call out the missing prerequisite artifact or validation step.</code></pre><p>宪法文件随时可以补充，比如每次改完宪法文件，都让它自己commit一次，你就可以让它自己把规则加进去。我想让ai自动完成所有需求，所以我加了个<code>自动完成设计图中还没实现的所有功能</code>的规则。还有很多可以加的，比如一个复杂需求可以开几个并行的子agent执行，这些都可以写进宪法文件</p><h2 id="结语"><a class="markdownIt-Anchor" href="#结语"></a> 结语</h2><p>最早ChatGPT出来的时候，我用它看论文，只会胡说八道，用它来写代码，一些片段写的还可以。再后来DeepSeek出来的时候，写代码能力我觉得比我好了，虽然读取不了代码上下文，通过和它聊天也可以给你重构建议。现在LLM越来越强了，我觉得Agent完全能取代绝大部分程序员了，因为写代码本质上还是种体力劳动，人不可能比得过机器的。织布机出现后，不愿转型的织布工人下岗，愿意转型的成了织布机技术员，管理各种织布机生产活动。那未来程序员出路是啥？大抵是和织布机技术员一样，监督各种Agent生产。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;准备工作&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#准备工作&quot;&gt;&lt;/a&gt; 准备工作&lt;/h2&gt;
+&lt;h3 id=&quot;开发环境&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#开发环境&quot;&gt;&lt;/a&gt; 开发环境&lt;/h3</summary>
+      
+    
+    
+    
+    <category term="经验总结" scheme="https://zunpan.github.io/categories/%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/"/>
+    
+    
+    <category term="AI" scheme="https://zunpan.github.io/tags/AI/"/>
+    
+    <category term="编程方法论" scheme="https://zunpan.github.io/tags/%E7%BC%96%E7%A8%8B%E6%96%B9%E6%B3%95%E8%AE%BA/"/>
+    
+  </entry>
   
   <entry>
     <title>安卓MVX发展史</title>
@@ -535,34 +562,6 @@
     <category term="Effective-Java" scheme="https://zunpan.github.io/tags/Effective-Java/"/>
     
     <category term="创建和销毁对象" scheme="https://zunpan.github.io/tags/%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>跨域问题</title>
-    <link href="https://zunpan.github.io/2022/06/22/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/"/>
-    <id>https://zunpan.github.io/2022/06/22/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/</id>
-    <published>2022-06-22T09:12:37.000Z</published>
-    <updated>2023-09-24T04:27:40.285Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="同源策略"><a class="markdownIt-Anchor" href="#同源策略"></a> 同源策略</h2><p>同源策略是浏览器的重要安全策略。大致来说，不同域（协议+域名/ip+端口）生成的cookie只能给这个域使用</p><h2 id="跨域出现与解决"><a class="markdownIt-Anchor" href="#跨域出现与解决"></a> 跨域出现与解决</h2><p>下面的演示是在hosts文件中添加以下配置</p><pre class="highlight"><code class="text">127.0.0.1   zhufeng-test.163.com</code></pre><p>不添加的话，把zhufeng-test.163.com换成localhost或者127.0.0.1是一样的</p><p>假如我们只有后端，它的域是<a href="http://zhufeng-test.163.com:8080">http://zhufeng-test.163.com:8080</a>，它有一个get方法是setCookie，那么访问<a href="http://zhufeng-test.163.com:8080/setCookie">http://zhufeng-test.163.com:8080/setCookie</a>，此时可以在Response Cookies中找到这个cookie，对这个域下的接口访问时会自动带上这个域所有可见的cookie（springboot开启allowCredentials，前端axios需要自己开启withCredentials: true）<br /><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/IMG_20220618-105411813.png" alt="图 2" /></p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/IMG_20220618-105444278.png" alt="图 3" /></p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/IMG_20220618-105349152.png" alt="图 1" /></p><p>现在我们有前端了，前后端分离运行，前端运行在<a href="http://zhufeng-test.163.com:8081">http://zhufeng-test.163.com:8081</a></p><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/IMG_20220618-111058801.png" alt="图 6" /></p><p>因为后端生成的cookie的domain是 <a href="http://zhufeng-test.163.com">zhufeng-test.163.com</a>，所以浏览器访问相同域名的前端也可以读取到这个cookie。<br />但是前端不能访问后端的其它接口，因为它们端口不同，发生了跨域，浏览器不会带上cookie<br /><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/IMG_20220618-111419228.png" alt="图 7" /></p><p>给后端配置一下跨域，.allowedOrigins(“<a href="http://zhufeng-test.163.com:8081/">http://zhufeng-test.163.com:8081/</a>”)表示允许前端<a href="http://zhufeng-test.163.com:8081">http://zhufeng-test.163.com:8081</a>访问后端，不开会返回状态码200的跨域错误，.allowCredentials(true)不开时前端访问后端不会带上后端域名可见的cookie</p><pre class="highlight"><code class="Java"><span class="hljs-meta">@Configuration</span><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CorsConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WebMvcConfigurer</span> &#123;    <span class="hljs-meta">@Override</span>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addCorsMappings</span><span class="hljs-params">(CorsRegistry registry)</span> &#123;        <span class="hljs-comment">//项目中的所有接口都支持跨域</span>        registry.addMapping(<span class="hljs-string">&quot;/**&quot;</span>)                <span class="hljs-comment">// 所有地址都可以访问，也可以配置具体地址</span>                <span class="hljs-comment">// .allowedOrigins(&quot;http://zhufeng-test.163.com:8081/&quot;)</span>                .allowedOriginPatterns(<span class="hljs-string">&quot;*://*:*/&quot;</span>)                <span class="hljs-comment">// &quot;GET&quot;, &quot;HEAD&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;</span>                .allowedMethods(<span class="hljs-string">&quot;*&quot;</span>)                <span class="hljs-comment">// 允许前端携带后端域名可见的cookie</span>                .allowCredentials(<span class="hljs-literal">true</span>)                .maxAge(<span class="hljs-number">3600</span>);    &#125;&#125;</code></pre><p><img src="https://cdn.jsdelivr.net/gh/zunpan/note-imgur/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/IMG_20220618-111742704.png" alt="图 8" /></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;同源策略&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#同源策略&quot;&gt;&lt;/a&gt; 同源策略&lt;/h2&gt;
-&lt;p&gt;同源策略是浏览器的重要安全策略。大致来说，不同域（协议+域名/ip+端口）生成的cookie只能给这个域使用&lt;/p&gt;
-&lt;h2 id=</summary>
-      
-    
-    
-    
-    <category term="基础知识" scheme="https://zunpan.github.io/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
-    
-    
-    <category term="CORS" scheme="https://zunpan.github.io/tags/CORS/"/>
-    
-    <category term="Java" scheme="https://zunpan.github.io/tags/Java/"/>
     
   </entry>
   
